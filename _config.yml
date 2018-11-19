@@ -1,0 +1,57 @@
+title: Solution for problems
+description: Hướng dẫn và chia sẻ lời giải cho các problems trên vn.spoj.com
+author: Tutorial SPOJ
+github: //github.com/vnspoj
+about: Hướng dẫn và chia sẻ lời giải cho các problems trên vn.spoj.com
+disqus_shortname: vnspoj
+# google_analytics: UA-XXXXXXXX-Y
+avatar_url: /static/img/avatar.jpeg
+email: tutorialspoj@gmail.com
+
+username: vnspoj
+repo: solution
+
+social:
+    - icon: fa-facebook
+      link: "//facebook.com/huynhsamha"
+    - icon: fa-twitter
+      link: "//twitter.com/huynhsamha"
+    - icon: fa-linkedin
+      link: "//www.linkedin.com/in/huynhsamha"
+    - icon: fa-stack-overflow
+      link: "//stackoverflow.com/users/8828489/huynhsamha"
+    - icon: fa-github
+      link: "//github.com/vnspoj"
+
+share:
+  twitter_username: huynhsamha
+  # fb_appid: 1749788565247320
+
+urls:
+    - text: About Us
+      url: /about
+    - text: Categories
+      url: /category
+    - text: XML Feed
+      url: /feed.xml
+    - text: Join with us
+      url: //github.com/vnspoj
+
+url: "//vnspoj.github.io"
+baseurl: ""
+paginate: 50
+per_page: 50
+paginate_path: "/page/:num/"
+markdown: kramdown
+mathjax: true
+gems:
+  - jekyll-paginate
+  - jekyll-gist
+
+compress_html:
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+
+sass:
+  style: compressed
