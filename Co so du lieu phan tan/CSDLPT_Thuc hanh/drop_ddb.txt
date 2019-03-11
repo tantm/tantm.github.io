@@ -1,0 +1,21 @@
+/*
+khoa(makhoa,tenkhoa)
+bomon(mabm, tenbm, makhoa)
+giangvien(magv, hoten, phai, tuoi, mabm)
+monhoc(mamh, tenmh, mabm)
+*/
+
+-- drop table day;
+
+drop table giangvien1;
+drop table giangvien2;
+
+drop table monhoc1;
+drop table monhoc2;
+
+drop table bomon1;
+drop table bomon2;
+
+drop table khoa1;
+drop table khoa2;
+

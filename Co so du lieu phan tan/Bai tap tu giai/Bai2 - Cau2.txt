@@ -1,0 +1,83 @@
+1. Cơ sở dữ liệu tập trung
+
+select mamh,tenmh
+from monhoc
+where mamh in  (select mamh
+				from day
+				where magv in (select magv
+							   from giangvien
+							   where magv=$magv))
+	and mabm != (select magv
+			    from giangvien
+			    where magv=$magv)
+
+Cách 2:
+
+select mabm into $mabm
+from giangvien
+where magv=$magv
+if #found
+{
+	select mamh,tenmh
+	from monhoc
+	where mamh in  (select mamh
+					from day
+					where magv=$magv)
+		and mabm!=$mabm;
+}
+
+2. Cơ sở dữ liệu phân tán
+
+
+
+
+Bài tập: Chuyển bộ môn có mã 'HTTT' từ khoa 'CNTT' qua khoa 'MNON'.
+
+1. cơ sở dữ liệu tập trung
+
+update bomon
+set tenkhoa='MNON'
+where mabm='HTTT' and tenkhoa='CNTT'
+
+2. cơ sở dữ liệu phân tán
+
+$MNON=MNON
+insert into bmmon(mabm,tenbm,tenkhoa) value
+select mabm,tenbm,$MNON
+from bmcntt
+where mabm='HTTT'
+if #found
+{
+	insert into mhmnon(...) value
+	select * 
+	from mhcntt
+	where mabm='HTTT'
+	insert into gvmnon(...) value
+	select * 
+	from gvcntt
+	where mabm='HTTT'
+	if #found
+	{
+		insert into daymnon(...) value
+		select *
+		from daycntt
+		where magv in (select magv
+					   from gvcntt
+					   where mabm='HTTT')
+		insert into damnon(...) value
+		select *
+		from dacntt
+		where magv in (select magv
+					   from gvcntt
+					   where mabm='HTTT')
+	}
+}
+delete from dacntt where magv in (select magv
+								   from gvcntt
+								   where mabm='HTTT')
+delete from daycntt where magv in (select magv
+								   from gvcntt
+								   where mabm='HTTT')
+delete from gvcntt where mabm='HTTT'
+delete from mhcntt where mabm='HTTT'
+delete from bmcntt where mabm='HTTT'

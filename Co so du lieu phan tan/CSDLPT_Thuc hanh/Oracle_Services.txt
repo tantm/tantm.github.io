@@ -1,0 +1,4 @@
+OracleMTSRecoveryService
+OracleOraHome92Agent
+OracleOraHome92TNSListener
+OracleServiceTRUC
