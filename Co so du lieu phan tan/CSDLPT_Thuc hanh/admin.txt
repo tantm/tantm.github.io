@@ -1,9 +1,0 @@
-database: truc
-password: truc
-
-user: system / sys
-password: truc
-
-Su dung:
-Enterprise Manager Console hoac SQL Plus
-
