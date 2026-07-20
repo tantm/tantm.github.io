@@ -18,7 +18,9 @@ git add -A
 if git diff --cached --quiet; then
   echo "Không có thay đổi mới — dùng commit hiện tại trên master."
 else
-  git commit -m "$MSG"
+  git commit -m "$MSG
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 fi
 git push origin master
 SHA="$(git rev-parse HEAD)"
