@@ -11,7 +11,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useT(lang);
 const posts = await getPublishedPosts();
-const latest = posts.slice(0, 5);
+const latest = posts.slice(0, 6);
 const counts = new Map<string, number>();
 for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) ?? 0) + 1);
 ---

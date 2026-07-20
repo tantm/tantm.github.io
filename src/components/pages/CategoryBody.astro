@@ -1,16 +1,19 @@
 ---
+import type { Page } from 'astro';
 import PostCard from '../PostCard.astro';
+import Pagination from '../Pagination.astro';
 import type { Post } from '../../lib/posts';
 import { CATEGORY_META } from '../../consts';
 import { localePath, postCount, useT, type Lang } from '../../i18n';
 
 interface Props {
   name: string;
-  posts: Post[];
+  page: Page<Post>;
+  totalPosts: number;
   lang: Lang;
 }
 
-const { name, posts, lang } = Astro.props;
+const { name, page, totalPosts, lang } = Astro.props;
 const t = useT(lang);
 const slug = name.toLowerCase();
 const meta = CATEGORY_META.find((c) => c.slug === slug);
@@ -24,9 +27,11 @@ const meta = CATEGORY_META.find((c) => c.slug === slug);
   </div>
 </header>
 <p style="color: var(--fg-muted);">
-  {postCount(lang, posts.length)} ·
+  {postCount(lang, totalPosts)} ·
   <a href={localePath(lang, '/categories')}>{t('cat.allCategories')}</a>
 </p>
 <ul class="post-list">
-  {posts.map((post) => <PostCard post={post} lang={lang} />)}
+  {page.data.map((post) => <PostCard post={post} lang={lang} />)}
 </ul>
+
+<Pagination page={page} lang={lang} />

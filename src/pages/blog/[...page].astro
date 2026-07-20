@@ -1,0 +1,21 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogIndexBody from '../../components/pages/BlogIndexBody.astro';
+import { getPublishedPosts } from '../../lib/posts';
+import { useT } from '../../i18n';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPublishedPosts();
+  return paginate(posts, { pageSize: 12, props: { totalPosts: posts.length } });
+}) satisfies GetStaticPaths;
+
+const { page, totalPosts } = Astro.props;
+const t = useT('en');
+const suffix = page.currentPage > 1 ? ` — ${t('pag.page')} ${page.currentPage}` : '';
+const viUrl = page.currentPage > 1 ? `/vi/blog/${page.currentPage}` : '/vi/blog';
+---
+
+<BaseLayout title={`${t('blog.title')}${suffix}`} description={t('blog.desc')} lang="en" translationUrl={viUrl}>
+  <BlogIndexBody page={page} totalPosts={totalPosts} lang="en" />
+</BaseLayout>

@@ -1,0 +1,42 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CategoryBody from '../../../components/pages/CategoryBody.astro';
+import { getPublishedPosts, type Post } from '../../../lib/posts';
+import { CATEGORY_META } from '../../../consts';
+import { useT } from '../../../i18n';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPublishedPosts();
+  const groups = new Map<string, { name: string; posts: Post[] }>();
+  for (const post of posts) {
+    const key = post.data.category.toLowerCase();
+    if (!groups.has(key)) groups.set(key, { name: post.data.category, posts: [] });
+    groups.get(key)!.posts.push(post);
+  }
+  return [...groups.entries()].flatMap(([key, group]) =>
+    paginate(group.posts, {
+      params: { category: key },
+      props: { name: group.name, totalPosts: group.posts.length },
+      pageSize: 12,
+    })
+  );
+}) satisfies GetStaticPaths;
+
+const { name, page, totalPosts } = Astro.props;
+const t = useT('en');
+const slug = name.toLowerCase();
+const meta = CATEGORY_META.find((c) => c.slug === slug);
+const suffix = page.currentPage > 1 ? ` — ${t('pag.page')} ${page.currentPage}` : '';
+const viUrl =
+  page.currentPage > 1 ? `/vi/categories/${slug}/${page.currentPage}` : `/vi/categories/${slug}`;
+---
+
+<BaseLayout
+  title={`Category: ${name}${suffix}`}
+  description={meta?.description.en ?? `Posts in category ${name}.`}
+  lang="en"
+  translationUrl={viUrl}
+>
+  <CategoryBody name={name} page={page} totalPosts={totalPosts} lang="en" />
+</BaseLayout>

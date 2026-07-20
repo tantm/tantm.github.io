@@ -1,96 +1,73 @@
 ---
+import type { Page } from 'astro';
 import PostCard from '../PostCard.astro';
-import { getPublishedPosts } from '../../lib/posts';
+import Pagination from '../Pagination.astro';
+import { formatDate, readingTime, type Post } from '../../lib/posts';
+import { CATEGORY_META } from '../../consts';
 import { localePath, useT, type Lang } from '../../i18n';
 
 interface Props {
+  page: Page<Post>;
   lang: Lang;
+  totalPosts: number;
 }
 
-const { lang } = Astro.props;
+const { page, lang, totalPosts } = Astro.props;
 const t = useT(lang);
-const posts = await getPublishedPosts();
-const categories = [...new Set(posts.map((p) => p.data.category))];
-const hasVi = posts.some((p) => p.data.lang === 'vi');
-const byYear = new Map<number, typeof posts>();
-for (const post of posts) {
-  const year = post.data.date.getUTCFullYear();
-  if (!byYear.has(year)) byYear.set(year, []);
-  byYear.get(year)!.push(post);
-}
-const years = [...byYear.keys()].sort((a, b) => b - a);
+const isFirst = page.currentPage === 1;
+const featured = isFirst ? page.data[0] : null;
+const rest = isFirst ? page.data.slice(1) : page.data;
+const featIcon = featured && CATEGORY_META.find((c) => c.slug === featured.data.category.toLowerCase())?.icon;
 ---
 
 <h1>{t('blog.title')}</h1>
 <p style="color: var(--fg-muted); margin-top: 0.25rem;">
-  {posts.length} {lang === 'vi' ? '' : `post${posts.length !== 1 ? 's' : ''} `}{t('blog.counting')}
+  {totalPosts} {lang === 'vi' ? '' : `post${totalPosts !== 1 ? 's' : ''} `}{t('blog.counting')}
   <a href={localePath(lang, '/search')}>{t('blog.search')}</a>.
 </p>
 
-<div class="filter-bar" id="filter-bar">
-  <button class="chip active" data-filter="all">{t('blog.all')}</button>
+<div class="filter-bar">
+  <a class="chip active" href={localePath(lang, '/blog')}>{t('blog.all')}</a>
   {
-    categories.map((c) => (
-      <button class="chip" data-filter={c} data-cat={c.toLowerCase()}>
-        {c}
-      </button>
+    CATEGORY_META.map((c) => (
+      <a class="chip" href={localePath(lang, `/categories/${c.slug}`)} data-cat={c.slug}>
+        {c.icon} {c.name}
+      </a>
     ))
-  }
-  {
-    hasVi && (
-      <>
-        <span class="filter-sep" aria-hidden="true" />
-        <button class="chip active" data-lang-filter="all">{t('blog.langAll')}</button>
-        <button class="chip" data-lang-filter="en">{t('blog.langEn')}</button>
-        <button class="chip" data-lang-filter="vi">{t('blog.langVi')}</button>
-      </>
-    )
   }
 </div>
 
 {
-  years.map((year) => (
-    <section data-year-section>
-      <h2 class="year-heading">{year}</h2>
-      <ul class="post-list">
-        {byYear.get(year)!.map((post) => (
-          <PostCard post={post} lang={lang} />
-        ))}
-      </ul>
-    </section>
-  ))
+  featured && (
+    <a
+      class="featured-card"
+      href={`/blog/${featured.id}`}
+      data-cat={featured.data.category.toLowerCase()}
+    >
+      <div class="card-cover">
+        {featIcon && <span class="cover-icon">{featIcon}</span>}
+        <span class="cover-word">{featured.data.category}</span>
+      </div>
+      <div class="card-body">
+        <span class="featured-label">★ {t('blog.featured')}</span>
+        <h2>{featured.data.title}</h2>
+        {featured.data.description && <p class="desc">{featured.data.description}</p>}
+        <div class="post-meta">
+          <span class="badge">{featured.data.category}</span>
+          {featured.data.lang === 'vi' && <span class="lang-badge">VI</span>}
+          <time datetime={featured.data.date.toISOString()}>{formatDate(featured.data.date)}</time>
+          <span class="dot" />
+          <span>
+            {readingTime(featured.body)} {t('post.minRead')}
+          </span>
+        </div>
+      </div>
+    </a>
+  )
 }
 
-<script>
-  const bar = document.getElementById('filter-bar')!;
-  let cat = 'all';
-  let lang = 'all';
+<ul class="post-list">
+  {rest.map((post) => <PostCard post={post} lang={lang} />)}
+</ul>
 
-  function apply() {
-    document.querySelectorAll<HTMLElement>('.post-card').forEach((card) => {
-      const catOk = cat === 'all' || card.dataset.category === cat;
-      const langOk = lang === 'all' || card.dataset.lang === lang;
-      card.style.display = catOk && langOk ? '' : 'none';
-    });
-    document.querySelectorAll<HTMLElement>('[data-year-section]').forEach((sec) => {
-      const visible = [...sec.querySelectorAll<HTMLElement>('.post-card')].some(
-        (c) => c.style.display !== 'none'
-      );
-      sec.style.display = visible ? '' : 'none';
-    });
-  }
-
-  bar.addEventListener('click', (e) => {
-    const chip = (e.target as HTMLElement).closest('.chip') as HTMLElement | null;
-    if (!chip) return;
-    if (chip.dataset.langFilter) {
-      lang = chip.dataset.langFilter;
-      bar.querySelectorAll('[data-lang-filter]').forEach((c) => c.classList.remove('active'));
-    } else {
-      cat = chip.dataset.filter!;
-      bar.querySelectorAll('[data-filter]').forEach((c) => c.classList.remove('active'));
-    }
-    chip.classList.add('active');
-    apply();
-  });
-</script>
+<Pagination page={page} lang={lang} />

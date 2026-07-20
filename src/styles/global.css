@@ -362,13 +362,6 @@ html[data-theme='dark'] .theme-toggle .icon-moon { display: none; }
   padding: 0.05rem 0.35rem;
 }
 
-.filter-sep {
-  width: 1px;
-  align-self: stretch;
-  background: var(--border);
-  margin: 0 0.35rem;
-}
-
 .lang-switch {
   display: block;
   border: 1px solid var(--border);
@@ -410,27 +403,176 @@ html[data-theme='dark'] .theme-toggle .icon-moon { display: none; }
 [data-cat='developer'] { --cat-color: var(--cat-developer); --cat-soft: var(--cat-developer-soft); }
 
 /* ============ Post list & cards ============ */
-.post-list { list-style: none; margin: 0; padding: 0; }
+.post-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 1.1rem;
+}
 
 .post-card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg);
-  padding: 1.1rem 1.35rem;
-  margin: 0 0 0.9rem;
+  overflow: hidden;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--cat-color, var(--accent));
+}
+
+.post-card .card-body {
+  padding: 0.95rem 1.15rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.post-card h3 { margin: 0.45rem 0 0.35rem; font-size: 1.13rem; line-height: 1.35; }
+.post-card h3 a { color: var(--fg); }
+.post-card h3 a:hover { color: var(--cat-color, var(--accent)); text-decoration: none; }
+
+.post-card .desc {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 0.92rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* cover gradient theo category (không cần ảnh) */
+.card-cover {
+  position: relative;
+  display: block;
+  height: 6.25rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  background:
+    radial-gradient(circle at 85% -20%, color-mix(in srgb, var(--cat-color, var(--accent)) 36%, transparent), transparent 62%),
+    linear-gradient(135deg, var(--cat-soft, var(--accent-soft)), color-mix(in srgb, var(--cat-color, var(--accent)) 14%, var(--bg)));
+}
+
+.card-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(color-mix(in srgb, var(--cat-color, var(--accent)) 20%, transparent) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+.card-cover .cover-icon {
+  position: absolute;
+  left: 1rem;
+  top: 0.8rem;
+  font-size: 1.65rem;
+  z-index: 1;
+}
+
+.card-cover .cover-word {
+  position: absolute;
+  right: 0.4rem;
+  bottom: -1.1rem;
+  z-index: 1;
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  color: color-mix(in srgb, var(--cat-color, var(--accent)) 32%, transparent);
+  transition: color 0.15s ease;
+}
+
+.post-card:hover .cover-word,
+.featured-card:hover .cover-word {
+  color: color-mix(in srgb, var(--cat-color, var(--accent)) 52%, transparent);
+}
+
+/* ============ Featured card (đầu trang blog) ============ */
+.featured-card {
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  margin: 0 0 0.5rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.featured-card:hover {
+  text-decoration: none;
+  color: var(--fg);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   border-color: var(--cat-color, var(--accent));
 }
 
-.post-card h3 { margin: 0.3rem 0 0.35rem; font-size: 1.22rem; }
-.post-card h3 a { color: var(--fg); }
-.post-card h3 a:hover { color: var(--cat-color, var(--accent)); text-decoration: none; }
-.post-card .desc { margin: 0; color: var(--fg-muted); font-size: 0.96rem; }
+.featured-card .card-cover { height: 100%; min-height: 10.5rem; }
+.featured-card .cover-word { font-size: 3.4rem; bottom: -1.3rem; }
+.featured-card .card-body { padding: 1.25rem 1.5rem; }
+
+.featured-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--cat-color, var(--accent));
+}
+
+.featured-card h2 { margin: 0.4rem 0 0.45rem; font-size: 1.45rem; }
+.featured-card .desc { color: var(--fg-muted); margin: 0 0 0.8rem; font-size: 0.98rem; }
+
+/* ============ Pagination ============ */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 2.5rem 0 0;
+}
+
+.page-btn {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+
+.page-btn:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+.page-btn.disabled { opacity: 0.35; }
+
+.page-nums { display: flex; align-items: center; gap: 0.3rem; }
+
+.page-num {
+  min-width: 2.15rem;
+  height: 2.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.page-num:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+.page-num.current { background: var(--accent); color: #fff; }
+.page-nums .ellipsis { color: var(--fg-muted); padding: 0 0.15rem; }
 
 .post-meta {
   display: flex;
@@ -459,14 +601,6 @@ a.badge:hover {
   color: #fff;
 }
 
-.year-heading {
-  margin: 2.25rem 0 0.75rem;
-  font-size: 1rem;
-  color: var(--fg-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
 /* ============ Filter chips ============ */
 .filter-bar {
   display: flex;
@@ -476,6 +610,9 @@ a.badge:hover {
 }
 
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--fg-muted);
@@ -488,7 +625,7 @@ a.badge:hover {
   transition: all 0.12s ease;
 }
 
-.chip:hover { border-color: var(--cat-color, var(--accent)); color: var(--cat-color, var(--accent)); }
+.chip:hover { border-color: var(--cat-color, var(--accent)); color: var(--cat-color, var(--accent)); text-decoration: none; }
 
 .chip.active {
   background: var(--cat-color, var(--accent));
@@ -851,4 +988,6 @@ html[data-theme='dark'] .astro-code span { color: var(--shiki-dark); }
   .profile-hero { flex-direction: column; text-align: center; gap: 1.25rem; }
   .post-nav { grid-template-columns: 1fr; }
   .post-nav .next { text-align: left; }
+  .featured-card { grid-template-columns: 1fr; }
+  .featured-card .card-cover { min-height: 0; height: 7rem; }
 }

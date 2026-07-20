@@ -99,6 +99,12 @@ Set `lang: vi` on the Vietnamese one and give **both** files the same `translati
   prev/next navigation, related posts (shared tags/category).
 - Category colors: each category (Data/AI/Architecture/Developer) has its own accent,
   defined in `src/consts.ts` (`CATEGORY_META`) + `src/styles/global.css` (`[data-cat]`).
+- Post cards: CSS-generated cover art (category gradient + dot pattern + oversized
+  category word) — no per-post images to maintain. Blog index shows page 1 with a
+  featured (latest) card.
+- Pagination (12 posts/page) on `/blog` and `/categories/<slug>` in both languages —
+  built for thousands of posts. Category chips on the blog index link to category pages
+  (no client-side filtering).
 - Dark/light theme, self-hosted fonts (Inter + JetBrains Mono), RSS, sitemap, OG tags.
 
 ## Commands

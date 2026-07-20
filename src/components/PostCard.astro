@@ -1,6 +1,7 @@
 ---
 import { formatDate, readingTime, type Post } from '../lib/posts';
 import { localePath, useT, type Lang } from '../i18n';
+import { CATEGORY_META } from '../consts';
 
 interface Props {
   post: Post;
@@ -10,18 +11,25 @@ interface Props {
 const { post, lang = 'en' } = Astro.props;
 const { title, description, date, category, lang: postLang } = post.data;
 const catSlug = category.toLowerCase();
+const icon = CATEGORY_META.find((c) => c.slug === catSlug)?.icon;
 const minutes = readingTime(post.body);
 const t = useT(lang);
 ---
 
 <li class="post-card" data-cat={catSlug} data-category={category} data-lang={postLang}>
-  <div class="post-meta">
-    <a class="badge" href={localePath(lang, `/categories/${catSlug}`)}>{category}</a>
-    {postLang === 'vi' && <span class="lang-badge">VI</span>}
-    <time datetime={date.toISOString()}>{formatDate(date)}</time>
-    <span class="dot"></span>
-    <span>{minutes} {t('post.minRead')}</span>
+  <a class="card-cover" href={`/blog/${post.id}`} tabindex="-1" aria-hidden="true">
+    {icon && <span class="cover-icon">{icon}</span>}
+    <span class="cover-word">{category}</span>
+  </a>
+  <div class="card-body">
+    <div class="post-meta">
+      <a class="badge" href={localePath(lang, `/categories/${catSlug}`)}>{category}</a>
+      {postLang === 'vi' && <span class="lang-badge">VI</span>}
+      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      <span class="dot"></span>
+      <span>{minutes} {t('post.minRead')}</span>
+    </div>
+    <h3><a href={`/blog/${post.id}`}>{title}</a></h3>
+    {description && <p class="desc">{description}</p>}
   </div>
-  <h3><a href={`/blog/${post.id}`}>{title}</a></h3>
-  {description && <p class="desc">{description}</p>}
 </li>

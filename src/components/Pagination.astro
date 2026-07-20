@@ -1,0 +1,60 @@
+---
+import type { Page } from 'astro';
+import { useT, type Lang } from '../i18n';
+
+interface Props {
+  page: Page<any>;
+  lang?: Lang;
+}
+
+const { page, lang = 'en' } = Astro.props;
+const t = useT(lang);
+const { currentPage, lastPage } = page;
+
+/* Cửa sổ số trang: 1 … c-1 c c+1 … N (scale tới hàng trăm trang) */
+const nums = new Set<number>([1, lastPage, currentPage - 1, currentPage, currentPage + 1]);
+const items: (number | '…')[] = [];
+let prev = 0;
+for (const n of [...nums].filter((n) => n >= 1 && n <= lastPage).sort((a, b) => a - b)) {
+  if (n - prev > 1) items.push('…');
+  items.push(n);
+  prev = n;
+}
+
+/* URL trang n theo pattern rest-param: trang 1 không có suffix */
+const base = (page.url.current ?? '').replace(/\/\d+\/?$/, '').replace(/\/$/, '');
+const pageUrl = (n: number) => (n === 1 ? base || '/' : `${base}/${n}`);
+---
+
+{
+  lastPage > 1 && (
+    <nav class="pagination" aria-label="Pagination">
+      {page.url.prev ? (
+        <a class="page-btn" href={page.url.prev}>{t('pag.newer')}</a>
+      ) : (
+        <span class="page-btn disabled">{t('pag.newer')}</span>
+      )}
+      <div class="page-nums">
+        {items.map((it) =>
+          it === '…' ? (
+            <span class="ellipsis">…</span>
+          ) : (
+            <a
+              class:list={['page-num', { current: it === currentPage }]}
+              href={pageUrl(it)}
+              aria-current={it === currentPage ? 'page' : undefined}
+              aria-label={`${t('pag.page')} ${it}`}
+            >
+              {it}
+            </a>
+          )
+        )}
+      </div>
+      {page.url.next ? (
+        <a class="page-btn" href={page.url.next}>{t('pag.older')}</a>
+      ) : (
+        <span class="page-btn disabled">{t('pag.older')}</span>
+      )}
+    </nav>
+  )
+}
