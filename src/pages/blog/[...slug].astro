@@ -1,0 +1,220 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import PostNav from '../../components/PostNav.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
+import {
+  getPublishedPosts,
+  getPostNeighbors,
+  getRelatedPosts,
+  getTranslation,
+  formatDate,
+  readingTime,
+  slugifyTag,
+} from '../../lib/posts';
+import { AUTHOR, AUTHOR_TITLE, AVATAR } from '../../consts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { title, description, date, updated, category, tags, lang } = post.data;
+const catSlug = category.toLowerCase();
+const { Content, headings } = await render(post);
+const allPosts = await getPublishedPosts();
+const { older, newer } = getPostNeighbors(allPosts, post);
+const related = getRelatedPosts(allPosts, post);
+const translation = getTranslation(allPosts, post);
+const translationUrl = translation ? `/blog/${translation.id}` : undefined;
+const minutes = readingTime(post.body);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedTime={date}
+  tags={tags}
+  lang={lang}
+  translationUrl={translationUrl}
+  wide
+>
+  <div class="read-progress" id="read-progress"></div>
+
+  <div class="post-layout">
+    <article data-pagefind-body data-cat={catSlug}>
+      <header class="article-header">
+        <div class="post-meta">
+          <a class="badge" href={`/categories/${catSlug}`}>{category}</a>
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          {updated && <span>· updated {formatDate(updated)}</span>}
+          <span class="dot"></span>
+          <span>{minutes} min read</span>
+        </div>
+        <h1>{title}</h1>
+        {
+          tags.length > 0 && (
+            <div class="tag-list">
+              {tags.map((tag) => (
+                <a class="tag" href={`/tags/${slugifyTag(tag)}`}>
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      {
+        translation && (
+          <a class="lang-switch" href={translationUrl} data-pagefind-ignore>
+            {lang === 'en'
+              ? '🇻🇳 Bài này có bản tiếng Việt — đọc tại đây'
+              : '🇬🇧 This post is available in English — read it here'}
+          </a>
+        )
+      }
+
+      <TableOfContents headings={headings} mobile />
+
+      <div class="prose" id="prose">
+        <Content />
+      </div>
+
+      <AdSlot />
+
+      <div class="author-box" data-pagefind-ignore>
+        <img src={AVATAR} alt={AUTHOR} />
+        <div>
+          <span class="name">{AUTHOR}</span>
+          <p>
+            {AUTHOR_TITLE} — building data platforms & AI systems, writing down what works.
+            <a href="/profile">More about me →</a>
+          </p>
+        </div>
+      </div>
+
+      <div data-pagefind-ignore>
+        <PostNav older={older} newer={newer} />
+        <RelatedPosts posts={related} />
+      </div>
+    </article>
+
+    <aside class="post-aside">
+      <TableOfContents headings={headings} />
+    </aside>
+  </div>
+
+  <!-- Reading progress -->
+  <script>
+    const bar = document.getElementById('read-progress')!;
+    const onScroll = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      bar.style.width = max > 0 ? `${(h.scrollTop / max) * 100}%` : '0';
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  </script>
+
+  <!-- Copy button cho code block -->
+  <script>
+    document.querySelectorAll('pre.astro-code').forEach((pre) => {
+      if ((pre as HTMLElement).dataset.language === 'mermaid') return;
+      const wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.replaceWith(wrap);
+      wrap.appendChild(pre);
+      const btn = document.createElement('button');
+      btn.className = 'code-copy';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(pre.textContent ?? '');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1600);
+      });
+      wrap.appendChild(btn);
+    });
+  </script>
+
+  <!-- Anchor link cho heading -->
+  <script>
+    document.querySelectorAll('#prose h2[id], #prose h3[id]').forEach((h) => {
+      const a = document.createElement('a');
+      a.className = 'anchor';
+      a.href = `#${h.id}`;
+      a.textContent = '#';
+      a.ariaLabel = 'Link to this section';
+      h.appendChild(a);
+    });
+  </script>
+
+  <!-- TOC active highlight -->
+  <script>
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    if (links.length > 0) {
+      const map = new Map<Element, HTMLAnchorElement>();
+      links.forEach((a) => {
+        const target = document.getElementById(a.dataset.tocLink!);
+        if (target) map.set(target, a);
+      });
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              links.forEach((a) => a.classList.remove('active'));
+              map.get(e.target)?.classList.add('active');
+            }
+          });
+        },
+        { rootMargin: '-15% 0px -75% 0px' }
+      );
+      map.forEach((_, el) => observer.observe(el));
+    }
+  </script>
+
+  <!-- Mermaid: render code block ```mermaid thành diagram (GitHub cũng render block này) -->
+  <script is:inline type="module">
+    const blocks = document.querySelectorAll('pre[data-language="mermaid"]');
+    if (blocks.length > 0) {
+      const { default: mermaid } = await import(
+        'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs'
+      );
+
+      blocks.forEach((pre, i) => {
+        const div = document.createElement('div');
+        div.className = 'mermaid-diagram';
+        div.dataset.code = pre.textContent;
+        div.id = `mermaid-d${i}`;
+        pre.replaceWith(div);
+      });
+
+      async function renderAll() {
+        const dark = document.documentElement.dataset.theme === 'dark';
+        mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'neutral' });
+        for (const div of document.querySelectorAll('.mermaid-diagram')) {
+          try {
+            const { svg } = await mermaid.render(`${div.id}-svg${Date.now()}`, div.dataset.code);
+            div.innerHTML = svg;
+          } catch (e) {
+            div.innerHTML = `<pre>${div.dataset.code}</pre>`;
+          }
+        }
+      }
+
+      await renderAll();
+      new MutationObserver(renderAll).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPublishedPosts, slugifyTag, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const groups = new Map<string, { name: string; posts: Post[] }>();
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      const key = slugifyTag(tag);
+      if (!groups.has(key)) groups.set(key, { name: tag, posts: [] });
+      groups.get(key)!.posts.push(post);
+    }
+  }
+  return [...groups.entries()].map(([key, group]) => ({ params: { tag: key }, props: group }));
+}
+
+const { name, posts } = Astro.props;
+---
+
+<BaseLayout title={`Tag: ${name}`} description={`Posts tagged with ${name}.`}>
+  <h1>#{name}</h1>
+  <p style="color: var(--fg-muted);">
+    {posts.length} post{posts.length !== 1 ? 's' : ''} ·
+    <a href="/blog">all posts</a>
+  </p>
+  <ul class="post-list">
+    {posts.map((post) => <PostCard post={post} />)}
+  </ul>
+</BaseLayout>

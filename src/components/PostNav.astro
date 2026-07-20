@@ -1,0 +1,33 @@
+---
+import type { Post } from '../lib/posts';
+
+interface Props {
+  older: Post | null;
+  newer: Post | null;
+}
+
+const { older, newer } = Astro.props;
+---
+
+{
+  (older || newer) && (
+    <nav class="post-nav" aria-label="Post navigation">
+      {older ? (
+        <a href={`/blog/${older.id}`}>
+          <span class="label">← Older</span>
+          <span class="title">{older.data.title}</span>
+        </a>
+      ) : (
+        <span class="spacer" />
+      )}
+      {newer ? (
+        <a href={`/blog/${newer.id}`} class="next">
+          <span class="label">Newer →</span>
+          <span class="title">{newer.data.title}</span>
+        </a>
+      ) : (
+        <span class="spacer" />
+      )}
+    </nav>
+  )
+}

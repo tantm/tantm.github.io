@@ -1,0 +1,24 @@
+---
+import { formatDate, readingTime, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, date, category, lang } = post.data;
+const catSlug = category.toLowerCase();
+const minutes = readingTime(post.body);
+---
+
+<li class="post-card" data-cat={catSlug} data-category={category} data-lang={lang}>
+  <div class="post-meta">
+    <a class="badge" href={`/categories/${catSlug}`}>{category}</a>
+    {lang === 'vi' && <span class="lang-badge">VI</span>}
+    <time datetime={date.toISOString()}>{formatDate(date)}</time>
+    <span class="dot"></span>
+    <span>{minutes} min read</span>
+  </div>
+  <h3><a href={`/blog/${post.id}`}>{title}</a></h3>
+  {description && <p class="desc">{description}</p>}
+</li>

@@ -1,0 +1,27 @@
+---
+// Chỗ gắn AdSense sau này: bật bằng cách điền ADSENSE_CLIENT trong src/consts.ts
+// và điền data-ad-slot cho từng vị trí. Khi client rỗng → không render gì.
+import { ADSENSE_CLIENT } from '../consts';
+
+interface Props {
+  slot?: string;
+}
+
+const { slot = '' } = Astro.props;
+---
+
+{
+  ADSENSE_CLIENT && slot && (
+    <div class="ad-slot">
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={ADSENSE_CLIENT}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+      <script is:inline>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  )
+}

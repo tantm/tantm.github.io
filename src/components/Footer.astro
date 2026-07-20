@@ -1,0 +1,40 @@
+---
+import { AUTHOR, SITE_TITLE, SITE_TAGLINE, GITHUB_URL, CATEGORY_META } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="site-brand">{SITE_TITLE}<span style="color: var(--accent)">.</span></a>
+        <p>{SITE_TAGLINE} — practical, experience-driven, always anonymized.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Topics</h4>
+        <ul>
+          {
+            CATEGORY_META.map((c) => (
+              <li>
+                <a href={`/categories/${c.slug}`}>{c.name}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Links</h4>
+        <ul>
+          <li><a href="/profile">About me</a></li>
+          <li><a href={GITHUB_URL}>GitHub</a></li>
+          <li><a href="/search">Search</a></li>
+          <li><a href="/rss.xml">RSS feed</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {year} {AUTHOR}. All opinions are my own.</span>
+      <span>Built with <a href="https://astro.build">Astro</a> · Hosted on GitHub Pages</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,42 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  mobile?: boolean;
+}
+
+const { headings, mobile = false } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length > 2 &&
+    (mobile ? (
+      <div class="toc-mobile">
+        <details>
+          <summary>On this page</summary>
+          <ul class="toc">
+            {items.map((h) => (
+              <li class={`depth-${h.depth}`}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      </div>
+    ) : (
+      <nav class="toc" aria-label="Table of contents">
+        <h4>On this page</h4>
+        <ul>
+          {items.map((h) => (
+            <li class={`depth-${h.depth}`}>
+              <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    ))
+}

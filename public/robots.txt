@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tantm.github.io/sitemap-index.xml
