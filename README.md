@@ -98,12 +98,16 @@ Set `lang: vi` on the Vietnamese one and give **both** files the same `translati
 | `make build` | Production build → `dist/` |
 | `make preview` | Serve the built `dist/` locally |
 | `make new-post TITLE="..." [CATEGORY=...] [LANG=vi]` | Scaffold a new draft post |
-| `make push [MSG="..."]` | Commit all + push `master` → GitHub Actions builds & deploys Pages |
+| `make publish [MSG="..."]` | **Full pipeline:** build → commit → push → wait for deploy → verify site live |
+| `make push [MSG="..."]` | Commit + push only (no build/verify — prefer `make publish`) |
 
 ## Deploy
 
-Pushing to `master` triggers `.github/workflows/deploy.yml` (build → deploy Pages).
-Repo setting required once: **Settings → Pages → Source = GitHub Actions**.
+`make publish` runs everything end-to-end. Under the hood, pushing to `master` triggers
+`.github/workflows/deploy.yml` (build → deploy Pages); the script then waits for the
+workflow and smoke-tests https://tantm.github.io.
+
+Requires Node >= 22 (Astro 7) — the Makefile auto-activates it via nvm + `.nvmrc`.
 
 ## Content rules
 
