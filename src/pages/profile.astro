@@ -1,116 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { AUTHOR, AUTHOR_TITLE, AVATAR, GITHUB_URL } from '../consts';
-
-const facts = [
-  { num: '7+', lbl: 'Years of engineering' },
-  { num: '15+', lbl: 'Client platform deliveries' },
-  { num: '6+', lbl: 'Years on AWS data platforms' },
-  { num: '2', lbl: 'AWS certifications' },
-];
-
-const skills = [
-  {
-    group: 'Data Platforms & Engineering',
-    items: ['Databricks', 'Spark', 'Kafka', 'Airflow', 'dbt', 'Medallion lakehouse', 'Streaming & batch ETL', 'Data quality & governance'],
-  },
-  {
-    group: 'Cloud & Infrastructure (AWS)',
-    items: ['S3', 'Glue', 'EMR', 'Redshift', 'Lambda', 'Step Functions', 'ECS', 'MSK', 'SageMaker', 'Bedrock', 'Terraform', 'CI/CD'],
-  },
-  {
-    group: 'AI & ML',
-    items: ['Multi-agent systems', 'RAG & knowledge bases', 'MLOps', 'Model serving & monitoring', 'AIOps — anomaly · correlation · RCA'],
-  },
-  {
-    group: 'Leadership & Architecture',
-    items: ['Solution architecture', 'Technical proposals', 'Delivery governance', 'Workstream leadership', 'Team mentorship'],
-  },
-];
+import ProfileBody from '../components/pages/ProfileBody.astro';
+import { AUTHOR, AUTHOR_TITLE } from '../consts';
 ---
 
 <BaseLayout
   title="Profile"
   description={`About ${AUTHOR} — ${AUTHOR_TITLE}. View or download my CV.`}
+  lang="en"
+  translationUrl="/vi/profile"
 >
-  <section class="profile-hero">
-    <img src={AVATAR} alt={AUTHOR} width="136" height="136" />
-    <div>
-      <h1>{AUTHOR}</h1>
-      <p class="role">{AUTHOR_TITLE}</p>
-      <p class="loc">📍 Ho Chi Minh City, Vietnam</p>
-    </div>
-  </section>
-
-  <div class="fact-grid">
-    {
-      facts.map((f) => (
-        <div class="fact">
-          <div class="num">{f.num}</div>
-          <div class="lbl">{f.lbl}</div>
-        </div>
-      ))
-    }
-  </div>
-
-  <section class="prose">
-    <h2>About</h2>
-    <p>
-      I design and deliver enterprise <strong>data &amp; AI platforms on AWS</strong> —
-      lakehouses, OLAP/CDP systems, MLOps/AIOps and multi-agent GenAI platforms — for
-      leading banks and enterprises. I grew from hands-on data engineer to platform lead:
-      solution architecture and technical proposals for enterprise programs, leading data
-      workstreams, and building GenAI assistant platforms on AWS Bedrock.
-    </p>
-    <p>
-      Day to day I combine hands-on depth (Python, Spark, Airflow, dbt, Terraform, Kafka)
-      with technical leadership: planning and unblocking the team, design &amp; code
-      reviews, and coaching engineers toward independent delivery.
-    </p>
-    <p>What I write about here:</p>
-    <ul>
-      <li>Data platforms that stay simple to operate — lakehouse, pipelines, governance</li>
-      <li>GenAI and agentic systems beyond the demo — RAG, guardrails, evaluation</li>
-      <li>Architecture trade-offs from real delivery, generalized and anonymized</li>
-      <li>Developer productivity — tooling, automation, AI-assisted workflows</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Skills</h2>
-    {
-      skills.map((s) => (
-        <div class="skill-group">
-          <h3>{s.group}</h3>
-          <div class="tag-list">
-            {s.items.map((item) => (
-              <span class="tag">{item}</span>
-            ))}
-          </div>
-        </div>
-      ))
-    }
-  </section>
-
-  <section class="prose">
-    <h2>Certifications</h2>
-    <ul>
-      <li>AWS Certified Solutions Architect</li>
-      <li>AWS Certified AI Practitioner</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Curriculum Vitae</h2>
-    <p style="color: var(--fg-muted);">
-      Full CV — experience, skills and education. Contact details are in the CV.
-    </p>
-    <div class="profile-actions">
-      <a class="btn btn-primary" href="/cv/">View CV online</a>
-      <a class="btn btn-outline" href="/cv/CV_Tan_Thai_Data_AI_Platform_Lead_2026.pdf" download>
-        Download CV (PDF)
-      </a>
-      <a class="btn btn-outline" href={GITHUB_URL}>GitHub</a>
-    </div>
-  </section>
+  <ProfileBody lang="en" />
 </BaseLayout>

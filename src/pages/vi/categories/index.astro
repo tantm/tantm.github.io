@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CategoriesBody from '../../../components/pages/CategoriesBody.astro';
+import { useT } from '../../../i18n';
+
+const t = useT('vi');
+---
+
+<BaseLayout title={t('cats.title')} description={t('cats.desc')} lang="vi" translationUrl="/categories">
+  <CategoriesBody lang="vi" />
+</BaseLayout>

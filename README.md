@@ -47,6 +47,17 @@ draft: true           # remove (or false) to publish
 
 Posts live under `src/content/blog/<year>/` — readable directly on GitHub/VSCode.
 
+### Bilingual site (EN–VI)
+
+The whole site is bilingual: English is the default (no URL prefix), Vietnamese lives
+under `/vi/…` (home, blog index, categories, tags, profile, search — same content,
+Vietnamese UI). The header has an EN↔VI switcher that always points at the exact
+counterpart page. UI strings live in `src/i18n.ts`; page bodies are shared components
+in `src/components/pages/` so each page exists once and is rendered per language.
+
+Blog **posts** keep a single canonical URL per language (`/blog/<year>/<slug>`, no
+`/vi/` prefix) — the page chrome follows the post's own `lang`.
+
 ### Bilingual posts (EN–VI)
 
 Each language version is its own `.md` file with its own slug (Vietnamese slug is fine).

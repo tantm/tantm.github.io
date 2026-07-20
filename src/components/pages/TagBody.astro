@@ -1,0 +1,23 @@
+---
+import PostCard from '../PostCard.astro';
+import type { Post } from '../../lib/posts';
+import { localePath, postCount, useT, type Lang } from '../../i18n';
+
+interface Props {
+  name: string;
+  posts: Post[];
+  lang: Lang;
+}
+
+const { name, posts, lang } = Astro.props;
+const t = useT(lang);
+---
+
+<h1>#{name}</h1>
+<p style="color: var(--fg-muted);">
+  {postCount(lang, posts.length)} ·
+  <a href={localePath(lang, '/blog')}>{t('tag.allPosts')}</a>
+</p>
+<ul class="post-list">
+  {posts.map((post) => <PostCard post={post} lang={lang} />)}
+</ul>

@@ -1,0 +1,150 @@
+---
+import { AUTHOR, AUTHOR_TITLE, AVATAR, GITHUB_URL } from '../../consts';
+import type { Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const vi = lang === 'vi';
+
+const facts = [
+  { num: '7+', lbl: vi ? 'Năm kinh nghiệm engineering' : 'Years of engineering' },
+  { num: '15+', lbl: vi ? 'Platform bàn giao cho khách hàng' : 'Client platform deliveries' },
+  { num: '6+', lbl: vi ? 'Năm làm data platform trên AWS' : 'Years on AWS data platforms' },
+  { num: '2', lbl: vi ? 'Chứng chỉ AWS' : 'AWS certifications' },
+];
+
+const skills = [
+  {
+    group: vi ? 'Data Platform & Engineering' : 'Data Platforms & Engineering',
+    items: ['Databricks', 'Spark', 'Kafka', 'Airflow', 'dbt', 'Medallion lakehouse', 'Streaming & batch ETL', 'Data quality & governance'],
+  },
+  {
+    group: vi ? 'Cloud & Hạ tầng (AWS)' : 'Cloud & Infrastructure (AWS)',
+    items: ['S3', 'Glue', 'EMR', 'Redshift', 'Lambda', 'Step Functions', 'ECS', 'MSK', 'SageMaker', 'Bedrock', 'Terraform', 'CI/CD'],
+  },
+  {
+    group: 'AI & ML',
+    items: ['Multi-agent systems', 'RAG & knowledge bases', 'MLOps', 'Model serving & monitoring', 'AIOps — anomaly · correlation · RCA'],
+  },
+  {
+    group: vi ? 'Leadership & Kiến trúc' : 'Leadership & Architecture',
+    items: ['Solution architecture', 'Technical proposals', 'Delivery governance', 'Workstream leadership', 'Team mentorship'],
+  },
+];
+---
+
+<section class="profile-hero">
+  <img src={AVATAR} alt={AUTHOR} width="136" height="136" />
+  <div>
+    <h1>{AUTHOR}</h1>
+    <p class="role">{AUTHOR_TITLE}</p>
+    <p class="loc">📍 {vi ? 'TP. Hồ Chí Minh, Việt Nam' : 'Ho Chi Minh City, Vietnam'}</p>
+  </div>
+</section>
+
+<div class="fact-grid">
+  {
+    facts.map((f) => (
+      <div class="fact">
+        <div class="num">{f.num}</div>
+        <div class="lbl">{f.lbl}</div>
+      </div>
+    ))
+  }
+</div>
+
+<section class="prose">
+  <h2>{vi ? 'Giới thiệu' : 'About'}</h2>
+  {
+    vi ? (
+      <>
+        <p>
+          Mình thiết kế và triển khai <strong>data &amp; AI platform cấp doanh nghiệp trên AWS</strong> —
+          lakehouse, hệ thống OLAP/CDP, MLOps/AIOps và nền tảng GenAI multi-agent — cho các
+          ngân hàng và doanh nghiệp lớn. Mình đi lên từ data engineer hands-on tới platform
+          lead: làm solution architecture và technical proposal cho các chương trình lớn,
+          dẫn dắt data workstream, và xây nền tảng GenAI assistant trên AWS Bedrock.
+        </p>
+        <p>
+          Hằng ngày mình kết hợp chiều sâu hands-on (Python, Spark, Airflow, dbt, Terraform,
+          Kafka) với technical leadership: lập kế hoạch và gỡ vướng cho team, review thiết kế
+          &amp; code, và coaching engineer tới mức tự chủ delivery.
+        </p>
+        <p>Trên blog này mình viết về:</p>
+        <ul>
+          <li>Data platform vận hành đơn giản, bền — lakehouse, pipeline, governance</li>
+          <li>GenAI và hệ thống agentic vượt qua mức demo — RAG, guardrails, evaluation</li>
+          <li>Trade-off kiến trúc từ dự án thật, tổng quát hoá và ẩn danh</li>
+          <li>Năng suất developer — tooling, automation, workflow có AI hỗ trợ</li>
+        </ul>
+      </>
+    ) : (
+      <>
+        <p>
+          I design and deliver enterprise <strong>data &amp; AI platforms on AWS</strong> —
+          lakehouses, OLAP/CDP systems, MLOps/AIOps and multi-agent GenAI platforms — for
+          leading banks and enterprises. I grew from hands-on data engineer to platform lead:
+          solution architecture and technical proposals for enterprise programs, leading data
+          workstreams, and building GenAI assistant platforms on AWS Bedrock.
+        </p>
+        <p>
+          Day to day I combine hands-on depth (Python, Spark, Airflow, dbt, Terraform, Kafka)
+          with technical leadership: planning and unblocking the team, design &amp; code
+          reviews, and coaching engineers toward independent delivery.
+        </p>
+        <p>What I write about here:</p>
+        <ul>
+          <li>Data platforms that stay simple to operate — lakehouse, pipelines, governance</li>
+          <li>GenAI and agentic systems beyond the demo — RAG, guardrails, evaluation</li>
+          <li>Architecture trade-offs from real delivery, generalized and anonymized</li>
+          <li>Developer productivity — tooling, automation, AI-assisted workflows</li>
+        </ul>
+      </>
+    )
+  }
+</section>
+
+<section>
+  <h2>{vi ? 'Kỹ năng' : 'Skills'}</h2>
+  {
+    skills.map((s) => (
+      <div class="skill-group">
+        <h3>{s.group}</h3>
+        <div class="tag-list">
+          {s.items.map((item) => (
+            <span class="tag">{item}</span>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</section>
+
+<section class="prose">
+  <h2>{vi ? 'Chứng chỉ' : 'Certifications'}</h2>
+  <ul>
+    <li>AWS Certified Solutions Architect</li>
+    <li>AWS Certified AI Practitioner</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Curriculum Vitae</h2>
+  <p style="color: var(--fg-muted);">
+    {
+      vi
+        ? 'CV đầy đủ — kinh nghiệm, kỹ năng và học vấn. Thông tin liên hệ có trong CV.'
+        : 'Full CV — experience, skills and education. Contact details are in the CV.'
+    }
+  </p>
+  <div class="profile-actions">
+    <a class="btn btn-primary" href="/cv/">{vi ? 'Xem CV online' : 'View CV online'}</a>
+    <a class="btn btn-outline" href="/cv/CV_Tan_Thai_Data_AI_Platform_Lead_2026.pdf" download>
+      {vi ? 'Tải CV (PDF)' : 'Download CV (PDF)'}
+    </a>
+    <a class="btn btn-outline" href={GITHUB_URL}>GitHub</a>
+  </div>
+</section>

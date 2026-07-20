@@ -1,5 +1,13 @@
 ---
 import { AUTHOR, SITE_TITLE, SITE_TAGLINE, GITHUB_URL, CATEGORY_META } from '../consts';
+import { localePath, useT, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = useT(lang);
 const year = new Date().getFullYear();
 ---
 
@@ -7,34 +15,34 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="site-brand">{SITE_TITLE}<span style="color: var(--accent)">.</span></a>
-        <p>{SITE_TAGLINE} — practical, experience-driven, always anonymized.</p>
+        <a href={localePath(lang, '/')} class="site-brand">{SITE_TITLE}<span style="color: var(--accent)">.</span></a>
+        <p>{SITE_TAGLINE} — {t('footer.tagline')}</p>
       </div>
       <div class="footer-col">
-        <h4>Topics</h4>
+        <h4>{t('footer.topics')}</h4>
         <ul>
           {
             CATEGORY_META.map((c) => (
               <li>
-                <a href={`/categories/${c.slug}`}>{c.name}</a>
+                <a href={localePath(lang, `/categories/${c.slug}`)}>{c.name}</a>
               </li>
             ))
           }
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Links</h4>
+        <h4>{t('footer.links')}</h4>
         <ul>
-          <li><a href="/profile">About me</a></li>
+          <li><a href={localePath(lang, '/profile')}>{t('footer.about')}</a></li>
           <li><a href={GITHUB_URL}>GitHub</a></li>
-          <li><a href="/search">Search</a></li>
-          <li><a href="/rss.xml">RSS feed</a></li>
+          <li><a href={localePath(lang, '/search')}>{t('nav.search')}</a></li>
+          <li><a href="/rss.xml">{t('footer.rss')}</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© {year} {AUTHOR}. All opinions are my own.</span>
-      <span>Built with <a href="https://astro.build">Astro</a> · Hosted on GitHub Pages</span>
+      <span>© {year} {AUTHOR}. {t('footer.rights')}</span>
+      <span>{t('footer.built')} <a href="https://astro.build">Astro</a> · {t('footer.hosted')}</span>
     </div>
   </div>
 </footer>

@@ -13,7 +13,7 @@ export interface CategoryMeta {
   name: string;
   slug: string;
   icon: string;
-  description: string;
+  description: { en: string; vi: string };
 }
 
 export const CATEGORY_META: CategoryMeta[] = [
@@ -21,25 +21,37 @@ export const CATEGORY_META: CategoryMeta[] = [
     name: 'Data',
     slug: 'data',
     icon: '🗄️',
-    description: 'Data platforms, lakehouse, pipelines, streaming & governance.',
+    description: {
+      en: 'Data platforms, lakehouse, pipelines, streaming & governance.',
+      vi: 'Data platform, lakehouse, pipeline, streaming & governance.',
+    },
   },
   {
     name: 'AI',
     slug: 'ai',
     icon: '🤖',
-    description: 'GenAI, agentic systems, RAG, MLOps & evaluation.',
+    description: {
+      en: 'GenAI, agentic systems, RAG, MLOps & evaluation.',
+      vi: 'GenAI, hệ thống agentic, RAG, MLOps & evaluation.',
+    },
   },
   {
     name: 'Architecture',
     slug: 'architecture',
     icon: '📐',
-    description: 'System design patterns and trade-offs from real delivery.',
+    description: {
+      en: 'System design patterns and trade-offs from real delivery.',
+      vi: 'Pattern thiết kế hệ thống và trade-off từ dự án thật.',
+    },
   },
   {
     name: 'Developer',
     slug: 'developer',
     icon: '⚡',
-    description: 'Tooling, workflows and productivity — including AI-assisted development.',
+    description: {
+      en: 'Tooling, workflows and productivity — including AI-assisted development.',
+      vi: 'Tooling, workflow và năng suất — gồm cả lập trình với AI.',
+    },
   },
 ];
 

@@ -1,0 +1,96 @@
+---
+import PostCard from '../PostCard.astro';
+import { getPublishedPosts } from '../../lib/posts';
+import { localePath, useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const posts = await getPublishedPosts();
+const categories = [...new Set(posts.map((p) => p.data.category))];
+const hasVi = posts.some((p) => p.data.lang === 'vi');
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.date.getUTCFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(post);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+
+<h1>{t('blog.title')}</h1>
+<p style="color: var(--fg-muted); margin-top: 0.25rem;">
+  {posts.length} {lang === 'vi' ? '' : `post${posts.length !== 1 ? 's' : ''} `}{t('blog.counting')}
+  <a href={localePath(lang, '/search')}>{t('blog.search')}</a>.
+</p>
+
+<div class="filter-bar" id="filter-bar">
+  <button class="chip active" data-filter="all">{t('blog.all')}</button>
+  {
+    categories.map((c) => (
+      <button class="chip" data-filter={c} data-cat={c.toLowerCase()}>
+        {c}
+      </button>
+    ))
+  }
+  {
+    hasVi && (
+      <>
+        <span class="filter-sep" aria-hidden="true" />
+        <button class="chip active" data-lang-filter="all">{t('blog.langAll')}</button>
+        <button class="chip" data-lang-filter="en">{t('blog.langEn')}</button>
+        <button class="chip" data-lang-filter="vi">{t('blog.langVi')}</button>
+      </>
+    )
+  }
+</div>
+
+{
+  years.map((year) => (
+    <section data-year-section>
+      <h2 class="year-heading">{year}</h2>
+      <ul class="post-list">
+        {byYear.get(year)!.map((post) => (
+          <PostCard post={post} lang={lang} />
+        ))}
+      </ul>
+    </section>
+  ))
+}
+
+<script>
+  const bar = document.getElementById('filter-bar')!;
+  let cat = 'all';
+  let lang = 'all';
+
+  function apply() {
+    document.querySelectorAll<HTMLElement>('.post-card').forEach((card) => {
+      const catOk = cat === 'all' || card.dataset.category === cat;
+      const langOk = lang === 'all' || card.dataset.lang === lang;
+      card.style.display = catOk && langOk ? '' : 'none';
+    });
+    document.querySelectorAll<HTMLElement>('[data-year-section]').forEach((sec) => {
+      const visible = [...sec.querySelectorAll<HTMLElement>('.post-card')].some(
+        (c) => c.style.display !== 'none'
+      );
+      sec.style.display = visible ? '' : 'none';
+    });
+  }
+
+  bar.addEventListener('click', (e) => {
+    const chip = (e.target as HTMLElement).closest('.chip') as HTMLElement | null;
+    if (!chip) return;
+    if (chip.dataset.langFilter) {
+      lang = chip.dataset.langFilter;
+      bar.querySelectorAll('[data-lang-filter]').forEach((c) => c.classList.remove('active'));
+    } else {
+      cat = chip.dataset.filter!;
+      bar.querySelectorAll('[data-filter]').forEach((c) => c.classList.remove('active'));
+    }
+    chip.classList.add('active');
+    apply();
+  });
+</script>

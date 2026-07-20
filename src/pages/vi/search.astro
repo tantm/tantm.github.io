@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SearchBody from '../../components/pages/SearchBody.astro';
+import { useT } from '../../i18n';
+
+const t = useT('vi');
+---
+
+<BaseLayout title={t('search.title')} description={t('search.desc')} lang="vi" translationUrl="/search">
+  <SearchBody lang="vi" />
+</BaseLayout>

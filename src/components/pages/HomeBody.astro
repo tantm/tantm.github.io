@@ -1,0 +1,68 @@
+---
+import PostCard from '../PostCard.astro';
+import { getPublishedPosts } from '../../lib/posts';
+import { AUTHOR, AVATAR, GITHUB_URL, CATEGORY_META } from '../../consts';
+import { localePath, postCount, useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const posts = await getPublishedPosts();
+const latest = posts.slice(0, 5);
+const counts = new Map<string, number>();
+for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) ?? 0) + 1);
+---
+
+<section class="hero">
+  <img class="hero-avatar" src={AVATAR} alt={AUTHOR} width="120" height="120" />
+  <div>
+    <h1>
+      {
+        lang === 'en' ? (
+          <>Hi, I'm <span class="grad-text">Tân</span> 👋</>
+        ) : (
+          <>Chào, mình là <span class="grad-text">Tân</span> 👋</>
+        )
+      }
+    </h1>
+    <p class="hero-role">{t('home.role')}</p>
+    <p class="hero-desc">{t('home.desc')}</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href={localePath(lang, '/blog')}>{t('home.readBlog')}</a>
+      <a class="btn btn-outline" href={localePath(lang, '/profile')}>{t('home.aboutMe')}</a>
+      <a class="btn btn-outline" href={GITHUB_URL}>GitHub</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <h2>{t('home.topics')}</h2>
+    <a href={localePath(lang, '/categories')}>{t('home.allCategories')}</a>
+  </div>
+  <div class="topic-grid">
+    {
+      CATEGORY_META.map((c) => (
+        <a class="topic-card" href={localePath(lang, `/categories/${c.slug}`)} data-cat={c.slug}>
+          <span class="topic-icon">{c.icon}</span>
+          <h3>{c.name}</h3>
+          <p>{c.description[lang]}</p>
+          <span class="topic-count">{postCount(lang, counts.get(c.name) ?? 0)}</span>
+        </a>
+      ))
+    }
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <h2>{t('home.latest')}</h2>
+    <a href={localePath(lang, '/blog')}>{t('home.allPosts')}</a>
+  </div>
+  <ul class="post-list">
+    {latest.map((post) => <PostCard post={post} lang={lang} />)}
+  </ul>
+</section>

@@ -1,19 +1,29 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import { SITE_TITLE } from '../consts';
+import { localePath, switchPath, useT, type Lang } from '../i18n';
 
+interface Props {
+  lang?: Lang;
+  /* URL đích của switcher EN↔VI (post page truyền bản dịch nếu có) */
+  switchUrl?: string;
+}
+
+const { lang = 'en', switchUrl } = Astro.props;
+const t = useT(lang);
 const nav = [
-  { href: '/blog', label: 'Blog' },
-  { href: '/categories', label: 'Categories' },
-  { href: '/profile', label: 'Profile' },
+  { href: localePath(lang, '/blog'), label: t('nav.blog') },
+  { href: localePath(lang, '/categories'), label: t('nav.categories') },
+  { href: localePath(lang, '/profile'), label: t('nav.profile') },
 ];
-
+const searchHref = localePath(lang, '/search');
 const path = Astro.url.pathname.replace(/\/$/, '');
+const switchHref = switchUrl ?? switchPath(lang, Astro.url.pathname);
 ---
 
 <header class="site-header">
   <div class="container">
-    <a href="/" class="site-brand">{SITE_TITLE}<span style="color: var(--accent)">.</span></a>
+    <a href={localePath(lang, '/')} class="site-brand">{SITE_TITLE}<span style="color: var(--accent)">.</span></a>
     <nav class="site-nav">
       {
         nav.map(({ href, label }) => (
@@ -22,11 +32,14 @@ const path = Astro.url.pathname.replace(/\/$/, '');
           </a>
         ))
       }
-      <a href="/search" class="nav-icon-btn" aria-current={path === '/search' ? 'page' : undefined} aria-label="Search">
+      <a href={searchHref} class="nav-icon-btn" aria-current={path === searchHref ? 'page' : undefined} aria-label={t('nav.search')}>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
+      </a>
+      <a href={switchHref} class="lang-toggle" aria-label={lang === 'en' ? 'Chuyển sang tiếng Việt' : 'Switch to English'}>
+        {lang === 'en' ? 'VI' : 'EN'}
       </a>
       <ThemeToggle />
     </nav>

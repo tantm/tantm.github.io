@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import TagBody from '../../components/pages/TagBody.astro';
-import { getPublishedPosts, slugifyTag, type Post } from '../../lib/posts';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TagBody from '../../../components/pages/TagBody.astro';
+import { getPublishedPosts, slugifyTag, type Post } from '../../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -21,10 +21,10 @@ const { tag } = Astro.params;
 ---
 
 <BaseLayout
-  title={`Tag: ${name}`}
-  description={`Posts tagged with ${name}.`}
-  lang="en"
-  translationUrl={`/vi/tags/${tag}`}
+  title={`Thẻ: ${name}`}
+  description={`Bài viết gắn thẻ ${name}.`}
+  lang="vi"
+  translationUrl={`/tags/${tag}`}
 >
-  <TagBody name={name} posts={posts} lang="en" />
+  <TagBody name={name} posts={posts} lang="vi" />
 </BaseLayout>

@@ -1,0 +1,32 @@
+---
+import PostCard from '../PostCard.astro';
+import type { Post } from '../../lib/posts';
+import { CATEGORY_META } from '../../consts';
+import { localePath, postCount, useT, type Lang } from '../../i18n';
+
+interface Props {
+  name: string;
+  posts: Post[];
+  lang: Lang;
+}
+
+const { name, posts, lang } = Astro.props;
+const t = useT(lang);
+const slug = name.toLowerCase();
+const meta = CATEGORY_META.find((c) => c.slug === slug);
+---
+
+<header class="cat-header" data-cat={slug}>
+  {meta && <span class="topic-icon">{meta.icon}</span>}
+  <div>
+    <h1>{name}</h1>
+    {meta && <p class="cat-desc">{meta.description[lang]}</p>}
+  </div>
+</header>
+<p style="color: var(--fg-muted);">
+  {postCount(lang, posts.length)} ·
+  <a href={localePath(lang, '/categories')}>{t('cat.allCategories')}</a>
+</p>
+<ul class="post-list">
+  {posts.map((post) => <PostCard post={post} lang={lang} />)}
+</ul>

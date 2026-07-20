@@ -1,0 +1,50 @@
+---
+import { useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const pagefindTranslations =
+  lang === 'vi'
+    ? {
+        placeholder: 'Tìm bài viết…',
+        clear_search: 'Xoá',
+        load_more: 'Xem thêm kết quả',
+        search_label: 'Tìm kiếm trên site',
+        zero_results: 'Không tìm thấy kết quả cho [SEARCH_TERM]',
+        many_results: '[COUNT] kết quả cho [SEARCH_TERM]',
+        one_result: '[COUNT] kết quả cho [SEARCH_TERM]',
+        searching: 'Đang tìm [SEARCH_TERM]…',
+      }
+    : {};
+---
+
+<h1>{t('search.title')}</h1>
+<p style="color: var(--fg-muted);">{t('search.sub')}</p>
+
+<div class="search-box" id="search"></div>
+
+<!-- Pagefind index được sinh lúc build (npm run build); trên dev server chưa có -->
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+<script
+  is:inline
+  type="module"
+  define:vars={{ translations: pagefindTranslations, fallback: t('search.fallback') }}
+>
+  try {
+    const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+    new PagefindUI({
+      element: '#search',
+      showSubResults: true,
+      showImages: false,
+      autofocus: true,
+      translations,
+    });
+  } catch {
+    document.getElementById('search').innerHTML =
+      `<p style="color: var(--fg-muted)">${fallback}</p>`;
+  }
+</script>

@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProfileBody from '../../components/pages/ProfileBody.astro';
+import { AUTHOR, AUTHOR_TITLE } from '../../consts';
+---
+
+<BaseLayout
+  title="Hồ sơ"
+  description={`Về ${AUTHOR} — ${AUTHOR_TITLE}. Xem hoặc tải CV.`}
+  lang="vi"
+  translationUrl="/profile"
+>
+  <ProfileBody lang="vi" />
+</BaseLayout>

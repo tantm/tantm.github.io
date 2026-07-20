@@ -159,6 +159,25 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   gap: 0.35rem;
 }
 
+.lang-toggle {
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--fg-muted);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.6rem;
+  margin-left: 0.35rem;
+}
+
+.lang-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  text-decoration: none;
+}
+
 /* ============ Theme toggle ============ */
 .theme-toggle {
   border: 1px solid var(--border);

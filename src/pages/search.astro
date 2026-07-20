@@ -1,27 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SearchBody from '../components/pages/SearchBody.astro';
+import { useT } from '../i18n';
+
+const t = useT('en');
 ---
 
-<BaseLayout title="Search" description="Full-text search across all posts.">
-  <h1>Search</h1>
-  <p style="color: var(--fg-muted);">Search every post on this site.</p>
-
-  <div class="search-box" id="search"></div>
-
-  <!-- Pagefind index được sinh lúc build (npm run build); trên dev server chưa có -->
-  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
-  <script is:inline type="module">
-    try {
-      const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
-      new PagefindUI({
-        element: '#search',
-        showSubResults: true,
-        showImages: false,
-        autofocus: true,
-      });
-    } catch {
-      document.getElementById('search').innerHTML =
-        '<p style="color: var(--fg-muted)">Search index is only available on the built site (<code>make build && make preview</code>).</p>';
-    }
-  </script>
+<BaseLayout title={t('search.title')} description={t('search.desc')} lang="en" translationUrl="/vi/search">
+  <SearchBody lang="en" />
 </BaseLayout>

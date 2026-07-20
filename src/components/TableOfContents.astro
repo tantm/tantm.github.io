@@ -1,12 +1,15 @@
 ---
 import type { MarkdownHeading } from 'astro';
+import { useT, type Lang } from '../i18n';
 
 interface Props {
   headings: MarkdownHeading[];
   mobile?: boolean;
+  lang?: Lang;
 }
 
-const { headings, mobile = false } = Astro.props;
+const { headings, mobile = false, lang = 'en' } = Astro.props;
+const t = useT(lang);
 const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
@@ -15,7 +18,7 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
     (mobile ? (
       <div class="toc-mobile">
         <details>
-          <summary>On this page</summary>
+          <summary>{t('post.onThisPage')}</summary>
           <ul class="toc">
             {items.map((h) => (
               <li class={`depth-${h.depth}`}>
@@ -27,7 +30,7 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
       </div>
     ) : (
       <nav class="toc" aria-label="Table of contents">
-        <h4>On this page</h4>
+        <h4>{t('post.onThisPage')}</h4>
         <ul>
           {items.map((h) => (
             <li class={`depth-${h.depth}`}>

@@ -1,23 +1,26 @@
 ---
 import PostCard from './PostCard.astro';
 import type { Post } from '../lib/posts';
+import { useT, type Lang } from '../i18n';
 
 interface Props {
   posts: Post[];
+  lang?: Lang;
 }
 
-const { posts } = Astro.props;
+const { posts, lang = 'en' } = Astro.props;
+const t = useT(lang);
 ---
 
 {
   posts.length > 0 && (
     <section>
       <div class="section-head">
-        <h2>Related posts</h2>
+        <h2>{t('post.related')}</h2>
       </div>
       <ul class="post-list">
         {posts.map((post) => (
-          <PostCard post={post} />
+          <PostCard post={post} lang={lang} />
         ))}
       </ul>
     </section>

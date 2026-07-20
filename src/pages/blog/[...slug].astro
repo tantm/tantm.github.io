@@ -15,6 +15,7 @@ import {
   slugifyTag,
 } from '../../lib/posts';
 import { AUTHOR, AUTHOR_TITLE, AVATAR } from '../../consts';
+import { localePath, useT } from '../../i18n';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -31,6 +32,9 @@ const related = getRelatedPosts(allPosts, post);
 const translation = getTranslation(allPosts, post);
 const translationUrl = translation ? `/blog/${translation.id}` : undefined;
 const minutes = readingTime(post.body);
+const t = useT(lang);
+/* Switcher header: sang bản dịch nếu có, không thì về trang chủ ngôn ngữ kia */
+const switchUrl = translationUrl ?? localePath(lang === 'en' ? 'vi' : 'en', '/');
 ---
 
 <BaseLayout
@@ -41,6 +45,7 @@ const minutes = readingTime(post.body);
   tags={tags}
   lang={lang}
   translationUrl={translationUrl}
+  switchUrl={switchUrl}
   wide
 >
   <div class="read-progress" id="read-progress"></div>
@@ -49,18 +54,18 @@ const minutes = readingTime(post.body);
     <article data-pagefind-body data-cat={catSlug}>
       <header class="article-header">
         <div class="post-meta">
-          <a class="badge" href={`/categories/${catSlug}`}>{category}</a>
+          <a class="badge" href={localePath(lang, `/categories/${catSlug}`)}>{category}</a>
           <time datetime={date.toISOString()}>{formatDate(date)}</time>
-          {updated && <span>· updated {formatDate(updated)}</span>}
+          {updated && <span>· {t('post.updated')} {formatDate(updated)}</span>}
           <span class="dot"></span>
-          <span>{minutes} min read</span>
+          <span>{minutes} {t('post.minRead')}</span>
         </div>
         <h1>{title}</h1>
         {
           tags.length > 0 && (
             <div class="tag-list">
               {tags.map((tag) => (
-                <a class="tag" href={`/tags/${slugifyTag(tag)}`}>
+                <a class="tag" href={localePath(lang, `/tags/${slugifyTag(tag)}`)}>
                   #{tag}
                 </a>
               ))}
@@ -79,7 +84,7 @@ const minutes = readingTime(post.body);
         )
       }
 
-      <TableOfContents headings={headings} mobile />
+      <TableOfContents headings={headings} mobile lang={lang} />
 
       <div class="prose" id="prose">
         <Content />
@@ -92,20 +97,20 @@ const minutes = readingTime(post.body);
         <div>
           <span class="name">{AUTHOR}</span>
           <p>
-            {AUTHOR_TITLE} — building data platforms & AI systems, writing down what works.
-            <a href="/profile">More about me →</a>
+            {AUTHOR_TITLE} — {t('post.authorBlurb')}
+            <a href={localePath(lang, '/profile')}>{t('post.moreAbout')}</a>
           </p>
         </div>
       </div>
 
       <div data-pagefind-ignore>
-        <PostNav older={older} newer={newer} />
-        <RelatedPosts posts={related} />
+        <PostNav older={older} newer={newer} lang={lang} />
+        <RelatedPosts posts={related} lang={lang} />
       </div>
     </article>
 
     <aside class="post-aside">
-      <TableOfContents headings={headings} />
+      <TableOfContents headings={headings} lang={lang} />
     </aside>
   </div>
 

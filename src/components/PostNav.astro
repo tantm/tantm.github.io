@@ -1,12 +1,15 @@
 ---
 import type { Post } from '../lib/posts';
+import { useT, type Lang } from '../i18n';
 
 interface Props {
   older: Post | null;
   newer: Post | null;
+  lang?: Lang;
 }
 
-const { older, newer } = Astro.props;
+const { older, newer, lang = 'en' } = Astro.props;
+const t = useT(lang);
 ---
 
 {
@@ -14,7 +17,7 @@ const { older, newer } = Astro.props;
     <nav class="post-nav" aria-label="Post navigation">
       {older ? (
         <a href={`/blog/${older.id}`}>
-          <span class="label">← Older</span>
+          <span class="label">{t('post.older')}</span>
           <span class="title">{older.data.title}</span>
         </a>
       ) : (
@@ -22,7 +25,7 @@ const { older, newer } = Astro.props;
       )}
       {newer ? (
         <a href={`/blog/${newer.id}`} class="next">
-          <span class="label">Newer →</span>
+          <span class="label">{t('post.newer')}</span>
           <span class="title">{newer.data.title}</span>
         </a>
       ) : (

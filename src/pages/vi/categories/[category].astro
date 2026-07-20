@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import CategoryBody from '../../components/pages/CategoryBody.astro';
-import { getPublishedPosts, type Post } from '../../lib/posts';
-import { CATEGORY_META } from '../../consts';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CategoryBody from '../../../components/pages/CategoryBody.astro';
+import { getPublishedPosts, type Post } from '../../../lib/posts';
+import { CATEGORY_META } from '../../../consts';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -24,10 +24,10 @@ const meta = CATEGORY_META.find((c) => c.slug === slug);
 ---
 
 <BaseLayout
-  title={`Category: ${name}`}
-  description={meta?.description.en ?? `Posts in category ${name}.`}
-  lang="en"
-  translationUrl={`/vi/categories/${slug}`}
+  title={`Chủ đề: ${name}`}
+  description={meta?.description.vi ?? `Bài viết trong chủ đề ${name}.`}
+  lang="vi"
+  translationUrl={`/categories/${slug}`}
 >
-  <CategoryBody name={name} posts={posts} lang="en" />
+  <CategoryBody name={name} posts={posts} lang="vi" />
 </BaseLayout>

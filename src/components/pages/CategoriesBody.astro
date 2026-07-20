@@ -1,0 +1,33 @@
+---
+import { getPublishedPosts } from '../../lib/posts';
+import { CATEGORY_META } from '../../consts';
+import { localePath, postCount, useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const posts = await getPublishedPosts();
+const counts = new Map<string, number>();
+for (const post of posts) {
+  const c = post.data.category;
+  counts.set(c, (counts.get(c) ?? 0) + 1);
+}
+---
+
+<h1>{t('cats.title')}</h1>
+<p style="color: var(--fg-muted); margin-top: 0.25rem;">{t('cats.sub')}</p>
+<div class="topic-grid">
+  {
+    CATEGORY_META.map((c) => (
+      <a class="topic-card" href={localePath(lang, `/categories/${c.slug}`)} data-cat={c.slug}>
+        <span class="topic-icon">{c.icon}</span>
+        <h3>{c.name}</h3>
+        <p>{c.description[lang]}</p>
+        <span class="topic-count">{postCount(lang, counts.get(c.name) ?? 0)}</span>
+      </a>
+    ))
+  }
+</div>

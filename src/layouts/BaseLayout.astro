@@ -17,6 +17,8 @@ interface Props {
   lang?: 'en' | 'vi';
   /* URL bản dịch (nếu có) — sinh hreflang alternate cho SEO */
   translationUrl?: string;
+  /* Override đích switcher EN↔VI trên header (mặc định: switchPath từ pathname) */
+  switchUrl?: string;
 }
 
 const {
@@ -28,6 +30,7 @@ const {
   wide = false,
   lang = 'en',
   translationUrl,
+  switchUrl,
 } = Astro.props;
 const altLang = lang === 'en' ? 'vi' : 'en';
 const pageTitle = title ? `${title} · ${SITE_TITLE}` : `${SITE_TITLE} — ${SITE_DESCRIPTION.split('.')[0]}`;
@@ -90,11 +93,11 @@ const ogImage = new URL(AVATAR, Astro.site);
     }
   </head>
   <body>
-    <Header />
+    <Header lang={lang} switchUrl={switchUrl ?? translationUrl} />
     <main class:list={['container', { wide }]}>
       <slot />
     </main>
-    <Footer />
+    <Footer lang={lang} />
 
     <button class="back-top" id="back-top" aria-label="Back to top">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
