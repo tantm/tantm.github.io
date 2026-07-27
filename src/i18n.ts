@@ -20,6 +20,7 @@ const ui = {
   en: {
     'nav.blog': 'Blog',
     'nav.categories': 'Categories',
+    'nav.series': 'Series',
     'nav.profile': 'Profile',
     'nav.search': 'Search',
     'footer.tagline': 'practical, experience-driven, always anonymized.',
@@ -37,6 +38,8 @@ const ui = {
     'home.aboutMe': 'About me',
     'home.topics': 'Topics',
     'home.allCategories': 'All categories →',
+    'home.series': 'Learning paths',
+    'home.allSeries': 'All series →',
     'home.latest': 'Latest posts',
     'home.allPosts': 'All posts →',
     'blog.title': 'Blog',
@@ -52,7 +55,7 @@ const ui = {
     'pag.older': 'Older →',
     'pag.page': 'Page',
     'cats.title': 'Categories',
-    'cats.desc': 'Browse posts by topic — Data, AI, Architecture, Developer.',
+    'cats.desc': 'Browse posts by topic — Data, AI, Architecture, Developer, Cloud.',
     'cats.sub': 'Everything on this site, grouped by topic.',
     'cat.allCategories': 'all categories',
     'tag.allPosts': 'all posts',
@@ -71,10 +74,19 @@ const ui = {
     'search.sub': 'Search every post on this site.',
     'search.fallback':
       'Search index is only available on the built site (<code>make build && make preview</code>).',
+    'series.title': 'Series',
+    'series.desc': 'Course-like series with a clear path — read each part in order, from 1 to n.',
+    'series.sub': 'Mini-courses with a clear learning path. Pick one and read in order.',
+    'series.viewAll': 'View full series →',
+    'series.prevPart': '← Previous part',
+    'series.nextPart': 'Next part →',
+    'series.comingSoon': 'More parts coming soon.',
+    'series.soon': 'Coming soon',
   },
   vi: {
     'nav.blog': 'Blog',
     'nav.categories': 'Chủ đề',
+    'nav.series': 'Series',
     'nav.profile': 'Hồ sơ',
     'nav.search': 'Tìm kiếm',
     'footer.tagline': 'thực chiến, đúc kết từ kinh nghiệm, luôn ẩn danh.',
@@ -92,6 +104,8 @@ const ui = {
     'home.aboutMe': 'Về mình',
     'home.topics': 'Chủ đề',
     'home.allCategories': 'Tất cả chủ đề →',
+    'home.series': 'Lộ trình học',
+    'home.allSeries': 'Tất cả series →',
     'home.latest': 'Bài mới nhất',
     'home.allPosts': 'Tất cả bài viết →',
     'blog.title': 'Blog',
@@ -107,7 +121,7 @@ const ui = {
     'pag.older': 'Cũ hơn →',
     'pag.page': 'Trang',
     'cats.title': 'Chủ đề',
-    'cats.desc': 'Duyệt bài viết theo chủ đề — Data, AI, Architecture, Developer.',
+    'cats.desc': 'Duyệt bài viết theo chủ đề — Data, AI, Architecture, Developer, Cloud.',
     'cats.sub': 'Toàn bộ nội dung trên site, nhóm theo chủ đề.',
     'cat.allCategories': 'tất cả chủ đề',
     'tag.allPosts': 'tất cả bài viết',
@@ -126,6 +140,14 @@ const ui = {
     'search.sub': 'Tìm trong tất cả bài viết của site.',
     'search.fallback':
       'Chỉ tìm được trên bản build (<code>make build && make preview</code>).',
+    'series.title': 'Series',
+    'series.desc': 'Các chuỗi bài như khoá học, có lộ trình rõ ràng — đọc lần lượt từ bài 1 đến n.',
+    'series.sub': 'Khoá học mini có lộ trình. Chọn một series và đọc theo thứ tự.',
+    'series.viewAll': 'Xem toàn bộ series →',
+    'series.prevPart': '← Phần trước',
+    'series.nextPart': 'Phần tiếp theo →',
+    'series.comingSoon': 'Các phần tiếp theo sẽ sớm ra mắt.',
+    'series.soon': 'Sắp ra mắt',
   },
 } as const;
 
@@ -139,4 +161,16 @@ export function useT(lang: Lang) {
 export function postCount(lang: Lang, n: number): string {
   if (lang === 'vi') return `${n} bài viết`;
   return `${n} post${n !== 1 ? 's' : ''}`;
+}
+
+/** "Part 3/14" / "Phần 3/14" */
+export function partLabel(lang: Lang, part: number, total: number): string {
+  return lang === 'vi' ? `Phần ${part}/${total}` : `Part ${part}/${total}`;
+}
+
+/** "5 of 14 parts published" / "Đã đăng 5/14 phần" */
+export function seriesProgress(lang: Lang, published: number, planned: number): string {
+  return lang === 'vi'
+    ? `Đã đăng ${published}/${planned} phần`
+    : `${published} of ${planned} parts published`;
 }

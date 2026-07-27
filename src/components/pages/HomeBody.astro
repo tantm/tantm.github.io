@@ -1,8 +1,9 @@
 ---
+import Icon from '../Icon.astro';
 import PostCard from '../PostCard.astro';
-import { getPublishedPosts } from '../../lib/posts';
-import { AUTHOR, AVATAR, GITHUB_URL, CATEGORY_META } from '../../consts';
-import { localePath, postCount, useT, type Lang } from '../../i18n';
+import { getPublishedPosts, getSeriesPosts } from '../../lib/posts';
+import { AUTHOR, AVATAR, GITHUB_URL, CATEGORY_META, SERIES_META } from '../../consts';
+import { localePath, postCount, seriesProgress, useT, type Lang } from '../../i18n';
 
 interface Props {
   lang: Lang;
@@ -14,6 +15,8 @@ const posts = await getPublishedPosts();
 const latest = posts.slice(0, 6);
 const counts = new Map<string, number>();
 for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) ?? 0) + 1);
+/* Trang chủ chỉ show category đã có bài (trang /categories vẫn liệt kê đủ) */
+const topics = CATEGORY_META.filter((c) => (counts.get(c.name) ?? 0) > 0);
 ---
 
 <section class="hero">
@@ -22,9 +25,9 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
     <h1>
       {
         lang === 'en' ? (
-          <>Hi, I'm <span class="grad-text">Tân</span> 👋</>
+          <>Hi, I'm <span class="grad-text">Tân</span></>
         ) : (
-          <>Chào, mình là <span class="grad-text">Tân</span> 👋</>
+          <>Chào, mình là <span class="grad-text">Tân</span></>
         )
       }
     </h1>
@@ -40,14 +43,33 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
 
 <section>
   <div class="section-head">
+    <h2>{t('home.series')}</h2>
+    <a href={localePath(lang, '/series')}>{t('home.allSeries')}</a>
+  </div>
+  <div class="topic-grid">
+    {
+      SERIES_META.map((s) => (
+        <a class="topic-card" href={localePath(lang, `/series/${s.slug}`)} data-cat={s.category.toLowerCase()}>
+          <span class="topic-icon"><Icon name={s.icon} /></span>
+          <h3>{s.name[lang]}</h3>
+          <p>{s.description[lang]}</p>
+          <span class="topic-count">{seriesProgress(lang, getSeriesPosts(posts, s.slug, lang).length, s.plannedParts)}</span>
+        </a>
+      ))
+    }
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
     <h2>{t('home.topics')}</h2>
     <a href={localePath(lang, '/categories')}>{t('home.allCategories')}</a>
   </div>
   <div class="topic-grid">
     {
-      CATEGORY_META.map((c) => (
+      topics.map((c) => (
         <a class="topic-card" href={localePath(lang, `/categories/${c.slug}`)} data-cat={c.slug}>
-          <span class="topic-icon">{c.icon}</span>
+          <span class="topic-icon"><Icon name={c.icon} /></span>
           <h3>{c.name}</h3>
           <p>{c.description[lang]}</p>
           <span class="topic-count">{postCount(lang, counts.get(c.name) ?? 0)}</span>

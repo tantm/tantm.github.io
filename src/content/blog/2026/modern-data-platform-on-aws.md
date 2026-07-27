@@ -4,6 +4,7 @@ description: "A reference architecture for lakehouse-style data platforms on AWS
 date: 2026-07-20
 category: Data
 tags: [aws, data-platform, lakehouse, architecture, spark, airflow, dbt]
+draft: true # T1: tạm ẩn — sẽ viết lại gắn vào series (blog-plan PLAN.md T1)
 ---
 
 After delivering data platforms for banks, consumer finance, aviation and FMCG companies,

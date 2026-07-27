@@ -6,6 +6,7 @@ category: Developer
 tags: [meta, astro, blogging]
 lang: en
 translationKey: hello-world-2026
+draft: true # T1: tạm ẩn — sẽ viết lại gắn vào series (blog-plan PLAN.md T1)
 ---
 
 After years of taking notes that never left my private repos, I'm turning this site into a

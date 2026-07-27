@@ -1,0 +1,33 @@
+---
+/* Box đầu bài viết thuộc series: "Phần x/N của <series>" + link syllabus */
+import Icon from './Icon.astro';
+import { getSeriesMeta } from '../consts';
+import { localePath, partLabel, useT, type Lang } from '../i18n';
+
+interface Props {
+  seriesSlug: string;
+  part?: number;
+  lang: Lang;
+}
+
+const { seriesSlug, part, lang } = Astro.props;
+const meta = getSeriesMeta(seriesSlug);
+const t = useT(lang);
+---
+
+{
+  meta && (
+    <aside class="series-box" data-pagefind-ignore>
+      <span class="series-icon"><Icon name={meta.icon} size={22} /></span>
+      <div>
+        {part && <span class="series-part">{partLabel(lang, part, meta.plannedParts)}</span>}
+        <a class="series-name" href={localePath(lang, `/series/${meta.slug}`)}>
+          {meta.name[lang]}
+        </a>
+        <a class="series-all" href={localePath(lang, `/series/${meta.slug}`)}>
+          {t('series.viewAll')}
+        </a>
+      </div>
+    </aside>
+  )
+}

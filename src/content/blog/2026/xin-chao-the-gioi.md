@@ -6,6 +6,7 @@ category: Developer
 tags: [meta, astro, blogging]
 lang: vi
 translationKey: hello-world-2026
+draft: true # T1: tạm ẩn — sẽ viết lại gắn vào series (blog-plan PLAN.md T1)
 ---
 
 Sau nhiều năm ghi chú chỉ nằm trong private repo, mình quyết định biến trang này thành một

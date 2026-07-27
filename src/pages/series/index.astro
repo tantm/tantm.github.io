@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SeriesIndexBody from '../../components/pages/SeriesIndexBody.astro';
+import { useT } from '../../i18n';
+
+const t = useT('en');
+---
+
+<BaseLayout title={t('series.title')} description={t('series.desc')} lang="en" translationUrl="/vi/series">
+  <SeriesIndexBody lang="en" />
+</BaseLayout>

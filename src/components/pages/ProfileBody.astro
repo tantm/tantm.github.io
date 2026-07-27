@@ -1,4 +1,5 @@
 ---
+import Icon from '../Icon.astro';
 import { AUTHOR, AUTHOR_TITLE, AVATAR, GITHUB_URL } from '../../consts';
 import type { Lang } from '../../i18n';
 
@@ -41,7 +42,7 @@ const skills = [
   <div>
     <h1>{AUTHOR}</h1>
     <p class="role">{AUTHOR_TITLE}</p>
-    <p class="loc">📍 {vi ? 'TP. Hồ Chí Minh, Việt Nam' : 'Ho Chi Minh City, Vietnam'}</p>
+    <p class="loc"><Icon name="pin" size={14} /> {vi ? 'TP. Hồ Chí Minh, Việt Nam' : 'Ho Chi Minh City, Vietnam'}</p>
   </div>
 </section>
 

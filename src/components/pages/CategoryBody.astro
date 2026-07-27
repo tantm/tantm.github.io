@@ -1,4 +1,5 @@
 ---
+import Icon from '../Icon.astro';
 import type { Page } from 'astro';
 import PostCard from '../PostCard.astro';
 import Pagination from '../Pagination.astro';
@@ -20,7 +21,7 @@ const meta = CATEGORY_META.find((c) => c.slug === slug);
 ---
 
 <header class="cat-header" data-cat={slug}>
-  {meta && <span class="topic-icon">{meta.icon}</span>}
+  {meta && <span class="topic-icon"><Icon name={meta.icon} /></span>}
   <div>
     <h1>{name}</h1>
     {meta && <p class="cat-desc">{meta.description[lang]}</p>}

@@ -26,6 +26,8 @@
   --cat-architecture-soft: #fdf3e3;
   --cat-developer: #2563eb;
   --cat-developer-soft: #eff4ff;
+  --cat-cloud: #0284c7;
+  --cat-cloud-soft: #e0f2fe;
 }
 
 html[data-theme='dark'] {
@@ -50,6 +52,8 @@ html[data-theme='dark'] {
   --cat-architecture-soft: #332508;
   --cat-developer: #60a5fa;
   --cat-developer-soft: #14263f;
+  --cat-cloud: #38bdf8;
+  --cat-cloud-soft: #0c2a3d;
 }
 
 /* ============ Base ============ */
@@ -380,6 +384,164 @@ html[data-theme='dark'] .theme-toggle .icon-moon { display: none; }
   color: var(--accent);
 }
 
+/* ===== Series (khoá học mini) ===== */
+
+/* Box đầu bài viết thuộc series */
+.series-box {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  padding: 0.7rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.series-box .series-icon { font-size: 1.35rem; }
+
+.series-box .series-part {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: 0.5rem;
+}
+
+.series-box .series-name {
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.series-box .series-all {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+  margin-top: 0.1rem;
+}
+
+.series-box .series-all:hover,
+.series-box .series-name:hover { color: var(--accent); text-decoration: none; }
+
+/* Header trang syllabus series */
+.series-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  margin-bottom: 1.5rem;
+}
+
+.series-header .topic-icon { font-size: 1.7rem; }
+.series-header h1 { margin: 0; }
+.series-header p { margin: 0; color: var(--fg-muted); }
+
+.series-progress {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Danh sách phần trong series */
+.series-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.series-list a {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+  color: var(--fg);
+}
+
+.series-list a:hover {
+  text-decoration: none;
+  border-color: var(--accent);
+}
+
+.series-list-part {
+  flex: none;
+  width: 1.9rem;
+  height: 1.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.series-list-body { display: flex; flex-direction: column; gap: 0.15rem; }
+.series-list-title { font-weight: 600; }
+.series-list a:hover .series-list-title { color: var(--accent); }
+.series-list-desc { font-size: 0.88rem; color: var(--fg-muted); }
+.series-list-meta { font-size: 0.8rem; color: var(--fg-muted); }
+
+.series-coming {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--fg-muted);
+}
+
+/* Hàng "coming soon" trong syllabus series */
+.series-row-soon {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+  color: var(--fg-muted);
+}
+
+.series-list-part.soon {
+  background: var(--bg-soft);
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+}
+
+.series-row-soon .series-list-title { font-weight: 500; }
+
+/* ===== Icon SVG (thay emoji — không phụ thuộc emoji font) ===== */
+.topic-icon {
+  display: inline-flex;
+  color: var(--cat-color, var(--accent));
+}
+
+.topic-icon svg { width: 1.55rem; height: 1.55rem; }
+.series-header .topic-icon svg { width: 1.8rem; height: 1.8rem; }
+
+.chip svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  vertical-align: -0.1em;
+  color: var(--cat-color, currentColor);
+}
+
+.series-box .series-icon {
+  display: inline-flex;
+  color: var(--accent);
+}
+
+.loc svg { vertical-align: -0.12em; }
+
 /* category detail header */
 .cat-header {
   display: flex;
@@ -401,6 +563,7 @@ html[data-theme='dark'] .theme-toggle .icon-moon { display: none; }
 [data-cat='ai'] { --cat-color: var(--cat-ai); --cat-soft: var(--cat-ai-soft); }
 [data-cat='architecture'] { --cat-color: var(--cat-architecture); --cat-soft: var(--cat-architecture-soft); }
 [data-cat='developer'] { --cat-color: var(--cat-developer); --cat-soft: var(--cat-developer-soft); }
+[data-cat='cloud'] { --cat-color: var(--cat-cloud); --cat-soft: var(--cat-cloud-soft); }
 
 /* ============ Post list & cards ============ */
 .post-list {
@@ -469,32 +632,45 @@ html[data-theme='dark'] .theme-toggle .icon-moon { display: none; }
   background-size: 14px 14px;
 }
 
-.card-cover .cover-icon {
+/* Ảnh cover thật (frontmatter `cover`) phủ kín */
+.card-cover .cover-img {
   position: absolute;
-  left: 1rem;
-  top: 0.8rem;
-  font-size: 1.65rem;
+  inset: 0;
   z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.card-cover .cover-word {
+/* Fallback không ảnh: icon category + label căn giữa */
+.card-cover .cover-fallback {
   position: absolute;
-  right: 0.4rem;
-  bottom: -1.1rem;
+  inset: 0;
   z-index: 1;
-  font-size: 2.8rem;
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 1;
-  white-space: nowrap;
-  user-select: none;
-  color: color-mix(in srgb, var(--cat-color, var(--accent)) 32%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: color-mix(in srgb, var(--cat-color, var(--accent)) 72%, var(--fg));
   transition: color 0.15s ease;
 }
 
-.post-card:hover .cover-word,
-.featured-card:hover .cover-word {
-  color: color-mix(in srgb, var(--cat-color, var(--accent)) 52%, transparent);
+.card-cover .cover-fallback svg {
+  opacity: 0.9;
+}
+
+.card-cover .cover-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.post-card:hover .cover-fallback,
+.featured-card:hover .cover-fallback {
+  color: var(--cat-color, var(--accent));
 }
 
 /* ============ Featured card (đầu trang blog) ============ */
@@ -519,7 +695,7 @@ html[data-theme='dark'] .theme-toggle .icon-moon { display: none; }
 }
 
 .featured-card .card-cover { height: 100%; min-height: 10.5rem; }
-.featured-card .cover-word { font-size: 3.4rem; bottom: -1.3rem; }
+.featured-card .cover-fallback svg { width: 2.6rem; height: 2.6rem; }
 .featured-card .card-body { padding: 1.25rem 1.5rem; }
 
 .featured-label {

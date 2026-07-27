@@ -4,6 +4,7 @@ description: "What actually changes when a multi-agent GenAI assistant has to se
 date: 2026-07-20
 category: AI
 tags: [genai, agents, bedrock, rag, llm, aws]
+draft: true # T1: tạm ẩn — sẽ viết lại gắn vào series (blog-plan PLAN.md T1)
 ---
 
 Building a GenAI agent demo takes a weekend. Making it something an enterprise can rely on

@@ -1,0 +1,33 @@
+---
+/* Ruột cover của post card: ảnh cover thật (frontmatter `cover`) nếu có,
+   fallback = icon category + label căn giữa trên nền gradient (CSS theo data-cat). */
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { CATEGORY_META } from '../consts';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const iconName =
+  CATEGORY_META.find((c) => c.slug === post.data.category.toLowerCase())?.icon ?? 'developer';
+---
+
+{
+  post.data.cover ? (
+    <Image
+      class="cover-img"
+      src={post.data.cover}
+      alt=""
+      widths={[480, 760, 1200]}
+      sizes="(max-width: 48rem) 100vw, 26rem"
+    />
+  ) : (
+    <span class="cover-fallback">
+      <Icon name={iconName} size={30} />
+      <span class="cover-label">{post.data.category}</span>
+    </span>
+  )
+}

@@ -1,7 +1,7 @@
 ---
+import CoverArt from './CoverArt.astro';
 import { formatDate, readingTime, type Post } from '../lib/posts';
 import { localePath, useT, type Lang } from '../i18n';
-import { CATEGORY_META } from '../consts';
 
 interface Props {
   post: Post;
@@ -11,15 +11,13 @@ interface Props {
 const { post, lang = 'en' } = Astro.props;
 const { title, description, date, category, lang: postLang } = post.data;
 const catSlug = category.toLowerCase();
-const icon = CATEGORY_META.find((c) => c.slug === catSlug)?.icon;
 const minutes = readingTime(post.body);
 const t = useT(lang);
 ---
 
 <li class="post-card" data-cat={catSlug} data-category={category} data-lang={postLang}>
   <a class="card-cover" href={`/blog/${post.id}`} tabindex="-1" aria-hidden="true">
-    {icon && <span class="cover-icon">{icon}</span>}
-    <span class="cover-word">{category}</span>
+    <CoverArt post={post} />
   </a>
   <div class="card-body">
     <div class="post-meta">

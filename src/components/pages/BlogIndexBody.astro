@@ -2,7 +2,9 @@
 import type { Page } from 'astro';
 import PostCard from '../PostCard.astro';
 import Pagination from '../Pagination.astro';
-import { formatDate, readingTime, type Post } from '../../lib/posts';
+import CoverArt from '../CoverArt.astro';
+import Icon from '../Icon.astro';
+import { formatDate, getPublishedPosts, readingTime, type Post } from '../../lib/posts';
 import { CATEGORY_META } from '../../consts';
 import { localePath, useT, type Lang } from '../../i18n';
 
@@ -17,21 +19,23 @@ const t = useT(lang);
 const isFirst = page.currentPage === 1;
 const featured = isFirst ? page.data[0] : null;
 const rest = isFirst ? page.data.slice(1) : page.data;
-const featIcon = featured && CATEGORY_META.find((c) => c.slug === featured.data.category.toLowerCase())?.icon;
+/* Chip chỉ hiện category đã có bài (đủ danh sách ở /categories) */
+const allPosts = await getPublishedPosts();
+const chipCats = CATEGORY_META.filter((c) => allPosts.some((p) => p.data.category === c.name));
 ---
 
 <h1>{t('blog.title')}</h1>
 <p style="color: var(--fg-muted); margin-top: 0.25rem;">
-  {totalPosts} {lang === 'vi' ? '' : `post${totalPosts !== 1 ? 's' : ''} `}{t('blog.counting')}
+  {totalPosts} {lang === 'vi' ? '' : `post${totalPosts !== 1 ? 's' : ''} `}{t('blog.counting')}{' '}
   <a href={localePath(lang, '/search')}>{t('blog.search')}</a>.
 </p>
 
 <div class="filter-bar">
   <a class="chip active" href={localePath(lang, '/blog')}>{t('blog.all')}</a>
   {
-    CATEGORY_META.map((c) => (
+    chipCats.map((c) => (
       <a class="chip" href={localePath(lang, `/categories/${c.slug}`)} data-cat={c.slug}>
-        {c.icon} {c.name}
+        <Icon name={c.icon} size={13} /> {c.name}
       </a>
     ))
   }
@@ -45,8 +49,7 @@ const featIcon = featured && CATEGORY_META.find((c) => c.slug === featured.data.
       data-cat={featured.data.category.toLowerCase()}
     >
       <div class="card-cover">
-        {featIcon && <span class="cover-icon">{featIcon}</span>}
-        <span class="cover-word">{featured.data.category}</span>
+        <CoverArt post={featured} />
       </div>
       <div class="card-body">
         <span class="featured-label">★ {t('blog.featured')}</span>

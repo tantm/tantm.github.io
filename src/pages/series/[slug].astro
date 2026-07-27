@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SeriesBody from '../../components/pages/SeriesBody.astro';
+import { SERIES_META } from '../../consts';
+
+export function getStaticPaths() {
+  return SERIES_META.map((series) => ({ params: { slug: series.slug }, props: { series } }));
+}
+
+const { series } = Astro.props;
+---
+
+<BaseLayout
+  title={series.name.en}
+  description={series.description.en}
+  lang="en"
+  translationUrl={`/vi/series/${series.slug}`}
+>
+  <SeriesBody series={series} lang="en" />
+</BaseLayout>

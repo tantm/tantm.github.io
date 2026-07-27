@@ -1,4 +1,5 @@
 ---
+import Icon from '../Icon.astro';
 import { getPublishedPosts } from '../../lib/posts';
 import { CATEGORY_META } from '../../consts';
 import { localePath, postCount, useT, type Lang } from '../../i18n';
@@ -23,7 +24,7 @@ for (const post of posts) {
   {
     CATEGORY_META.map((c) => (
       <a class="topic-card" href={localePath(lang, `/categories/${c.slug}`)} data-cat={c.slug}>
-        <span class="topic-icon">{c.icon}</span>
+        <span class="topic-icon"><Icon name={c.icon} /></span>
         <h3>{c.name}</h3>
         <p>{c.description[lang]}</p>
         <span class="topic-count">{postCount(lang, counts.get(c.name) ?? 0)}</span>

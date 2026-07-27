@@ -6,10 +6,14 @@ interface Props {
   older: Post | null;
   newer: Post | null;
   lang?: Lang;
+  /* Bài thuộc series: prev/next là phần trước/phần sau trong series */
+  seriesMode?: boolean;
 }
 
-const { older, newer, lang = 'en' } = Astro.props;
+const { older, newer, lang = 'en', seriesMode = false } = Astro.props;
 const t = useT(lang);
+const olderLabel = seriesMode ? t('series.prevPart') : t('post.older');
+const newerLabel = seriesMode ? t('series.nextPart') : t('post.newer');
 ---
 
 {
@@ -17,7 +21,7 @@ const t = useT(lang);
     <nav class="post-nav" aria-label="Post navigation">
       {older ? (
         <a href={`/blog/${older.id}`}>
-          <span class="label">{t('post.older')}</span>
+          <span class="label">{olderLabel}</span>
           <span class="title">{older.data.title}</span>
         </a>
       ) : (
@@ -25,7 +29,7 @@ const t = useT(lang);
       )}
       {newer ? (
         <a href={`/blog/${newer.id}`} class="next">
-          <span class="label">{t('post.newer')}</span>
+          <span class="label">{newerLabel}</span>
           <span class="title">{newer.data.title}</span>
         </a>
       ) : (

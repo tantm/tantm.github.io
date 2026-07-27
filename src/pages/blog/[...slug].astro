@@ -5,9 +5,11 @@ import AdSlot from '../../components/AdSlot.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import PostNav from '../../components/PostNav.astro';
 import RelatedPosts from '../../components/RelatedPosts.astro';
+import SeriesBox from '../../components/SeriesBox.astro';
 import {
   getPublishedPosts,
   getPostNeighbors,
+  getSeriesNeighbors,
   getRelatedPosts,
   getTranslation,
   formatDate,
@@ -23,11 +25,16 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { title, description, date, updated, category, tags, lang } = post.data;
+const { title, description, date, updated, category, tags, lang, series, part } = post.data;
 const catSlug = category.toLowerCase();
 const { Content, headings } = await render(post);
 const allPosts = await getPublishedPosts();
-const { older, newer } = getPostNeighbors(allPosts, post);
+/* Bài thuộc series → prev/next theo series; bài lẻ → theo ngày */
+const dateNeighbors = getPostNeighbors(allPosts, post);
+const seriesNeighbors = getSeriesNeighbors(allPosts, post);
+const seriesMode = Boolean(series);
+const older = seriesMode ? seriesNeighbors.prev : dateNeighbors.older;
+const newer = seriesMode ? seriesNeighbors.next : dateNeighbors.newer;
 const related = getRelatedPosts(allPosts, post);
 const translation = getTranslation(allPosts, post);
 const translationUrl = translation ? `/blog/${translation.id}` : undefined;
@@ -74,12 +81,15 @@ const switchUrl = translationUrl ?? localePath(lang === 'en' ? 'vi' : 'en', '/')
         }
       </header>
 
+      {series && <SeriesBox seriesSlug={series} part={part} lang={lang} />}
+
       {
         translation && (
           <a class="lang-switch" href={translationUrl} data-pagefind-ignore>
+            <span class="lang-badge">{lang === 'en' ? 'VI' : 'EN'}</span>{' '}
             {lang === 'en'
-              ? '🇻🇳 Bài này có bản tiếng Việt — đọc tại đây'
-              : '🇬🇧 This post is available in English — read it here'}
+              ? 'Bài này có bản tiếng Việt — đọc tại đây'
+              : 'This post is available in English — read it here'}
           </a>
         )
       }
@@ -104,7 +114,7 @@ const switchUrl = translationUrl ?? localePath(lang === 'en' ? 'vi' : 'en', '/')
       </div>
 
       <div data-pagefind-ignore>
-        <PostNav older={older} newer={newer} lang={lang} />
+        <PostNav older={older} newer={newer} lang={lang} seriesMode={seriesMode} />
         <RelatedPosts posts={related} lang={lang} />
       </div>
     </article>

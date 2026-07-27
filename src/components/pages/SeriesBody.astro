@@ -1,0 +1,66 @@
+---
+/* Syllabus 1 series: header + đủ N phần theo kế hoạch —
+   phần đã publish = link tới bài, phần chưa = hàng "coming soon" (title từ SERIES_META.parts) */
+import Icon from '../Icon.astro';
+import { getPublishedPosts, getSeriesPosts, formatDate, readingTime } from '../../lib/posts';
+import type { SeriesMeta } from '../../consts';
+import { seriesProgress, useT, type Lang } from '../../i18n';
+
+interface Props {
+  series: SeriesMeta;
+  lang: Lang;
+}
+
+const { series, lang } = Astro.props;
+const t = useT(lang);
+const posts = await getPublishedPosts();
+const published = new Map(
+  getSeriesPosts(posts, series.slug, lang).map((p) => [p.data.part ?? 0, p])
+);
+const rows = series.parts.map((titles, i) => ({
+  n: i + 1,
+  title: titles[lang],
+  post: published.get(i + 1) ?? null,
+}));
+---
+
+<header class="series-header" data-cat={series.category.toLowerCase()}>
+  <span class="topic-icon"><Icon name={series.icon} /></span>
+  <h1>{series.name[lang]}</h1>
+  <p>{series.description[lang]}</p>
+  <span class="series-progress">{seriesProgress(lang, published.size, series.plannedParts)}</span>
+</header>
+
+<ol class="series-list">
+  {
+    rows.map(({ n, title, post }) =>
+      post ? (
+        <li>
+          {/* URL bài viết là canonical, không prefix /vi (chrome trang bài theo lang của bài) */}
+          <a href={`/blog/${post.id}`}>
+            <span class="series-list-part">{n}</span>
+            <span class="series-list-body">
+              <span class="series-list-title">{post.data.title}</span>
+              {post.data.description && (
+                <span class="series-list-desc">{post.data.description}</span>
+              )}
+              <span class="series-list-meta">
+                {formatDate(post.data.date)} · {readingTime(post.body)} {t('post.minRead')}
+              </span>
+            </span>
+          </a>
+        </li>
+      ) : (
+        <li>
+          <div class="series-row-soon">
+            <span class="series-list-part soon">{n}</span>
+            <span class="series-list-body">
+              <span class="series-list-title">{title}</span>
+              <span class="series-list-meta">{t('series.soon')}</span>
+            </span>
+          </div>
+        </li>
+      )
+    )
+  }
+</ol>

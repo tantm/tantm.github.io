@@ -54,6 +54,24 @@ export function getRelatedPosts(posts: Post[], current: Post, limit = 3): Post[]
     .map(({ post }) => post);
 }
 
+/** Bài trong 1 series, cùng ngôn ngữ, sort theo part tăng dần */
+export function getSeriesPosts(posts: Post[], seriesSlug: string, lang: string): Post[] {
+  return posts
+    .filter((p) => p.data.series === seriesSlug && p.data.lang === lang)
+    .sort((a, b) => (a.data.part ?? 0) - (b.data.part ?? 0));
+}
+
+/** Prev/next THEO SERIES (ưu tiên hơn prev/next theo ngày khi bài thuộc series) */
+export function getSeriesNeighbors(posts: Post[], current: Post) {
+  if (!current.data.series) return { prev: null, next: null };
+  const parts = getSeriesPosts(posts, current.data.series, current.data.lang);
+  const i = parts.findIndex((p) => p.id === current.id);
+  return {
+    prev: i > 0 ? parts[i - 1] : null,
+    next: i >= 0 && i < parts.length - 1 ? parts[i + 1] : null,
+  };
+}
+
 export function slugifyTag(tag: string): string {
   return tag
     .toLowerCase()

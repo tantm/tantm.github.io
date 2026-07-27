@@ -1,0 +1,33 @@
+---
+import Icon from '../Icon.astro';
+/* Catalog series — như danh mục khoá học */
+import { getPublishedPosts, getSeriesPosts } from '../../lib/posts';
+import { SERIES_META } from '../../consts';
+import { localePath, seriesProgress, useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const posts = await getPublishedPosts();
+---
+
+<h1>{t('series.title')}</h1>
+<p style="color: var(--fg-muted); margin-top: 0.25rem;">{t('series.sub')}</p>
+<div class="topic-grid">
+  {
+    SERIES_META.map((s) => {
+      const published = getSeriesPosts(posts, s.slug, lang).length;
+      return (
+        <a class="topic-card" href={localePath(lang, `/series/${s.slug}`)} data-cat={s.category.toLowerCase()}>
+          <span class="topic-icon"><Icon name={s.icon} /></span>
+          <h3>{s.name[lang]}</h3>
+          <p>{s.description[lang]}</p>
+          <span class="topic-count">{seriesProgress(lang, published, s.plannedParts)}</span>
+        </a>
+      );
+    })
+  }
+</div>

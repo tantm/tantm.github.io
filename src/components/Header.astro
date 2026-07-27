@@ -13,6 +13,7 @@ const { lang = 'en', switchUrl } = Astro.props;
 const t = useT(lang);
 const nav = [
   { href: localePath(lang, '/blog'), label: t('nav.blog') },
+  { href: localePath(lang, '/series'), label: t('nav.series') },
   { href: localePath(lang, '/categories'), label: t('nav.categories') },
   { href: localePath(lang, '/profile'), label: t('nav.profile') },
 ];
