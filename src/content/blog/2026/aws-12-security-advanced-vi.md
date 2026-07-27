@@ -8,7 +8,6 @@ lang: vi
 translationKey: aws-12
 series: aws-zero-to-advanced
 part: 12
-draft: true
 ---
 
 P02 đưa bạn bức tường đầu tiên: danh tính, least privilege, không key trong repo. Nhưng một bức tường chưa phải một tư thế an ninh — kỷ luật là **defense in depth**: giả định bất kỳ lớp đơn lẻ nào cũng thất bại (trọn thế giới quan của CS-P11) và xếp lớp kế tiếp để khoanh vùng nó. Trên AWS nghĩa là thêm ba bức tường — encryption mọi nơi, secrets tự quản lý, và guardrails khiến nguyên cả lớp sai lầm trở nên bất khả — cộng cấu trúc account biến "một credential bị chiếm" thành "một sandbox bị chiếm."

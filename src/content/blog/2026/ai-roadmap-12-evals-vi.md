@@ -8,7 +8,6 @@ lang: vi
 translationKey: ai-roadmap-12
 series: ai-roadmap
 part: 12
-draft: true
 ---
 
 Mỗi phần của series này đều kết bằng cùng một nhịp trống — golden set (P09), tiêu chí xong (P10), test set canh ví tiền (P11) — và phần này là nơi nhịp trống trở thành kỷ luật. Lý do nó quan trọng nằm ở một sự bất đối xứng: **demo cho thấy hệ thống chạy trên các input bạn chọn; production là các input bạn không chọn, mãi mãi.** Phần mềm truyền thống đóng khoảng cách đó bằng test tất định (S01-P09): cùng input, cùng output, assert equals. LLM trả về *các phân phối hợp lý*, nên `assertEqual` chết — và đa số team phản ứng bằng cách ship theo cảm giác. Câu trả lời kỹ thuật là một kim tự tháp test khác.

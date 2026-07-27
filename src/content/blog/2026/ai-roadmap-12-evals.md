@@ -8,7 +8,6 @@ lang: en
 translationKey: ai-roadmap-12
 series: ai-roadmap
 part: 12
-draft: true
 ---
 
 Every part of this series has ended with the same drumbeat — golden set (P09), done-criteria (P10), wallet-guarded test set (P11) — and this part is where the drumbeat becomes the discipline. The reason it matters is one asymmetry: **a demo shows the system working on inputs you chose; production is inputs you didn't choose, forever.** Traditional software closes that gap with deterministic tests (S01-P09): same input, same output, assert equals. LLMs return *plausible distributions*, so `assertEqual` dies — and most teams respond by shipping on vibes. The engineering answer is a different test pyramid.

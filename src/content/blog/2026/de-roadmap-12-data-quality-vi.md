@@ -8,7 +8,6 @@ lang: vi
 translationKey: de-roadmap-12
 series: de-roadmap
 part: 12
-draft: true
 ---
 
 Đây là failure mode định nghĩa phần này: **mọi task xanh, mọi con số sai.** Orchestrator (P08) không retry gì vì không gì crash; pipeline chạy hoàn hảo và trung thành lan truyền rác — một cú export nguồn hỏng trong im lặng, một cột tiền tệ đổi đơn vị, một cú JOIN bắt đầu fan-out (P02). Software testing (S01-P09) kiểm *code bạn viết*; data quality kiểm *input bạn không kiểm soát*, và input đó tới mới mỗi ngày. Bài toán khác, bộ đồ nghề khác — và đồng tiền đặt cược không phải uptime mà là **niềm tin**: lần đầu một giám đốc bắt được số sai trên dashboard, mọi con số tương lai đều ship kèm một dấu hoa thị.

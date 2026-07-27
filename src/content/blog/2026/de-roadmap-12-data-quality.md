@@ -8,7 +8,6 @@ lang: en
 translationKey: de-roadmap-12
 series: de-roadmap
 part: 12
-draft: true
 ---
 
 Here is the failure mode that defines this part: **every task green, every number wrong.** The orchestrator (P08) retried nothing because nothing crashed; the pipeline ran perfectly and faithfully propagated garbage — a silently broken source export, a currency column that switched units, a JOIN that started fanning out (P02). Software testing (S01-P09) checks *code you wrote*; data quality checks *inputs you don't control*, arriving fresh every day. Different problem, different toolkit — and the currency at stake is not uptime but **trust**: the first time a director catches a wrong number in a dashboard, every future number ships with an asterisk.

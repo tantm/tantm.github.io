@@ -8,7 +8,6 @@ lang: en
 translationKey: aws-12
 series: aws-zero-to-advanced
 part: 12
-draft: true
 ---
 
 P02 gave you the first wall: identity, least privilege, no keys in repos. But one wall is not a security posture — the discipline is **defense in depth**: assume any single layer fails (CS-P11's whole worldview) and arrange the next layer to contain it. On AWS that means three more walls — encryption everywhere, secrets that manage themselves, and guardrails that make entire mistake classes impossible — plus the account structure that turns "one compromised credential" into "one compromised sandbox."
