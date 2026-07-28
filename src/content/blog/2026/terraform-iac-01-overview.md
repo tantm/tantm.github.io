@@ -8,9 +8,8 @@ lang: en
 translationKey: terraform-iac-01
 series: terraform-iac
 part: 1
+cover: images/s12-p01-hero.png
 ---
-
-<!-- TODO(img): hero — SP-F blueprint: left side a hand cursor clicking a cloud console window (crossed out with an X), right side a text file labeled "MAIN.TF" feeding a robot arm that builds server racks; title "STOP CLICKING, START DECLARING" -->
 
 Somebody built your company's cloud by clicking buttons in a web console. Nobody remembers exactly what they clicked. Now every change is scary, and nobody can rebuild the environment if it disappears. **Infrastructure as Code (IaC)** fixes this — and Terraform is the most widely used tool for it. This course takes you from your first resource to running IaC like a professional team.
 
@@ -58,7 +57,7 @@ This snippet doesn't say "create". It says "this bucket exists with these proper
 
 That second behavior is called **idempotent** (running it many times gives the same result as running it once). Idempotency is why IaC is safe to re-run, safe to automate, and safe to put in a pipeline.
 
-<!-- TODO(img): concept — SP-F blueprint: two panels side by side. Left "IMPERATIVE": a long numbered checklist (STEP 1..5) with step 3 marked with a red X and question marks below. Right "DECLARATIVE": one simple target diagram (a bucket + a server with checkmarks) and a robot arm adjusting reality to match; caption "YOU DECLARE THE DESTINATION, THE TOOL DRIVES" -->
+![Imperative lists steps and breaks midway; declarative states the destination and the tool drives](images/s12-p01-concept1.png)
 
 ## 3. The core loop: write → plan → apply
 

@@ -17,7 +17,16 @@ Series này là roadmap thực dụng cho nghề đó: mười bốn phần, b�
 
 ![Lộ trình Data Engineer: từ Junior đến Senior](images/de-roadmap.png)
 
-## Data Engineer thực sự làm gì?
+## Bạn sẽ học được gì
+
+- Giải thích được Data Engineer làm gì, khác DA, DS, MLE chỗ nào.
+- Gọi tên 4 giai đoạn từ junior tới senior và mỗi giai đoạn thêm gì.
+- Tự định vị bản thân bằng bảng kỹ năng theo cấp bậc.
+- Nắm thứ tự đọc và cách thực hành song song.
+
+**Cần biết trước:** biết lập trình cơ bản. Nếu nền tảng còn lung lay, học CS Foundations trước.
+
+## 1. Data Engineer thực sự làm gì?
 
 Phiên bản một dòng: **Data Engineer xây và vận hành các hệ thống di chuyển, biến đổi và phục vụ dữ liệu một cách đáng tin cậy.**
 
@@ -34,7 +43,7 @@ Dễ hình dung nhất là đặt vai trò này cạnh hàng xóm:
 
 Ranh giới ở mỗi công ty mỗi khác, nhưng trọng tâm thì rõ: analyst và scientist **dùng** data platform; data engineer **xây** nó. Platform tốt thì mọi người khác chạy nhanh hơn — đó chính là lý do nghề này được săn đón.
 
-## Bốn giai đoạn
+## 2. Bốn giai đoạn
 
 ```mermaid
 flowchart LR
@@ -76,7 +85,9 @@ Công cụ lùi về hậu trường và câu hỏi đổi hẳn: Cả platform 
 
 Seniority trong nghề này không phải biết nhiều tool hơn — mà là **chịu trách nhiệm về kết quả**: dữ liệu đáng tin, chi phí dự đoán được, team ship đều.
 
-## Kỹ năng theo cấp bậc, nói thật
+![Bốn giai đoạn nghề data engineer, như một cầu thang](images/s02-p01-concept1.png)
+
+## 3. Kỹ năng theo cấp bậc, nói thật
 
 | | Junior | Mid | Senior |
 |---|---|---|---|
@@ -85,11 +96,33 @@ Seniority trong nghề này không phải biết nhiều tool hơn — mà là *
 | Khi có sự cố | Báo lên trên | Tự debug phần mình | Thiết kế sẵn để blast radius nhỏ |
 | Chọn công nghệ | Dùng cái có sẵn | Đề xuất trong stack | Quyết định, và thường xuyên nói "không" |
 
-## Cách dùng series này
+## 4. Cách dùng series này
 
 - **Theo thứ tự, mỗi lần một phần.** Các giai đoạn cố tình xây chồng lên nhau.
 - **Vừa đọc vừa build.** Phần nào cũng có yếu tố thực hành — roadmap chỉ đọc suông là tờ rơi du lịch.
 - **Đừng nhảy tool.** Một warehouse, một orchestrator, một nền tảng streaming — học sâu — thắng một CV mười cái logo.
+
+## Thực hành (10 phút)
+
+Định vị mình trên bản đồ trước khi bắt đầu:
+
+1. Dùng bảng kỹ-năng-theo-cấp, tự chấm trung thực mỗi hàng một mức. Lệch mức giữa các hàng là chuyện bình thường.
+2. Viết một câu: "Hàng yếu nhất của mình là ___, nên mình sẽ đọc kỹ nhất Giai đoạn ___."
+3. Chọn ngay dataset thực hành — một bộ dữ liệu thật, hơi bừa bộn (của công ty bạn, hoặc bất kỳ bộ public nào). Mọi phần hands-on của series sẽ tái dùng nó. Quyết một lần là gỡ được cái cớ lớn nhất để bỏ qua thực hành.
+
+## Tự kiểm tra
+
+1. Analyst hỏi "vì sao doanh thu giảm?", còn data engineer hỏi một câu khác về cùng bảng đó. Câu của DE là gì?
+2. "Idempotent" nghĩa là gì, và vì sao từ này quan trọng đến vậy trong nghề?
+3. Giai đoạn nào dạy bạn hỏi "mình có thật sự cần streaming không?" — và vì sao đó là câu hỏi senior?
+
+<details><summary>Xem đáp án</summary>
+
+1. "Dữ liệu này tới đây bằng đường nào, có đủ không, có đúng giờ không?" — DE sở hữu sự di chuyển và độ tin cậy của dữ liệu, không phải cách diễn giải business.
+2. An toàn để chạy lại: chạy pipeline hai lần cho cùng kết quả như một lần. Pipeline fail và retry liên tục, nên thiếu idempotency thì mỗi cú retry là một nguy cơ nhân đôi hay làm hỏng dữ liệu.
+3. Giai đoạn C. Streaming đắt hơn hẳn batch để vận hành; biết khi nào business thật sự cần độ tươi tính bằng giây — và khi nào batch chạy đêm là đủ — là phán đoán về kết quả, không phải về tool.
+
+</details>
 
 ## Điều cần nhớ
 

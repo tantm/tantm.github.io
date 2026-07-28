@@ -17,7 +17,16 @@ This series is a practical roadmap for that career: fourteen parts, four stages,
 
 ![The Data Engineer Roadmap: Junior to Senior](images/de-roadmap.png)
 
-## What does a Data Engineer actually do?
+## What you'll learn
+
+- Explain what a Data Engineer does, and how the role differs from DA, DS, and MLE.
+- Name the four stages from junior to senior and what each stage adds.
+- Self-assess your current stage with the skills-by-level table.
+- Know the reading order and how to practice alongside it.
+
+**Prerequisites:** comfortable with basic programming. If fundamentals feel shaky, do CS Foundations first.
+
+## 1. What does a Data Engineer actually do?
 
 The one-line version: **a Data Engineer builds and operates the systems that move, shape, and serve data reliably.**
 
@@ -34,7 +43,7 @@ It helps to see the role next to its neighbors:
 
 The boundaries blur at every company, but the center of gravity is clear: analysts and scientists **consume** the data platform; the data engineer **builds** it. When the platform is good, everyone else moves faster — which is exactly why the role is in demand.
 
-## The four stages
+## 2. The four stages
 
 ```mermaid
 flowchart LR
@@ -76,7 +85,9 @@ The tools fade into the background and the questions change: How should the whol
 
 Seniority in this field is not knowing more tools — it is **owning outcomes**: trustworthy data, predictable costs, a team that ships.
 
-## Skills by level, honestly
+![The four stages of the data engineer career, as a staircase](images/s02-p01-concept1.png)
+
+## 3. Skills by level, honestly
 
 | | Junior | Mid | Senior |
 |---|---|---|---|
@@ -85,11 +96,33 @@ Seniority in this field is not knowing more tools — it is **owning outcomes**:
 | When things break | Escalates | Debugs their area | Designed it so the blast radius is small |
 | Technology choices | Uses what's there | Recommends within the stack | Decides, and says "no" often |
 
-## How to use this series
+## 4. How to use this series
 
 - **In order, one part at a time.** The stages build on each other deliberately.
 - **Build as you read.** Every part has hands-on elements — a roadmap you only read is a travel brochure.
 - **Don't tool-hop.** One warehouse, one orchestrator, one streaming platform — learned deeply — beats a résumé of ten logos.
+
+## Practice (10 minutes)
+
+Locate yourself on the map before starting:
+
+1. Using the skills-by-level table, give yourself one honest level per row. Mixed levels are normal.
+2. Write one sentence: "My weakest row is ___, so I will read Stage ___ most carefully."
+3. Pick your practice dataset now — one real, slightly messy dataset (your company's, or any public one). Every hands-on part of this series will reuse it. Deciding once removes the biggest excuse for skipping practice.
+
+## Check yourself
+
+1. An analyst asks "why is revenue down?" and a data engineer asks a different question about the same table. What is the DE's question?
+2. What does "idempotent" mean, and why does the word matter so much in this career?
+3. Which stage teaches you to ask "do we actually need streaming for this?" — and why is that a senior question?
+
+<details><summary>See answers</summary>
+
+1. "How did this data get here, is it complete, and did it arrive on time?" — the DE owns the movement and trustworthiness of the data, not the business interpretation.
+2. Safe to re-run: running a pipeline twice produces the same result as once. Pipelines fail and retry constantly, so without idempotency every retry risks duplicating or corrupting data.
+3. Stage C. Streaming costs far more to operate than batch; knowing when the business genuinely needs seconds-level freshness — and when a nightly batch is enough — is a judgment call about outcomes, not tools.
+
+</details>
 
 ## Key takeaways
 

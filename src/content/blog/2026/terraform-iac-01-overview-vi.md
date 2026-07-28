@@ -8,9 +8,8 @@ lang: vi
 translationKey: terraform-iac-01
 series: terraform-iac
 part: 1
+cover: images/s12-p01-hero.png
 ---
-
-<!-- TODO(img): hero — SP-F blueprint: bên trái bàn tay click cửa sổ cloud console (gạch chéo X), bên phải file text nhãn "MAIN.TF" nối vào cánh tay robot đang dựng tủ rack server; tiêu đề "STOP CLICKING, START DECLARING" -->
 
 Ai đó đã dựng hạ tầng cloud của công ty bạn bằng cách click chuột trên web console. Không ai nhớ chính xác họ đã click gì. Giờ mỗi thay đổi đều đáng sợ, và không ai dựng lại được môi trường nếu nó biến mất. **Infrastructure as Code (IaC)** sửa điều này — và Terraform là công cụ phổ biến nhất cho nó. Khoá học này đưa bạn từ resource đầu tiên tới vận hành IaC như một team chuyên nghiệp.
 
@@ -58,7 +57,7 @@ resource "aws_s3_bucket" "reports" {
 
 Hành vi thứ hai gọi là **idempotent** (chạy nhiều lần cho cùng kết quả như chạy một lần). Idempotency là lý do IaC an toàn để chạy lại, an toàn để tự động hoá, an toàn để đưa vào pipeline.
 
-<!-- TODO(img): concept — SP-F blueprint: 2 panel cạnh nhau. Trái "IMPERATIVE": checklist dài đánh số (STEP 1..5), bước 3 gạch X đỏ và dấu hỏi bên dưới. Phải "DECLARATIVE": một sơ đồ đích đơn giản (bucket + server có dấu tick) và cánh tay robot chỉnh thực tế cho khớp; chú thích "YOU DECLARE THE DESTINATION, THE TOOL DRIVES" -->
+![Imperative liệt kê bước và gãy giữa chừng; declarative nêu đích đến và công cụ tự lái](images/s12-p01-concept1.png)
 
 ## 3. Vòng lặp lõi: write → plan → apply
 
