@@ -62,6 +62,15 @@ export const CATEGORY_META: CategoryMeta[] = [
       vi: 'AWS và cloud engineering — services, IaC, security và cost.',
     },
   },
+  {
+    name: 'DevOps',
+    slug: 'devops',
+    icon: 'devops',
+    description: {
+      en: 'Containers, Kubernetes, Terraform, CI/CD — shipping and running software reliably.',
+      vi: 'Container, Kubernetes, Terraform, CI/CD — ship và vận hành phần mềm tin cậy.',
+    },
+  },
 ];
 
 export const CATEGORIES = CATEGORY_META.map((c) => c.name);
@@ -228,6 +237,62 @@ export const SERIES_META: SeriesMeta[] = [
       { en: 'Architecting for Cost: FinOps Patterns', vi: 'Thiết kế theo chi phí: pattern FinOps' },
       { en: 'Migration Architectures: Legacy to Modern Without Falling', vi: 'Kiến trúc migration: từ legacy sang modern không ngã' },
       { en: 'Choosing Your Architecture: a Decision Framework', vi: 'Chọn kiến trúc: một decision framework' },
+    ],
+  },
+  {
+    slug: 'docker-k8s',
+    name: {
+      en: 'Docker & Kubernetes',
+      vi: 'Docker & Kubernetes: từ container đến orchestration',
+    },
+    icon: 'devops',
+    category: 'DevOps',
+    plannedParts: 12,
+    description: {
+      en: 'Hands-on containers course: from the container mental model to Kubernetes, deploy patterns and production choices.',
+      vi: 'Khoá thực hành container: từ mental model tới Kubernetes, pattern deploy và lựa chọn production.',
+    },
+    parts: [
+      { en: 'Containers: Why, What, and the Road Ahead', vi: 'Container: vì sao, là gì, và lộ trình phía trước' },
+      { en: 'A Container Is Just a Process', vi: 'Container chỉ là một process' },
+      { en: "Building Images That Don't Embarrass You", vi: 'Build image không xấu hổ' },
+      { en: 'Docker Compose: Your Local Environment as Code', vi: 'Docker Compose: môi trường local thành code' },
+      { en: 'Registries, Tags & Container Best Practices', vi: 'Registry, tag & best practices' },
+      { en: 'Why You Need an Orchestrator', vi: 'Vì sao cần một orchestrator' },
+      { en: 'Kubernetes Core: Pod, Deployment, Service', vi: 'Kubernetes core: Pod, Deployment, Service' },
+      { en: 'Config, Secrets & How Traffic Finds Your Pod', vi: 'Config, Secrets & traffic tìm Pod thế nào' },
+      { en: 'State, Storage & Batch Jobs on K8s', vi: 'State, storage & batch job trên K8s' },
+      { en: 'Deploy Patterns: Rolling, Blue-Green, Canary', vi: 'Pattern deploy: rolling, blue-green, canary' },
+      { en: 'Managed Kubernetes & the ECS Question', vi: 'Managed Kubernetes & câu hỏi ECS' },
+      { en: 'CI/CD, Security & Thinking in Containers', vi: 'CI/CD, security & tư duy container' },
+    ],
+  },
+  {
+    slug: 'terraform-iac',
+    name: {
+      en: 'Terraform & IaC in Practice',
+      vi: 'Terraform & IaC thực chiến',
+    },
+    icon: 'stack',
+    category: 'DevOps',
+    plannedParts: 12,
+    description: {
+      en: 'A full Terraform course through the real life of a team: state, modules, environments, CI/CD, drift and policy.',
+      vi: 'Khoá Terraform đầy đủ theo vòng đời thật của team: state, module, môi trường, CI/CD, drift và policy.',
+    },
+    parts: [
+      { en: 'IaC & Terraform: The Mental Model', vi: 'IaC & Terraform: mental model' },
+      { en: 'Your First Resources, Line by Line', vi: 'Những resource đầu tiên, từng dòng' },
+      { en: "State: Terraform's Memory, Deep Dive", vi: 'State: bộ nhớ của Terraform, đào sâu' },
+      { en: 'Reading Plans & Resource Lifecycle', vi: 'Đọc plan & vòng đời resource' },
+      { en: 'Remote State & Working as a Team', vi: 'Remote state & làm việc theo team' },
+      { en: 'Variables, Outputs & Multi-Environment', vi: 'Variables, outputs & đa môi trường' },
+      { en: 'Modules: Abstraction Done Right', vi: 'Module: abstraction đúng cách' },
+      { en: 'The PR Workflow: Plan as Review Artifact', vi: 'Workflow PR: plan là artifact review' },
+      { en: 'CI/CD for Infrastructure', vi: 'CI/CD cho hạ tầng' },
+      { en: 'Importing Legacy & Fighting Drift', vi: 'Import đồ cũ & chống drift' },
+      { en: 'Testing, Policy & Guardrails for IaC', vi: 'Testing, policy & guardrails cho IaC' },
+      { en: 'IaC Patterns, CDK/Pulumi & the Finale', vi: 'Pattern IaC, CDK/Pulumi & hồi kết' },
     ],
   },
 ];

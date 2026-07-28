@@ -28,6 +28,8 @@
   --cat-developer-soft: #eff4ff;
   --cat-cloud: #0284c7;
   --cat-cloud-soft: #e0f2fe;
+  --cat-devops: #059669;
+  --cat-devops-soft: #d1fae5;
 }
 
 html[data-theme='dark'] {
@@ -54,6 +56,8 @@ html[data-theme='dark'] {
   --cat-developer-soft: #14263f;
   --cat-cloud: #38bdf8;
   --cat-cloud-soft: #0c2a3d;
+  --cat-devops: #34d399;
+  --cat-devops-soft: #0b2f24;
 }
 
 /* ============ Base ============ */
@@ -564,6 +568,7 @@ html[data-theme='dark'] .theme-toggle .icon-moon { display: none; }
 [data-cat='architecture'] { --cat-color: var(--cat-architecture); --cat-soft: var(--cat-architecture-soft); }
 [data-cat='developer'] { --cat-color: var(--cat-developer); --cat-soft: var(--cat-developer-soft); }
 [data-cat='cloud'] { --cat-color: var(--cat-cloud); --cat-soft: var(--cat-cloud-soft); }
+[data-cat='devops'] { --cat-color: var(--cat-devops); --cat-soft: var(--cat-devops-soft); }
 
 /* ============ Post list & cards ============ */
 .post-list {
