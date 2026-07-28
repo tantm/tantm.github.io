@@ -14,7 +14,16 @@ You type `python app.py` and press Enter. Half a second later, text appears on s
 
 This part builds that model in four layers: the machine, the memory, the program, and the process.
 
-## Layer 1 — The machine: one chef, a counter, and a warehouse
+## What you'll learn
+
+- Hold a four-layer model of how your code actually runs: machine, memory, translation, processes.
+- Explain why RAM access, disk access, and network calls differ by orders of magnitude.
+- Tell I/O-bound from CPU-bound — the single most useful performance distinction.
+- Use `top`/`htop` to see the model live on your own machine.
+
+**Prerequisites:** Part 1 (the map). No systems background needed — this is the ground floor.
+
+## 1. Layer 1 — The machine: one chef, a counter, and a warehouse
 
 Strip a computer to three parts:
 
@@ -33,7 +42,7 @@ The numbers matter more than the metaphor. Rough orders of magnitude:
 
 This table explains most performance work you will ever do: **the fastest code is the code that stays high on this table.** A loop that reads from RAM beats a loop that reads from disk; a batch of one network call beats a thousand small ones. When a senior says "that's an N+1 query problem", they are reading this table out loud.
 
-## Layer 2 — Memory: the stack and the heap
+## 2. Layer 2 — Memory: the stack and the heap
 
 Your program's memory has two working areas:
 
@@ -45,7 +54,7 @@ Why care? Because two of the most common production incidents are memory stories
 - **The leak:** objects keep getting referenced (a global cache, a listener never removed) → the heap grows forever → the process slows, then dies. On Linux, the kernel's OOM killer picks your process and kills it — the infamous `OOMKilled` in container logs.
 - **The garbage-collection pause:** in GC languages (Python, Java, Go, JS), someone has to clean the heap. When it runs at the wrong moment, your p99 latency spikes for "no reason". The reason is the janitor.
 
-## Layer 3 — From source code to instructions
+## 3. Layer 3 — From source code to instructions
 
 The CPU doesn't understand Python or Java. Something has to translate:
 
@@ -65,7 +74,7 @@ flowchart LR
 
 Practical consequence: a tight numeric loop in pure Python can be 100× slower than the same loop in C — and why numpy (whose insides are compiled C) exists at all. You will meet this again in the AI series: the Python you write is a thin remote control over compiled kernels.
 
-## Layer 4 — Processes and threads
+## 4. Layer 4 — Processes and threads
 
 Run your program and the OS wraps it in a **process**: its own memory space, its own file handles, isolated from everyone else. Inside a process you can have multiple **threads**: workers sharing the same memory.
 
@@ -80,7 +89,7 @@ That's why a single-threaded Node.js server or Python's async can juggle thousan
 
 Ask this one question about any slow system: **is it waiting (I/O-bound) or computing (CPU-bound)?** The fix for one makes the other worse.
 
-## Debugging with this model
+## 5. Debugging with this model
 
 Next time something is slow, walk the layers:
 
@@ -89,6 +98,42 @@ Next time something is slow, walk the layers:
 3. Thousands of threads? → context-switching tax. One thread at 100% on a 16-core box? → single-threaded bottleneck.
 
 Four checks, one mental model, most incidents.
+
+## Practice (10 minutes)
+
+Watch the four layers live:
+
+```bash
+# 1. Open the machine view
+htop            # or: top
+
+# 2. Create a CPU-bound process and watch one core hit 100%
+python3 -c "while True: pass" &
+# in htop: find the python process — CPU ~100%, state R (running)
+
+# 3. Create an I/O-bound process and see the difference
+python3 -c "import time; time.sleep(600)" &
+# in htop: CPU ~0%, state S (sleeping) — waiting is not working
+
+# 4. Clean up
+kill %1 %2
+```
+
+Expected result: the busy loop pins one core at 100% while the sleeper uses ~0% — the visible difference between CPU-bound and I/O-bound, on your own machine.
+
+## Check yourself
+
+1. Your API spends 90% of its request time waiting on a database query. Is it CPU-bound or I/O-bound, and does buying a faster CPU help?
+2. Roughly how much slower is a disk read than a RAM read? Why does that shape how programs cache data?
+3. In `htop`, a process shows state S and near-zero CPU, yet users say "it's slow". Which layer do you investigate?
+
+<details><summary>See answers</summary>
+
+1. I/O-bound — the CPU is idle while waiting. A faster CPU changes almost nothing; a faster query (index!) or fewer round-trips is the fix.
+2. Orders of magnitude (~100,000× vs RAM for spinning disks; still ~1,000× for SSDs). That gap is why programs keep hot data in RAM caches and why "read it from disk every time" designs die under load.
+3. It's waiting on something — I/O: the database, the network, a lock. Investigate what it's blocked on (the S state says "sleeping until an event"), not the CPU.
+
+</details>
 
 ## Key takeaways
 

@@ -14,7 +14,16 @@ Bạn gõ `python app.py` và nhấn Enter. Nửa giây sau, chữ hiện lên m
 
 Phần này xây model đó theo bốn lớp: cỗ máy, bộ nhớ, chương trình, và process.
 
-## Lớp 1 — Cỗ máy: một đầu bếp, mặt bàn, và nhà kho
+## Bạn sẽ học được gì
+
+- Nắm model 4 lớp về cách code thật sự chạy: máy, memory, dịch code, process.
+- Giải thích vì sao truy cập RAM, disk, network chênh nhau hàng bậc độ lớn.
+- Phân biệt I/O-bound với CPU-bound — phép phân biệt hiệu năng hữu ích nhất.
+- Dùng `top`/`htop` xem model này sống động trên chính máy bạn.
+
+**Cần biết trước:** Bài 1 (tấm bản đồ). Không cần nền tảng hệ thống — đây là tầng trệt.
+
+## 1. Lớp 1 — Cỗ máy: một đầu bếp, mặt bàn, và nhà kho
 
 Rút gọn máy tính còn ba phần:
 
@@ -33,7 +42,7 @@ Con số quan trọng hơn phép ví von. Bậc độ lớn xấp xỉ:
 
 Bảng này giải thích phần lớn công việc tối ưu bạn sẽ làm: **code nhanh nhất là code ở càng cao trên bảng càng tốt.** Vòng loop đọc từ RAM thắng vòng loop đọc từ disk; một network call gộp thắng một nghìn call lẻ. Khi senior nói "đây là N+1 query", họ đang đọc to bảng này lên.
 
-## Lớp 2 — Memory: stack và heap
+## 2. Lớp 2 — Memory: stack và heap
 
 Bộ nhớ chương trình có hai vùng làm việc:
 
@@ -45,7 +54,7 @@ Vì sao phải quan tâm? Vì hai loại sự cố production phổ biến nhấ
 - **Leak:** object cứ bị giữ tham chiếu (một cache global, một listener quên gỡ) → heap phình mãi → process chậm dần rồi chết. Trên Linux, OOM killer của kernel chọn process của bạn mà xử — chính là dòng `OOMKilled` khét tiếng trong log container.
 - **Khựng vì garbage collection:** ở ngôn ngữ có GC (Python, Java, Go, JS), phải có ai đó dọn heap. Khi nó chạy sai thời điểm, p99 latency của bạn vọt lên "không lý do". Lý do chính là bác lao công.
 
-## Lớp 3 — Từ source code đến instruction
+## 3. Lớp 3 — Từ source code đến instruction
 
 CPU không hiểu Python hay Java. Phải có bộ phận phiên dịch:
 
@@ -65,7 +74,7 @@ flowchart LR
 
 Hệ quả thực dụng: một vòng loop tính toán thuần Python có thể chậm hơn 100 lần cùng vòng loop viết bằng C — và đó là lý do numpy (ruột là C đã compile) tồn tại. Bạn sẽ gặp lại điều này trong series AI: đoạn Python bạn viết chỉ là chiếc điều khiển từ xa mỏng đặt trên các kernel đã compile.
 
-## Lớp 4 — Process và thread
+## 4. Lớp 4 — Process và thread
 
 Chạy chương trình, OS bọc nó trong một **process**: không gian memory riêng, file handle riêng, cách ly với phần còn lại. Bên trong một process có thể có nhiều **thread**: các worker dùng chung memory.
 
@@ -80,7 +89,7 @@ Chỗ hiểu về scheduling giải thích câu "sao server chậm": máy 8 core
 
 Trước mọi hệ thống chậm, hỏi đúng một câu: **nó đang chờ (I/O-bound) hay đang tính (CPU-bound)?** Thuốc của bên này là độc của bên kia.
 
-## Debug bằng model này
+## 5. Debug bằng model này
 
 Lần tới gặp thứ gì đó chậm, đi từng lớp:
 
@@ -89,6 +98,42 @@ Lần tới gặp thứ gì đó chậm, đi từng lớp:
 3. Hàng nghìn thread? → thuế context-switch. Một thread 100% trên máy 16 core? → nghẽn đơn thread.
 
 Bốn phép kiểm, một mental model, xử được đa số sự cố.
+
+## Thực hành (10 phút)
+
+Xem 4 lớp sống động:
+
+```bash
+# 1. Mở góc nhìn cỗ máy
+htop            # hoặc: top
+
+# 2. Tạo một process CPU-bound và xem một core chạm 100%
+python3 -c "while True: pass" &
+# trong htop: tìm process python — CPU ~100%, state R (running)
+
+# 3. Tạo một process I/O-bound và thấy sự khác biệt
+python3 -c "import time; time.sleep(600)" &
+# trong htop: CPU ~0%, state S (sleeping) — chờ không phải là làm
+
+# 4. Dọn dẹp
+kill %1 %2
+```
+
+Kết quả mong đợi: vòng lặp bận ghim một core ở 100% trong khi anh ngủ dùng ~0% — khác biệt nhìn-thấy-được giữa CPU-bound và I/O-bound, trên chính máy bạn.
+
+## Tự kiểm tra
+
+1. API của bạn tốn 90% thời gian request để chờ một query database. Nó CPU-bound hay I/O-bound, và mua CPU nhanh hơn có giúp không?
+2. Đọc disk chậm hơn đọc RAM khoảng bao nhiêu? Vì sao khoảng cách đó định hình cách chương trình cache dữ liệu?
+3. Trong `htop`, một process ở state S và CPU gần 0, nhưng người dùng kêu "chậm". Bạn điều tra lớp nào?
+
+<details><summary>Xem đáp án</summary>
+
+1. I/O-bound — CPU đang rảnh trong lúc chờ. CPU nhanh hơn gần như không đổi gì; query nhanh hơn (index!) hoặc ít round-trip hơn mới là cách sửa.
+2. Hàng bậc độ lớn (~100.000× so với RAM cho đĩa quay; vẫn ~1.000× cho SSD). Khoảng cách đó là lý do chương trình giữ dữ liệu nóng trong cache RAM, và thiết kế "đọc disk mỗi lần" chết dưới tải.
+3. Nó đang chờ một thứ gì đó — I/O: database, network, một cái lock. Điều tra thứ nó đang bị chặn (state S nghĩa là "ngủ tới khi có sự kiện"), không phải CPU.
+
+</details>
 
 ## Điều cần nhớ
 
