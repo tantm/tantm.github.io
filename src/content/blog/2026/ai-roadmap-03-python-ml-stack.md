@@ -10,9 +10,20 @@ series: ai-roadmap
 part: 3
 ---
 
+<!-- TODO(img): concept — SP-E flat pastel (mint/peach/lavender): a four-layer workbench drawn as gentle stacked shelves labeled bottom-to-top "NUMPY", "PANDAS", "NOTEBOOK", "SCIKIT-LEARN"; on the top shelf a small pipeline of three connected rounded blocks; title "THE WORKBENCH" -->
+
 Part 2 gave you four math intuitions. This part installs the workbench where they become executable: numpy, pandas, the notebook, and scikit-learn. The goal is not tool tourism — it's the *stack discipline* that Part 4's ML fundamentals will assume, and that separates "ran a tutorial once" from "I trust my own results."
 
-## Layer 1 — numpy: stop writing loops over numbers
+## What you'll learn
+
+- Think in arrays with numpy: shapes, broadcasting, masks — vectorization instead of loops.
+- Run the fixed pandas inspection ritual that catches dirty data before it reaches a model.
+- Keep notebooks honest with three rules, so results are reproducible.
+- Build a scikit-learn pipeline that makes leakage — ML's most common silent bug — structurally hard.
+
+**Prerequisites:** Part 2 (the four math intuitions — especially "points in space"). Python basics; S02-P03's border-typing habit helps but isn't required.
+
+## 1. numpy: stop writing loops over numbers
 
 Part 2 said a neural network is stacked matrix machines. numpy is where you *feel* that:
 
@@ -29,7 +40,7 @@ top5 = np.argsort(sims)[-5:][::-1]    # retrieval, in four lines (hello, RAG)
 
 The mental shift is **vectorization**: describe the operation on the *whole array* and let compiled C do the loop (CS Foundations P2 explained why that's ~100× faster). The three ideas that cover daily use: **shapes** (`(10000, 768) @ (768,) → (10000,)` — read shapes like sentences and most bugs vanish), **broadcasting** (`emb - emb.mean(axis=0)` stretches the small array over the big one), and **boolean masks** (`sims[sims > 0.8]`). When you meet PyTorch in Part 5, it will be numpy with gradients and a GPU — this layer transfers wholesale.
 
-## Layer 2 — pandas: the janitor before the science
+## 2. pandas: the janitor before the science
 
 Every ML dataset arrives dirty, and pandas is where you look it in the eye. The workflow that matters is a fixed opening ritual, not an API tour:
 
@@ -43,7 +54,7 @@ df.describe()                       # ranges sane? (age = -1? amount = 9e9?)
 
 Ten minutes of this ritual per dataset prevents the classic ML embarrassments: the `object` column that's secretly numbers-with-commas, the "boolean" with three values, the duplicate customers that will leak across your train/test split (S02-P03's border-typing habit applies here unchanged). One honest heuristic from the DE world: **fix data problems at this layer, not inside the model** — a model trained around dirty data institutionalizes the dirt.
 
-## Layer 3 — the notebook, with discipline
+## 3. The notebook, with discipline
 
 Notebooks are ML's superpower and its crime scene. The superpower: see a distribution *now*, iterate in seconds. The crime: hidden state — cells run out of order until the notebook lies about what it computes. Three rules keep the power without the lies:
 
@@ -51,7 +62,7 @@ Notebooks are ML's superpower and its crime scene. The superpower: see a distrib
 2. **Config and seeds in the first cell** (`SEED = 42`, paths, params) — reproducibility is a Part 2 expectation-over-trials thing, not a luxury.
 3. **Graduate stable code out**: when a cleaning function survives three sessions, it moves to a `.py` module the notebook imports. Notebooks are for *exploring*; modules are for *keeping*.
 
-## Layer 4 — scikit-learn: the API that teaches ML
+## 4. scikit-learn: the API that teaches ML
 
 scikit-learn earns its place not by having every model, but by encoding ML's workflow into one repeating grammar — `fit` / `predict` / `transform` — and one object that quietly prevents the field's most common mistake:
 
@@ -73,9 +84,31 @@ The pipeline object is the whole lesson. Scale *before* splitting, and the scale
 
 Two split rules that will save you real pain: **stratify** on the label when classes are imbalanced (fraud at 2% needs both splits to contain fraud), and when data is temporal, **split by time, never randomly** — predicting last month from next month's rows is a time machine, not a model.
 
-## A 45-minute exercise that installs the whole stack
+## Practice (45 minutes — installs the whole stack)
 
-Take any public tabular dataset (a churn or titanic-style CSV): run the pandas ritual → fix one real dirt problem → build the pipeline above → get a test score → then *break it on purpose* (scale before split, or drop `stratify`) and watch the score shift. Feeling the leakage move the number teaches more than ten articles — including this one.
+Take any public tabular dataset (a churn or titanic-style CSV):
+
+1. **Ritual:** run the four pandas inspection lines from section 2. Write down two real problems you find (there are always at least two).
+2. **Janitor:** fix one of them properly at the pandas layer — parse the numbers-with-commas, collapse the three-valued boolean, drop the duplicates.
+3. **Pipeline:** build the section 4 pipeline, get a test score, note it.
+4. **Break it on purpose:** move the scaling *before* the split (fit the scaler on all data), rerun, and compare scores. Then remove `stratify` and watch class counts in both splits.
+5. **Honesty check:** Restart & Run All from the top — same numbers?
+
+Expected results: step 4's leaked version scores slightly *better* — that's the lie, seen with your own eyes: the model borrowed test-set statistics. Step 5 passing means your numbers are real. Feeling the leakage move the number teaches more than ten articles — including this one.
+
+## Check yourself
+
+1. Why is `emb @ q` on a `(10000, 768)` matrix hundreds of times faster than a Python loop doing the same math?
+2. Your pipeline scores 0.94 with scaling done before the split, and 0.91 with a proper pipeline. Which number do you report, and what happened?
+3. You're predicting next month's churn from a year of user history. How do you split — and why is `train_test_split`'s default wrong here?
+
+<details><summary>See answers</summary>
+
+1. Vectorization: numpy dispatches the whole operation to compiled C (with SIMD and cache-friendly memory layout) instead of interpreting a Python bytecode loop per element — the CS Foundations P2 argument, applied.
+2. Report 0.91. The 0.94 leaked: the scaler fit on all rows, so test-set statistics (mean/std) informed training-time preprocessing. The pipeline's number is the honest estimate of performance on unseen data.
+3. Split by time: train on months 1–10, validate on 11, test on 12. A random split scatters future rows into training — the model "predicts" the past using the future, and the score won't survive contact with production.
+
+</details>
 
 ## Key takeaways
 

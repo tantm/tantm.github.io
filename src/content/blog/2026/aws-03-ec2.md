@@ -10,9 +10,20 @@ series: aws-zero-to-advanced
 part: 3
 ---
 
+<!-- TODO(img): concept — SP-C isometric 3D purple-blue: a single glossy server rack slice floating on a platform, with four labeled price tags hanging off it reading "ON-DEMAND", "SPOT", "RESERVED", "FREE TIER"; the SPOT tag is attached by a thin thread with small scissors near it; title "SAME SERVER, FOUR PRICES" -->
+
 Serverless is the fashion, so why start with servers? Because every higher abstraction on the AWS map — Lambda, Fargate, managed databases — is **EC2 with the sharp edges filed off**, and when abstractions leak (they do), the leak is shaped like an instance. One hour of EC2 fluency buys you intuition for half the AWS catalog. This part is that hour.
 
-## What an instance actually is
+## What you'll learn
+
+- Say what an instance actually is — and the three lifecycle facts beginners learn the hard way.
+- Decode any instance type like a sentence and pick one with two questions.
+- Launch cattle, not pets: AMI + user data + parameters, connected the modern keyless way.
+- Configure a default-closed security group and choose from the four-price menu deliberately.
+
+**Prerequisites:** Part 1 (regions and AZs), Part 2 (IAM roles — SSM access depends on them). A personal AWS account; everything here fits the free tier.
+
+## 1. What an instance actually is
 
 An EC2 instance is a rented slice of a physical machine in one of Part 1's Availability Zones: virtual CPUs, memory, a network interface, and a root disk. Three consequences beginners learn the hard way:
 
@@ -20,7 +31,7 @@ An EC2 instance is a rented slice of a physical machine in one of Part 1's Avail
 - **The root EBS volume is a separate thing** — network-attached storage with its own lifecycle. Terminate carelessly and the disk can vanish with the instance; conversely, a volume can outlive its instance and be re-attached.
 - **Stop ≠ terminate.** Stopped instances don't bill for compute (the EBS volume still bills); terminated ones are gone. The pair of verbs behind many a beginner's heart attack.
 
-## Reading an instance type like a sentence
+## 2. Reading an instance type like a sentence
 
 `m7g.xlarge` decodes as: **family** (`m` = general purpose) + **generation** (`7`, newer = better price/performance, just take the newest) + **attribute** (`g` = Graviton/ARM chips — cheaper, and fine for most Linux workloads) + **size** (`xlarge` ≈ 4 vCPU / 16 GB; each size up doubles).
 
@@ -35,9 +46,9 @@ Families you'll actually meet:
 
 The decision is two questions — CPU-hungry or RAM-hungry, and how much? — then pick the newest generation of the matching family. Don't agonize: resizing is a stop-change-start away, which is precisely the elasticity you're paying for.
 
-## AMI, user data, and the pets-vs-cattle idea
+## 3. AMI, user data, and the pets-vs-cattle idea
 
-An **AMI** is the frozen disk image an instance boots from (OS + whatever was baked in). **User data** is a script that runs on first boot. Together they carry the cloud's most important cultural idea: **cattle, not pets**. A pet server is hand-configured, lovingly named, irreplaceable — and unreproducible. A cattle instance is *AMI + user data + parameters*: delete it, launch an identical one in two minutes.
+An **AMI** (Amazon Machine Image) is the frozen disk image an instance boots from (OS + whatever was baked in). **User data** is a script that runs on first boot. Together they carry the cloud's most important cultural idea — and this part's one analogy: **cattle, not pets**. A pet server is hand-configured, lovingly named, irreplaceable — and unreproducible. A cattle instance is *AMI + user data + parameters*: delete it, launch an identical one in two minutes.
 
 ```bash
 #!/bin/bash
@@ -48,11 +59,11 @@ systemctl enable --now nginx
 
 Practice the discipline now, and Part 11 (Terraform) will feel like a natural conclusion instead of a new religion.
 
-## Connecting: SSH, the 2026 way
+## 4. Connecting: SSH, the 2026 way
 
 The classic path — download a `.pem` key pair, `ssh -i my-key.pem ec2-user@<public-ip>` — still works and still teaches. But note what it requires: a key file to protect (IAM Part 2's warning about long-lived credentials, in file form) and an open port 22. The modern default on AWS is **SSM Session Manager**: the instance's IAM role (there it is again — Part 2's most important noun) lets you open a shell from the console or CLI with **no key file and no inbound port at all**. Learn SSH once for fluency; reach for SSM in anything real.
 
-## Your first security group
+## 5. Your first security group
 
 A **security group** is a stateful firewall attached to the instance's network interface: default = nothing in, everything out; you open only what's needed. Two rules for a demo web server:
 
@@ -63,7 +74,7 @@ A **security group** is a stateful firewall attached to the instance's network i
 
 The classic beginner mistake is `22` open to `0.0.0.0/0` — within hours the auth log fills with bot login attempts (they scan constantly; this is the visible-from-orbit version of Part 2's leaked-key lesson). Security groups go deeper in Part 5 (VPC), where they meet subnets and NACLs.
 
-## The pricing menu
+## 6. The pricing menu
 
 Same instance, four prices — and the menu *is* the architecture lesson (S07-P12 made it a whole part):
 
@@ -74,12 +85,28 @@ Same instance, four prices — and the menu *is* the architecture lesson (S07-P1
 
 The habit that matters more than any discount: **instances you're not using are stopped.** A forgotten `xlarge` is the classic first bill shock — your Part 2 billing alarm exists exactly for this.
 
-## Hands-on (30 minutes, free tier)
+## Practice (30 minutes — free tier)
 
-1. Launch the smallest current-gen instance with Amazon Linux, the nginx user-data script above, and a security group allowing 80 from anywhere.
-2. Hit the public IP in a browser — your server, from nothing, in minutes.
-3. Connect via SSM Session Manager (attach the default SSM role) — no key, no port 22.
-4. Stop the instance. Note the EBS volume still exists. Terminate. Note it's all gone. Feel the difference in your bones.
+1. Launch the smallest current-gen instance with Amazon Linux, the nginx user-data script from section 3, and a security group allowing 80 from anywhere (no port 22 rule at all).
+2. Hit the public IP in a browser.
+3. Connect via SSM Session Manager: attach the default SSM role to the instance (IAM → role with `AmazonSSMManagedInstanceCore`), then Connect → Session Manager in the console.
+4. Stop the instance and check the Volumes page. Then terminate and check again.
+
+Expected results: step 2 shows the nginx welcome page — a server from nothing, no human hands on it (cattle, not pets). Step 3 gives you a shell with no key file and no open port 22. Step 4: after stop, the EBS volume still exists (and still bills); after terminate, instance and volume are gone — the stop-vs-terminate difference, felt in your bones.
+
+## Check yourself
+
+1. Your `t3.micro` dev box runs a sustained load test and suddenly becomes unusably slow, though CPU shows 100% "in use." What happened?
+2. A teammate proposes running the nightly batch pipeline on spot instances. What property must the jobs have, and which earlier lesson provides it?
+3. Why is SSM Session Manager preferred over SSH keys for anything real — connect it to Part 2's core habit.
+
+<details><summary>See answers</summary>
+
+1. The burstable-family credit trap: `t` instances bank CPU credits and spend them under load. Sustained load drained the credits, so the instance is throttled to its low baseline. Fix: an `m`/`c` family for sustained work, or watch the credit balance.
+2. Idempotency (S02-P03): spot instances can be reclaimed with 2 minutes' warning, so a job must be safely re-runnable — a run owns its slice and produces the same result on retry. Idempotent batch + spot pricing is a made-for-each-other pair.
+3. SSM authenticates through the instance's IAM role — temporary credentials, no key file to leak, no inbound port 22 for bots to hammer. It's Part 2's "identities are permanent, credentials should not be" applied to shell access.
+
+</details>
 
 ## Key takeaways
 

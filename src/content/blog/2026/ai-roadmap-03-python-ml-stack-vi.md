@@ -10,9 +10,20 @@ series: ai-roadmap
 part: 3
 ---
 
+<!-- TODO(img): concept — SP-E flat pastel (mint/peach/lavender): a four-layer workbench drawn as gentle stacked shelves labeled bottom-to-top "NUMPY", "PANDAS", "NOTEBOOK", "SCIKIT-LEARN"; on the top shelf a small pipeline of three connected rounded blocks; title "THE WORKBENCH" -->
+
 Phần 2 cho bạn bốn trực giác toán. Phần này lắp cái bàn thợ nơi chúng trở thành thứ chạy được: numpy, pandas, notebook, và scikit-learn. Mục tiêu không phải du lịch công cụ — mà là *kỷ luật của stack* mà Phần 4 (ML fundamentals) sẽ mặc định bạn có, thứ tách "từng chạy một tutorial" khỏi "tôi tin kết quả của chính mình."
 
-## Lớp 1 — numpy: ngừng viết loop trên các con số
+## Bạn sẽ học được gì
+
+- Tư duy theo mảng với numpy: shape, broadcasting, mask — vector hoá thay cho loop.
+- Chạy nghi thức soi pandas cố định để bắt dữ liệu bẩn trước khi nó chạm vào model.
+- Giữ notebook trung thực bằng ba luật, để kết quả tái lập được.
+- Dựng pipeline scikit-learn khiến leakage — con bug thầm lặng phổ biến nhất của ML — khó xảy ra về mặt cấu trúc.
+
+**Cần biết trước:** Phần 2 (bốn trực giác toán — nhất là "điểm trong không gian"). Python cơ bản; thói quen type-ở-biên-giới của S02-P03 là lợi thế nhưng không bắt buộc.
+
+## 1. numpy: ngừng viết loop trên các con số
 
 Phần 2 nói neural network là chồng máy-matrix. numpy là nơi bạn *cảm* điều đó:
 
@@ -29,7 +40,7 @@ top5 = np.argsort(sims)[-5:][::-1]    # retrieval, trong bốn dòng (chào RAG)
 
 Cú chuyển não là **vector hoá**: mô tả phép toán trên *cả mảng* và để C đã compile lo vòng loop (CS Foundations P2 giải thích vì sao nhanh ~100×). Ba ý phủ hết việc hằng ngày: **shape** (`(10000, 768) @ (768,) → (10000,)` — đọc shape như đọc câu văn là đa số bug tan biến), **broadcasting** (`emb - emb.mean(axis=0)` kéo giãn mảng nhỏ phủ lên mảng lớn), và **boolean mask** (`sims[sims > 0.8]`). Khi gặp PyTorch ở Phần 5, nó sẽ là numpy có gradient và GPU — lớp này chuyển giao nguyên khối.
 
-## Lớp 2 — pandas: lao công đi trước khoa học
+## 2. pandas: lao công đi trước khoa học
 
 Mọi dataset ML đều đến trong tình trạng bẩn, và pandas là nơi bạn nhìn thẳng vào mắt nó. Workflow quan trọng là một nghi thức khai cuộc cố định, không phải tour API:
 
@@ -43,7 +54,7 @@ df.describe()                       # range có tỉnh táo không? (age = -1? a
 
 Mười phút nghi thức này mỗi dataset chặn được các màn bẽ mặt ML kinh điển: cột `object` bí mật là số-có-dấu-phẩy, cột "boolean" có ba giá trị, các khách hàng trùng lặp sẽ leak xuyên qua đường cắt train/test (thói quen type-ở-biên-giới của S02-P03 áp nguyên xi vào đây). Một heuristic thật thà từ giới DE: **sửa vấn đề dữ liệu ở lớp này, đừng sửa bên trong model** — model được train quanh dữ liệu bẩn là thể chế hoá cái bẩn.
 
-## Lớp 3 — notebook, có kỷ luật
+## 3. Notebook, có kỷ luật
 
 Notebook là siêu năng lực của ML và cũng là hiện trường vụ án. Siêu năng lực: thấy một distribution *ngay bây giờ*, lặp trong vài giây. Vụ án: trạng thái ẩn — các cell chạy sai thứ tự cho tới khi notebook nói dối về thứ nó tính. Ba luật giữ được sức mạnh mà không dính lời nói dối:
 
@@ -51,7 +62,7 @@ Notebook là siêu năng lực của ML và cũng là hiện trường vụ án.
 2. **Config và seed ở cell đầu tiên** (`SEED = 42`, path, param) — tái lập được là chuyện expectation-trên-nhiều-lần-thử của Phần 2, không phải xa xỉ phẩm.
 3. **Cho code ổn định tốt nghiệp ra ngoài**: hàm cleaning nào sống sót ba phiên làm việc thì chuyển vào module `.py` để notebook import. Notebook để *khám phá*; module để *giữ lại*.
 
-## Lớp 4 — scikit-learn: bộ API dạy ML
+## 4. scikit-learn: bộ API dạy ML
 
 scikit-learn xứng đáng chỗ đứng không phải vì có đủ mọi model, mà vì nó mã hoá workflow của ML vào một ngữ pháp lặp lại — `fit` / `predict` / `transform` — và một object lặng lẽ chặn sai lầm phổ biến nhất của ngành:
 
@@ -73,9 +84,31 @@ Object pipeline chính là toàn bộ bài học. Scale *trước khi* split là
 
 Hai luật cắt dữ liệu sẽ cứu bạn khỏi đau thật: **stratify** theo label khi lớp mất cân bằng (fraud 2% thì cả hai nửa đều phải chứa fraud), và khi dữ liệu có tính thời gian, **cắt theo thời gian, đừng bao giờ cắt ngẫu nhiên** — đoán tháng trước bằng các dòng của tháng sau là cỗ máy thời gian, không phải model.
 
-## Bài tập 45 phút lắp trọn bộ stack
+## Thực hành (45 phút — lắp trọn bộ stack)
 
-Lấy một dataset tabular công khai bất kỳ (CSV kiểu churn/titanic): chạy nghi thức pandas → sửa một vấn đề bẩn thật → dựng pipeline ở trên → lấy điểm test → rồi *cố tình phá nó* (scale trước split, hoặc bỏ `stratify`) và nhìn con số dịch chuyển. Cảm nhận leakage làm con số nhúc nhích dạy nhiều hơn mười bài viết — kể cả bài này.
+Lấy một dataset tabular công khai bất kỳ (CSV kiểu churn/titanic):
+
+1. **Nghi thức:** chạy bốn dòng soi pandas ở mục 2. Ghi lại hai vấn đề thật bạn tìm thấy (luôn có ít nhất hai).
+2. **Lao công:** sửa một vấn đề cho tử tế ở lớp pandas — parse số-có-dấu-phẩy, gộp cột boolean ba giá trị, bỏ dòng trùng.
+3. **Pipeline:** dựng pipeline mục 4, lấy điểm test, ghi lại.
+4. **Cố tình phá:** dời scaling *lên trước* split (fit scaler trên toàn bộ dữ liệu), chạy lại, so điểm. Rồi bỏ `stratify` và nhìn tỉ lệ lớp trong hai nửa.
+5. **Kiểm trung thực:** Restart & Run All từ đầu — số có y hệt không?
+
+Kết quả mong đợi: bản leak ở bước 4 cho điểm *cao hơn* một chút — chính là lời nói dối, thấy bằng mắt mình: model đã mượn thống kê của test set. Bước 5 pass nghĩa là con số của bạn là thật. Cảm nhận leakage làm con số nhúc nhích dạy nhiều hơn mười bài viết — kể cả bài này.
+
+## Tự kiểm tra
+
+1. Vì sao `emb @ q` trên matrix `(10000, 768)` nhanh hơn hàng trăm lần một vòng loop Python làm cùng phép toán?
+2. Pipeline của bạn cho 0.94 khi scale trước split, và 0.91 với pipeline đúng. Báo cáo con số nào, và chuyện gì đã xảy ra?
+3. Bạn đoán churn tháng tới từ một năm lịch sử user. Cắt dữ liệu thế nào — và vì sao mặc định của `train_test_split` sai ở đây?
+
+<details><summary>Xem đáp án</summary>
+
+1. Vector hoá: numpy đẩy cả phép toán xuống C đã compile (kèm SIMD và bố trí bộ nhớ thân thiện cache) thay vì thông dịch từng phần tử qua bytecode Python — lập luận của CS Foundations P2, đem ra áp dụng.
+2. Báo 0.91. Con 0.94 bị leak: scaler fit trên toàn bộ dòng, nên thống kê test set (mean/std) đã lọt vào tiền xử lý lúc train. Con số của pipeline mới là ước lượng trung thực trên dữ liệu chưa thấy.
+3. Cắt theo thời gian: train tháng 1–10, validate tháng 11, test tháng 12. Cắt ngẫu nhiên rải các dòng tương lai vào train — model "đoán" quá khứ bằng tương lai, và điểm số sẽ không sống sót khi chạm production.
+
+</details>
 
 ## Điều cần nhớ
 
