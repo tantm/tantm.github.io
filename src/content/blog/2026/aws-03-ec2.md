@@ -10,7 +10,7 @@ series: aws-zero-to-advanced
 part: 3
 ---
 
-<!-- TODO(img): concept — SP-C isometric 3D purple-blue: a single glossy server rack slice floating on a platform, with four labeled price tags hanging off it reading "ON-DEMAND", "SPOT", "RESERVED", "FREE TIER"; the SPOT tag is attached by a thin thread with small scissors near it; title "SAME SERVER, FOUR PRICES" -->
+![Same server, four prices — and spot hangs by a thread, by design](images/s04-p03-concept1.png)
 
 Serverless is the fashion, so why start with servers? Because every higher abstraction on the AWS map — Lambda, Fargate, managed databases — is **EC2 with the sharp edges filed off**, and when abstractions leak (they do), the leak is shaped like an instance. One hour of EC2 fluency buys you intuition for half the AWS catalog. This part is that hour.
 

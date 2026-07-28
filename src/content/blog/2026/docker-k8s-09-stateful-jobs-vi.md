@@ -8,10 +8,9 @@ lang: vi
 translationKey: docker-k8s-09
 series: docker-k8s
 part: 9
-
+cover: images/s11-p09-hero.png
 ---
 
-<!-- TODO(img): hero — SP-F blueprint: a storage map — three pod capsules at top; below them a claim ticket labeled "PVC" connected by a dashed line to a disk cylinder labeled "PV"; a vending-machine box at the right labeled "STORAGECLASS" dispensing a new disk; title "CLAIM, DON'T OWN" -->
 
 Đến giờ ta vẫn coi Pod là đồ dùng-một-lần — giết một cái, bản thay thế y hệt xuất hiện. Được vậy vì chúng stateless. Nhưng hệ thống thật có database, queue, và pipeline chạy đêm — và "dùng-một-lần" chính xác là thứ database không thể là. Bài này nói về cách Kubernetes xử lý những thứ phải sống sót: volume, StatefulSet, và workload dạng batch — cộng câu hỏi mà team nào rồi cũng cãi nhau.
 

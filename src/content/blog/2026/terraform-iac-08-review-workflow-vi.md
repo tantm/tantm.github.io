@@ -8,10 +8,9 @@ lang: vi
 translationKey: terraform-iac-08
 series: terraform-iac
 part: 8
-
+cover: images/s12-p08-hero.png
 ---
 
-<!-- TODO(img): hero — comic 4 panel, clean flat colors: (1) dev opens laptop with a small ".tf" file and an arrow to a PR box; (2) a robot stamps a document labeled "PLAN" onto the PR conversation; (3) two reviewers with magnifying glasses over the plan, one pointing at a line labeled "REPLACE"; (4) a green "MERGE" button pressed and a robot arm turning a key labeled "APPLY"; title "THE PLAN IS THE REVIEW" -->
 
 Bài 5 đã dời state lên backend dùng chung; bài 7 cho bạn module. Còn lại một câu hỏi workflow, và nó quyết định IaC có thật sự giao được lời hứa hay không: **ai chạy `terraform apply`, từ đâu, và cả team đã thấy gì trước khi nó xảy ra?** Câu trả lời chín muồi thì nhàm chán mà đẹp: không ai apply từ laptop. PR là đơn vị thay đổi, plan là artifact review, và CI giữ chìa khoá.
 

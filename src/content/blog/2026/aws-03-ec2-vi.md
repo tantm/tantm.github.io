@@ -10,7 +10,7 @@ series: aws-zero-to-advanced
 part: 3
 ---
 
-<!-- TODO(img): concept — SP-C isometric 3D purple-blue: a single glossy server rack slice floating on a platform, with four labeled price tags hanging off it reading "ON-DEMAND", "SPOT", "RESERVED", "FREE TIER"; the SPOT tag is attached by a thin thread with small scissors near it; title "SAME SERVER, FOUR PRICES" -->
+![Cùng một server, bốn mức giá — và spot treo trên sợi chỉ, đúng thiết kế](images/s04-p03-concept1.png)
 
 Serverless đang là mốt, vậy sao lại bắt đầu bằng server? Vì mọi abstraction cao hơn trên bản đồ AWS — Lambda, Fargate, database managed — đều là **EC2 đã được mài bớt cạnh sắc**, và khi abstraction rò rỉ (chắc chắn có lúc), vết rò mang hình một cái instance. Một giờ thông thạo EC2 mua được trực giác cho nửa catalog AWS. Phần này chính là một giờ đó.
 

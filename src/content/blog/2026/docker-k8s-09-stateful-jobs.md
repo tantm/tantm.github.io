@@ -8,10 +8,9 @@ lang: en
 translationKey: docker-k8s-09
 series: docker-k8s
 part: 9
-
+cover: images/s11-p09-hero.png
 ---
 
-<!-- TODO(img): hero — SP-F blueprint: a storage map — three pod capsules at top; below them a claim ticket labeled "PVC" connected by a dashed line to a disk cylinder labeled "PV"; a vending-machine box at the right labeled "STORAGECLASS" dispensing a new disk; title "CLAIM, DON'T OWN" -->
 
 Everything so far treated Pods as disposable — kill one, an identical replacement appears. That works because they were stateless. But real systems have databases, queues, and nightly pipelines, and "disposable" is exactly what a database is not. This part covers how Kubernetes handles the stuff that must survive: volumes, the StatefulSet, and batch workloads — plus the question every team eventually argues about.
 

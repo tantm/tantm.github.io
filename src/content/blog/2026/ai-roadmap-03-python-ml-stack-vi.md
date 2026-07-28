@@ -10,7 +10,7 @@ series: ai-roadmap
 part: 3
 ---
 
-<!-- TODO(img): concept — SP-E flat pastel (mint/peach/lavender): a four-layer workbench drawn as gentle stacked shelves labeled bottom-to-top "NUMPY", "PANDAS", "NOTEBOOK", "SCIKIT-LEARN"; on the top shelf a small pipeline of three connected rounded blocks; title "THE WORKBENCH" -->
+![Bàn thợ bốn tầng — và pipeline nằm trên kệ trên cùng](images/s03-p03-concept1.png)
 
 Phần 2 cho bạn bốn trực giác toán. Phần này lắp cái bàn thợ nơi chúng trở thành thứ chạy được: numpy, pandas, notebook, và scikit-learn. Mục tiêu không phải du lịch công cụ — mà là *kỷ luật của stack* mà Phần 4 (ML fundamentals) sẽ mặc định bạn có, thứ tách "từng chạy một tutorial" khỏi "tôi tin kết quả của chính mình."
 

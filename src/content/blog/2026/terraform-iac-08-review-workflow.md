@@ -8,10 +8,9 @@ lang: en
 translationKey: terraform-iac-08
 series: terraform-iac
 part: 8
-
+cover: images/s12-p08-hero.png
 ---
 
-<!-- TODO(img): hero — comic 4 panel, clean flat colors: (1) dev opens laptop with a small ".tf" file and an arrow to a PR box; (2) a robot stamps a document labeled "PLAN" onto the PR conversation; (3) two reviewers with magnifying glasses over the plan, one pointing at a line labeled "REPLACE"; (4) a green "MERGE" button pressed and a robot arm turning a key labeled "APPLY"; title "THE PLAN IS THE REVIEW" -->
 
 Part 5 moved state to a shared backend; Part 7 gave you modules. One workflow question remains, and it decides whether IaC actually delivers its promise: **who runs `terraform apply`, from where, and what did the team see before it happened?** The mature answer is boring and beautiful: nobody applies from a laptop. The PR is the unit of change, the plan is the review artifact, and CI holds the keys.
 

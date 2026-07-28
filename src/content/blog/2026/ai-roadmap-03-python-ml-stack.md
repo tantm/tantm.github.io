@@ -10,7 +10,7 @@ series: ai-roadmap
 part: 3
 ---
 
-<!-- TODO(img): concept — SP-E flat pastel (mint/peach/lavender): a four-layer workbench drawn as gentle stacked shelves labeled bottom-to-top "NUMPY", "PANDAS", "NOTEBOOK", "SCIKIT-LEARN"; on the top shelf a small pipeline of three connected rounded blocks; title "THE WORKBENCH" -->
+![The four-layer workbench — and the pipeline living on the top shelf](images/s03-p03-concept1.png)
 
 Part 2 gave you four math intuitions. This part installs the workbench where they become executable: numpy, pandas, the notebook, and scikit-learn. The goal is not tool tourism — it's the *stack discipline* that Part 4's ML fundamentals will assume, and that separates "ran a tutorial once" from "I trust my own results."
 
