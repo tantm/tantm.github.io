@@ -10,9 +10,20 @@ series: de-roadmap
 part: 3
 ---
 
+![Nấc thang leo hạng: mỗi bước là một cú tốt nghiệp có chủ đích, không phải mặc định](images/s02-p03-concept1.png)
+
 Bạn đã biết Python — ít nhất là cú pháp. Phần này nói về khoảng cách giữa "em viết được script" và "script của em chạy đêm suốt một năm mà không ai phải nghĩ về nó." Python của data engineering là một *phương ngữ*: ít abstraction khôn khéo hơn, nhiều sự đa nghi hơn về chuyện chạy lại, environment, và các biên giới nơi dữ liệu đi vào.
 
-## Thói quen 1 — Environment có khoá version, không thì coi như chưa xảy ra
+## Bạn sẽ học được gì
+
+- Dựng environment có khoá version, tái lập được, để scheduler dựng lại chính xác.
+- Viết job đậu bài test chạy-hai-lần (idempotency) và lộ ra CLI tử tế với log + exit code.
+- Đặt type ở biên giới nơi dữ liệu đi vào, để phần ruột pipeline tin được input.
+- Leo thang pandas → Arrow → DuckDB → Spark có chủ đích, và viết hai loại test trả được tiền thuê nhà.
+
+**Cần biết trước:** Phần 2 (pipeline là gì, vì sao có chạy lại). Python cơ bản — function, dict, chạy script.
+
+## 1. Environment có khoá version, không thì coi như chưa xảy ra
 
 Sự cố pipeline cổ xưa nhất trong sách: chạy trên laptop, chết trên scheduler, vì hai cái máy resolve "pandas" ra hai version khác nhau. Thuốc chữa thuần cơ học:
 
@@ -25,9 +36,9 @@ uv run python pipeline.py
 
 Tool không quan trọng bằng bản hợp đồng (uv là mặc định nhanh của thời nay; nghi thức venv+pip vẫn ổn): **dependency khai báo trong file, version bị khoá, environment dựng lại từ lockfile — không bao giờ "pip install vào bất kỳ thứ gì đang có sẵn."** Scheduler và laptop của bạn phải dựng ra cùng một thế giới từ cùng một file, không thì bí ẩn "trên máy em chạy bình thường" của Phần 2 (CS Foundations) thành ngày thứ Ba của bạn.
 
-## Thói quen 2 — Idempotency: bài test chạy-hai-lần
+## 2. Idempotency: bài test chạy-hai-lần
 
-Ta đã tụng từ này từ S02-P01; đây là nghĩa của nó trong Python. Hỏi mọi job: **nếu nó chạy hai lần, chuyện gì xảy ra?** Pipeline *chắc chắn sẽ* chạy lại — retry, backfill, một con người bồn chồn lúc 2 giờ sáng.
+Ta đã tụng từ này từ Phần 1; đây là nghĩa của nó trong Python. Hỏi mọi job: **nếu nó chạy hai lần, chuyện gì xảy ra?** Pipeline *chắc chắn sẽ* chạy lại — retry, backfill, một con người bồn chồn lúc 2 giờ sáng.
 
 ```python
 # Append: hai lần chạy = số dòng nhân đôi. TRƯỢT bài test.
@@ -40,7 +51,7 @@ df.to_sql("daily_sales", conn, if_exists="append")
 
 Pattern tổng quát: **mỗi lượt chạy sở hữu một lát cắt rõ ràng** (thường là partition theo ngày), ghi nguyên tử (ghi temp → swap), và mọi thứ suy ra từ tham số — không có `datetime.now()` chôn trong logic transform (lượt chạy "của hôm nay" mà rerun vào ngày mai phải cho ra *đúng* output cũ; ngày chạy là tham số, không phải thứ tự khám phá).
 
-## Thói quen 3 — CLI có tham số, không phải hằng số sửa tay
+## 3. CLI có tham số, không phải hằng số sửa tay
 
 Scheduler cần gọi script của bạn; một con người cần backfill hôm thứ Ba. Cả hai dùng chung một giao diện:
 
@@ -63,7 +74,7 @@ if __name__ == "__main__":
 
 Nhỏ, nhàm chán, và mã hoá cùng lúc ba bản hợp đồng: tham số thay cho hằng số sửa tay, log thay cho print (phiên bản 2-giờ-sáng của bạn cần timestamp), và **exit code thay cho thất bại im lặng** — pipeline nuốt exception rồi exit 0 là đang nói dối orchestrator của nó, và Phần 8 (Airflow) sẽ tin lời nói dối đó.
 
-## Thói quen 4 — Type ở biên giới
+## 4. Type ở biên giới
 
 Không cần type-theory thâm sâu; cần **biên giới có chú thích**. Dữ liệu đi vào code của bạn từ CSV, API, và bảng của người khác — biên giới là nơi những lời nói dối chui vào:
 
@@ -84,14 +95,14 @@ def parse_row(raw: dict) -> OrderRow:
 
 Parse một lần ở rìa thành hình dạng có type; mọi thứ hạ nguồn tin tưởng nó. Đây là bản song sinh mức-code của schema-on-write (S07-P03), và `mypy` trong CI biến chú thích từ tài liệu thành dây bẫy. Cần validate nặng đô hơn thì họ pydantic/pandera công nghiệp hoá đúng ý tưởng này — bắt đầu bằng dataclass, leo thang khi biên giới trở nên thù địch.
 
-## Thói quen 5 — Nấc thang pandas → Arrow → engine
+## 5. Nấc thang pandas → Arrow → engine
 
 pandas là xe chạy hằng ngày; phải biết sàn nhà nó cót két ở đâu:
 
 - **Memory:** một DataFrame muốn ~5–10× kích thước file CSV của nó trong RAM. File 5 GB trên node scheduler 16 GB đã là một sự cố.
-- **Type:** upcast im lặng `int` → `float` khi NaN xuất hiện, cột `object` giấu type trộn lẫn — type ở biên giới (Thói quen 4) là tấm khiên của bạn.
+- **Type:** upcast im lặng `int` → `float` khi NaN xuất hiện, cột `object` giấu type trộn lẫn — type ở biên giới (mục 4) là tấm khiên của bạn.
 
-Nấc thang leo hạng hiện đại, theo thứ tự: **pandas** (vừa RAM, khám phá) → **pyarrow / Parquet** (trao đổi columnar — đây là lý do mọi file trong S07 đều là Parquet) → **engine đơn-node** (DuckDB query thẳng Parquet, thường thay được nguyên một cuộc họp "chúng ta cần Spark" — luận đề S07-P08) → **Spark** chỉ khi dữ liệu thật sự vượt một máy (S02-P07 phía trước). Mỗi nấc là một cú tốt nghiệp có chủ đích, không phải mặc định.
+Nấc thang leo hạng hiện đại, theo thứ tự: **pandas** (vừa RAM, khám phá) → **pyarrow / Parquet** (trao đổi columnar — đây là lý do mọi file trong S07 đều là Parquet) → **engine đơn-node** (DuckDB query thẳng Parquet, thường thay được nguyên một cuộc họp "chúng ta cần Spark" — luận đề S07-P08) → **Spark** chỉ khi dữ liệu thật sự vượt một máy (Phần 7 phía trước). Mỗi nấc là một cú tốt nghiệp có chủ đích, không phải mặc định.
 
 ```python
 import duckdb
@@ -99,7 +110,7 @@ import duckdb
 duckdb.sql("SELECT country, SUM(amount_cents) FROM 'sales/*.parquet' GROUP BY 1")
 ```
 
-## Thói quen 6 — Test trả được tiền thuê nhà
+## 6. Test trả được tiền thuê nhà
 
 Bỏ qua kịch coverage. Hai loại test nuôi sống pipeline: **logic transform trên fixture tí hon** (5 dòng, đáp án tính tay được) và **các ca input xấu xí** bạn từng bị đốt (file rỗng, key trùng, cái timezone từng dịch):
 
@@ -109,7 +120,45 @@ def test_daily_totals_dedupes():
     assert daily_totals(rows)["total_cents"] == 100
 ```
 
-Mỗi sự cố production nên để lại một fixture — đó là cách bộ test của pipeline mọc răng thay vì mọc mỡ. (Kiểm tra chất lượng trên dữ liệu *thật* là một tầng khác — dbt test, lãnh thổ của S02-P12.)
+Mỗi sự cố production nên để lại một fixture — đó là cách bộ test của pipeline mọc răng thay vì mọc mỡ. (Kiểm tra chất lượng trên dữ liệu *thật* là một tầng khác — dbt test, lãnh thổ của Phần 12.)
+
+## Thực hành (25 phút — chỉ cần laptop)
+
+Dựng một pipeline tí hon đậu bài test của mọi thói quen:
+
+```bash
+# 1. Environment có khoá
+uv init rerun-lab && cd rerun-lab && uv add duckdb
+
+# 2. Viết pipeline.py: CLI nhận --run-date, ghi ra
+#    out/sales-<run-date>.parquet từ một list dict nhỏ hardcode
+#    (parse từng dict qua dataclass trước — thói quen 4).
+#    Dùng DuckDB: duckdb.sql("SELECT ...").write_parquet(...)
+
+# 3. Bài test chạy-lại — mục đích của lab:
+uv run python pipeline.py --run-date 2026-08-01
+uv run python pipeline.py --run-date 2026-08-01     # chạy LẦN NỮA
+python -c "import duckdb; print(duckdb.sql(\"SELECT count(*) FROM 'out/*.parquet'\"))"
+
+# 4. Bài test pipeline-nói-dối: cho parse raise khi gặp dòng xấu rồi kiểm
+uv run python pipeline.py --run-date bad-input; echo "exit=$?"
+```
+
+Kết quả mong đợi: count ở bước 3 y hệt sau lần chạy thứ hai — cùng lát cắt, cùng output, idempotent. Bước 4 in exit code khác 0 — script của bạn nói thật với orchestrator tương lai. Trượt bài nào là bạn vừa tìm ra đúng con bug mà bài này sinh ra để chặn.
+
+## Tự kiểm tra
+
+1. Job chạy tốt local nhưng crash trên scheduler với `AttributeError` bên trong pandas. Nghi phạm đầu tiên là gì, thói quen nào chặn được?
+2. Vì sao ngày chạy phải là tham số CLI thay vì `datetime.now()` trong transform?
+3. Phân tích CSV 4 GB đang đụng trần memory trên máy 16 GB. Nấc tiếp theo trên thang leo hạng là gì — và điều gì mới biện minh cho việc nhảy sang Spark?
+
+<details><summary>Xem đáp án</summary>
+
+1. Trôi version: scheduler resolve ra pandas version khác laptop. Lockfile commit vào repo + dựng lại environment từ nó (thói quen 1) khiến hai máy giống hệt nhau.
+2. Vì chạy lại là chuyện thường: backfill job "của hôm nay" vào ngày mai phải cho cùng output. Với `datetime.now()`, cùng một lệnh cho kết quả khác nhau mỗi ngày — lượt chạy không còn sở hữu lát cắt rõ ràng, idempotency vỡ.
+3. Chuyển sang Parquet và query bằng DuckDB — đọc columnar + chạy được lớn-hơn-RAM thường khép hồ sơ ngay trên một máy. Spark chỉ xứng đáng khi dữ liệu thật sự vượt năng lực một máy, không phải vì kích thước file nghe oách.
+
+</details>
 
 ## Điều cần nhớ
 
