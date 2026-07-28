@@ -17,7 +17,16 @@ Good news: you don't. Real systems — including very large ones — are built f
 
 ![The AWS Map: 200 Services, 20 That Matter](images/aws-learning-path.png)
 
-## First, the mental model
+## What you'll learn
+
+- Hold the three-sentence mental model that explains all of AWS.
+- Navigate the four tiers of services and the 20 that actually matter.
+- Set up a free-tier account you can learn on without bill anxiety.
+- Know the 16-part route and where your role should focus.
+
+**Prerequisites:** none. CS Foundations helps but is not required.
+
+## 1. First, the mental model
 
 Three ideas organize everything else:
 
@@ -25,7 +34,7 @@ Three ideas organize everything else:
 - **Everything is an API.** The console is just a UI over APIs. This is why infrastructure can be code (Tier 3) — and why credentials that call those APIs are the crown jewels (also Tier 3).
 - **Shared responsibility.** AWS secures the cloud; you secure what you put *in* it. Most cloud incidents in the news are on the customer side of that line — usually a misconfiguration.
 
-## The four tiers
+## 2. The four tiers
 
 ```mermaid
 flowchart LR
@@ -57,7 +66,9 @@ The difference between "it runs" and "it runs well": **CloudWatch** metrics, log
 
 Zoom out: **data services** (Glue, Athena, Kinesis, Redshift — the bridge to data engineering), **AI services** (Bedrock, SageMaker), the **Well-Architected Framework** for judging designs, and **cost optimization** — because on AWS, the bill *is* an architecture review. This tier ends with the certification path, if you want the paper.
 
-## The 20 services that matter
+![The AWS map: four tiers of services, compute to ops](images/s04-p01-concept1.png)
+
+## 3. The 20 services that matter
 
 | Tier | Services |
 |---|---|
@@ -68,12 +79,34 @@ Zoom out: **data services** (Glue, Athena, Kinesis, Redshift — the bridge to d
 
 Everything else you can learn on demand, once these are solid.
 
-## Learning without a scary bill
+## 4. Learning without a scary bill
 
 - Create a **fresh personal account** with the free tier — never practice in a company account.
 - Set a **billing alarm on day one** (we do it together in Part 2).
 - **Delete what you create** at the end of each session; a NAT Gateway left running is the classic beginner's $35 lesson.
 - All examples in this series use throwaway demo resources with generic names.
+
+## Practice (15 minutes)
+
+Do the two setup steps this whole series assumes:
+
+1. Create a free-tier AWS account. Immediately enable MFA on the root user, then create an IAM user for daily work (Part 2 explains why root stays locked away).
+2. Create a billing alarm at $5. This is the single highest-value click in AWS: you will never be surprised by a bill again. Console → Billing → Budgets → create a $5 monthly budget with an email alert.
+3. Bookmark the pricing calculator (calculator.aws). Before every hands-on in this series, you can check the expected cost — almost always $0 on free tier.
+
+## Check yourself
+
+1. What are the three sentences of the AWS mental model?
+2. You want to run a Python API with zero traffic at night. Which tier-1 service shape fits best, and why?
+3. Why does this series insist on a billing alarm before any other hands-on?
+
+<details><summary>See answers</summary>
+
+1. Everything is an API call; you rent by the unit (hour, GB, request); the shared responsibility model splits security between AWS (of the cloud) and you (in the cloud).
+2. Serverless (Lambda-class): it scales to zero, so zero traffic costs zero — a server would bill hourly all night.
+3. Because the biggest barrier to learning AWS is bill fear. A $5 alarm converts "what if I forget something expensive" into an email — making every later experiment psychologically free.
+
+</details>
 
 ## Key takeaways
 

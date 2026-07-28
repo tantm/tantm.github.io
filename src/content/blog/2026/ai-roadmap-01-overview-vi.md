@@ -15,7 +15,16 @@ Vài năm trước, muốn đưa machine learning vào sản phẩm cần cả m
 
 ![Lộ trình trở thành AI Engineer](images/ai-roadmap.png)
 
-## AI Engineer chính xác là gì?
+## Bạn sẽ học được gì
+
+- Giải thích được AI Engineer làm gì, khác Data Scientist và ML Engineer chỗ nào.
+- Gọi tên 4 giai đoạn của lộ trình và mỗi giai đoạn thêm gì.
+- Biết học gì — và bỏ qua gì một cách an toàn — trong năm 2026.
+- Chọn điểm vào phù hợp trong 14 bài.
+
+**Cần biết trước:** lập trình Python thoải mái. Không cần nền toán hay ML — giai đoạn A phủ đúng phần cần thiết.
+
+## 1. AI Engineer chính xác là gì?
 
 Bối rối là dễ hiểu, vì có tới ba vai trò cùng dính chữ "AI":
 
@@ -29,7 +38,7 @@ Bối rối là dễ hiểu, vì có tới ba vai trò cùng dính chữ "AI":
 
 Cũng vì thế mà roadmap này xuất phát từ software engineering, không phải từ tấm bằng PhD.
 
-## Bốn giai đoạn
+## 2. Bốn giai đoạn
 
 ```mermaid
 flowchart LR
@@ -79,17 +88,41 @@ Demo mất một cuối tuần; sản phẩm mất phần còn lại:
 
 Giai đoạn D là nơi AI Engineer thành senior. Thị trường đầy người build được demo; thị trường trả tiền cho người giữ được nó sống.
 
-## Học gì — và bỏ gì (phiên bản 2026)
+![Lộ trình AI engineer: bốn chặng dẫn tới một sản phẩm chạy thật](images/s03-p01-concept1.png)
+
+## 3. Học gì — và bỏ gì (phiên bản 2026)
 
 **Học:** Python vững + một API stack, embeddings & vector search, structured outputs, công cụ eval, bài toán cost/latency khi serving.
 
 **Bỏ (tạm thời):** train foundation model từ đầu, quản trị GPU cluster, chạy theo mọi model mới ra — fundamentals trong series này chuyển giao được; bảng xếp hạng tuần này thì không.
 
-## Cách dùng series này
+## 4. Cách dùng series này
 
 - **Theo thứ tự** — giai đoạn sau mặc định bạn đã qua giai đoạn trước.
 - **Mỗi giai đoạn ship một thứ** — một classifier (A), một training loop (B), một app RAG rồi một agent (C), một tính năng có eval + monitoring (D).
 - **Ngân sách thật thà** — vài đô la API credit là đi được rất xa; bạn không cần GPU để bắt đầu.
+
+## Thực hành (10 phút)
+
+Đặt mốc trước khi vào bài 2:
+
+1. Viết ra, mỗi câu một dòng, câu trả lời hiện tại của bạn cho: "Embedding là gì?", "Token là gì?", "Khi nào fine-tune thay vì prompt?". Trả lời sai cũng không sao — đó là tấm ảnh-trước của bạn.
+2. Giữ file đó. Bạn sẽ viết lại 3 câu sau bài 2, 7 và 11 — phần khác biệt chính là tiến bộ của bạn.
+3. Chọn một use case AI nhỏ từ công việc hằng ngày (tóm tắt X, phân loại Y). Các phần hands-on của series sẽ dựng nó từng bước.
+
+## Tự kiểm tra
+
+1. Công ty muốn một chatbot trả lời trên tài liệu nội bộ. Đó chủ yếu là việc của Data Scientist hay AI Engineer, vì sao?
+2. Giai đoạn nào phủ RAG và agents?
+3. Năm 2026, vì sao lộ trình này dành nhiều thời gian cho evals hơn là train model từ đầu?
+
+<details><summary>Xem đáp án</summary>
+
+1. AI Engineer — đây là việc xây một *hệ thống* đáng tin quanh model có sẵn (retrieval, prompt, guardrails, evals), không phải train model mới hay chạy thí nghiệm.
+2. Giai đoạn C — LLM engineering (Phần 8–11): prompting, RAG, agents, fine-tuning.
+3. Vì gần như không ai còn train foundation model từ đầu; kỹ năng khan hiếm là khiến hệ thống dựa trên model trở nên *đáng tin*, và evals là cách đo điều đó. Train từ đầu là ngách chuyên gia.
+
+</details>
 
 ## Điều cần nhớ
 

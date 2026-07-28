@@ -15,7 +15,16 @@ A few years ago, putting machine learning in a product required a research team,
 
 ![The AI Engineer Roadmap](images/ai-roadmap.png)
 
-## What is an AI Engineer, exactly?
+## What you'll learn
+
+- Explain what an AI Engineer does, and how the role differs from Data Scientist and ML Engineer.
+- Name the four stages of this roadmap and what each stage adds.
+- Know what to learn — and what to safely skip — in 2026.
+- Pick your entry point into the 14 parts.
+
+**Prerequisites:** comfortable programming in Python. No math or ML background needed — Stage A covers exactly what's required.
+
+## 1. What is an AI Engineer, exactly?
 
 The confusion is understandable, because three roles share the word "AI":
 
@@ -29,7 +38,7 @@ The AI Engineer's defining trait: **you usually don't train the model — you en
 
 That is also why this roadmap starts from software engineering, not from a PhD.
 
-## The four stages
+## 2. The four stages
 
 ```mermaid
 flowchart LR
@@ -79,17 +88,41 @@ The demo took a weekend; the product takes the rest:
 
 Stage D is where AI Engineers become seniors. The market is full of people who can build a demo; it pays for people who can keep one alive.
 
-## What to learn — and what to skip (2026 edition)
+![The AI engineer roadmap: four stages rising toward a working product](images/s03-p01-concept1.png)
+
+## 3. What to learn — and what to skip (2026 edition)
 
 **Learn:** solid Python + one API stack, embeddings & vector search, structured outputs, eval tooling, the cost/latency math of serving.
 
 **Skip (for now):** training foundation models from scratch, GPU cluster management, chasing every new model release — the fundamentals in this series transfer; the leaderboard of the week does not.
 
-## How to use this series
+## 4. How to use this series
 
 - **In order** — each stage assumes the previous one.
 - **Ship something per stage** — a classifier (A), a training loop (B), a RAG app then an agent (C), an eval'd, monitored feature (D).
 - **Budget honestly** — a few dollars of API credits go a long way; you do not need a GPU to start.
+
+## Practice (10 minutes)
+
+Set your baseline before Part 2:
+
+1. Write down, in one sentence each, your current answer to: "What is an embedding?", "What is a token?", "When would you fine-tune instead of prompt?". Wrong answers are fine — they are your before-photo.
+2. Keep the file. You will rewrite the three sentences after Parts 2, 7, and 11 — the diff is your progress.
+3. Pick one small AI use case from your daily work (summarize X, classify Y). The hands-on parts of this series will build it step by step.
+
+## Check yourself
+
+1. A company wants a chatbot over its internal documents. Is that primarily a Data Scientist task or an AI Engineer task, and why?
+2. Which stage covers RAG and agents?
+3. In 2026, why does this roadmap spend more time on evals than on training models from scratch?
+
+<details><summary>See answers</summary>
+
+1. AI Engineer — it's about building a reliable *system* around an existing model (retrieval, prompts, guardrails, evals), not about training a new model or running experiments.
+2. Stage C — LLM engineering (Parts 8–11): prompting, RAG, agents, fine-tuning.
+3. Because almost nobody trains foundation models from scratch anymore; the scarce skill is making model-based systems *trustworthy*, and evals are how you measure that. Training from scratch is a specialist niche.
+
+</details>
 
 ## Key takeaways
 

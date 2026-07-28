@@ -17,7 +17,16 @@ Tin tốt: không cần. Các hệ thống thật — kể cả hệ thống r�
 
 ![Bản đồ AWS: 200 services, 20 cái đáng học](images/aws-learning-path.png)
 
-## Trước hết, mental model
+## Bạn sẽ học được gì
+
+- Nắm mental model ba câu giải thích toàn bộ AWS.
+- Định vị được 4 tier dịch vụ và 20 service thật sự đáng học.
+- Tự dựng tài khoản free-tier học được mà không lo hoá đơn.
+- Biết lộ trình 16 bài và vai trò của bạn nên tập trung đâu.
+
+**Cần biết trước:** không cần gì. Có CS Foundations là lợi thế nhưng không bắt buộc.
+
+## 1. Trước hết, mental model
 
 Ba ý tưởng sắp xếp mọi thứ còn lại:
 
@@ -25,7 +34,7 @@ Ba ý tưởng sắp xếp mọi thứ còn lại:
 - **Mọi thứ là API.** Console chỉ là UI bọc trên API. Đây là lý do hạ tầng viết được thành code (Tier 3) — và cũng là lý do credentials gọi các API đó là báu vật cần giữ (cũng Tier 3).
 - **Shared responsibility.** AWS bảo mật *cái cloud*; bạn bảo mật *thứ bạn đặt vào* cloud. Đa số sự cố cloud lên báo nằm ở phía khách hàng của ranh giới đó — thường là một misconfiguration.
 
-## Bốn tier
+## 2. Bốn tier
 
 ```mermaid
 flowchart LR
@@ -57,7 +66,9 @@ Khác biệt giữa "chạy được" và "chạy tốt": **CloudWatch** với m
 
 Zoom out: **data services** (Glue, Athena, Kinesis, Redshift — cây cầu sang data engineering), **AI services** (Bedrock, SageMaker), **Well-Architected Framework** để chấm một bản thiết kế, và **cost optimization** — vì trên AWS, hoá đơn *chính là* một bài review kiến trúc. Tier này kết bằng lộ trình certification, nếu bạn muốn tấm giấy.
 
-## 20 services đáng học
+![Bản đồ AWS: bốn tier dịch vụ, từ compute tới ops](images/s04-p01-concept1.png)
+
+## 3. 20 services đáng học
 
 | Tier | Services |
 |---|---|
@@ -68,12 +79,34 @@ Zoom out: **data services** (Glue, Athena, Kinesis, Redshift — cây cầu sang
 
 Mọi thứ còn lại học on-demand được, một khi phần này đã vững.
 
-## Học mà không sợ hoá đơn
+## 4. Học mà không sợ hoá đơn
 
 - Tạo **account cá nhân mới** với free tier — tuyệt đối không thực hành trên account công ty.
 - Đặt **billing alarm ngay ngày đầu** (Phần 2 sẽ làm cùng nhau).
 - **Xoá những gì mình tạo** sau mỗi buổi học; một NAT Gateway để quên là bài học $35 kinh điển của người mới.
 - Mọi ví dụ trong series dùng tài nguyên demo dùng-xong-xoá với tên generic.
+
+## Thực hành (15 phút)
+
+Làm hai bước setup mà cả series này giả định:
+
+1. Tạo tài khoản AWS free-tier. Bật MFA cho root user ngay, rồi tạo một IAM user cho việc hằng ngày (bài 2 giải thích vì sao root phải cất kỹ).
+2. Tạo billing alarm ở mức $5. Đây là cú click giá trị nhất trên AWS: bạn sẽ không bao giờ bị hoá đơn làm bất ngờ nữa. Console → Billing → Budgets → tạo budget $5/tháng kèm email alert.
+3. Bookmark máy tính giá (calculator.aws). Trước mỗi bài hands-on trong series, bạn kiểm tra được chi phí dự kiến — gần như luôn là $0 với free tier.
+
+## Tự kiểm tra
+
+1. Ba câu của mental model AWS là gì?
+2. Bạn muốn chạy một API Python mà ban đêm không có traffic. Hình dạng dịch vụ tier-1 nào hợp nhất, vì sao?
+3. Vì sao series này khăng khăng đòi billing alarm trước mọi bài hands-on khác?
+
+<details><summary>Xem đáp án</summary>
+
+1. Mọi thứ là một cú gọi API; bạn thuê theo đơn vị (giờ, GB, request); shared responsibility chia security giữa AWS (của cloud) và bạn (trong cloud).
+2. Serverless (họ Lambda): nó scale về không, nên không traffic là không tốn — một server sẽ tính tiền theo giờ suốt đêm.
+3. Vì rào cản lớn nhất khi học AWS là nỗi sợ hoá đơn. Một alarm $5 đổi câu "lỡ mình quên thứ gì đắt thì sao" thành một email — khiến mọi thí nghiệm về sau miễn phí về mặt tâm lý.
+
+</details>
 
 ## Điều cần nhớ
 
