@@ -13,9 +13,16 @@ cover: images/dp-arch-lakehouse.png
 
 Phần 2 kết thúc ở giới hạn của warehouse: dữ liệu phi cấu trúc khối lượng lớn, và chi phí khi scale. Câu trả lời của ngành đi qua ba hồi — lake, đầm lầy, lakehouse — và hiểu vòng cung đó là tấm khiên tốt nhất để khỏi mua nhầm hồi kịch cho bộ ràng buộc của mình.
 
-![Lake, Warehouse, Lakehouse: cuộc hội tụ](images/dp-arch-lakehouse.png)
+## Bạn sẽ học được gì
 
-## Hồi 1 — Lake: cứ chứa trước, hỏi sau
+- Phân biệt ba hồi kịch — lake, đầm lầy, lakehouse — và nói được điều gì thật sự hỏng ở hồi hai.
+- Dùng quy ước medallion (bronze/silver/gold) như một hợp đồng tin cậy, không phải thời trang.
+- Giải thích table format (họ Iceberg/Delta/Hudi) thêm gì cho file Parquet — và vì sao trung-lập-engine là nước cờ chiến lược.
+- Chấm lakehouse trên năm trục và gọi tên chi phí ẩn của nó.
+
+**Cần biết trước:** Phần 2 (warehouse và giới hạn của nó — bài này bắt đầu đúng chỗ bài đó kết thúc). Năm trục của Phần 1.
+
+## 1. Lake: cứ chứa trước, hỏi sau
 
 Nỗi đau khai sinh: warehouse đòi cấu trúc *từ trước* (schema-on-write) và tính giá warehouse cho storage. Trong khi đó các công ty đang sinh ra log, event, ảnh — dữ liệu không schema và giá trị chưa rõ. Xoá thì tiếc; đưa vào warehouse thì đắt.
 
@@ -23,7 +30,7 @@ Cú cược của lake: **object storage rẻ đến phi lý — cứ giữ tấ
 
 Cú cược thắng một nửa. Storage đúng là rẻ và scale vô hạn. Nhưng…
 
-## Hồi 2 — Đầm lầy
+## 2. Đầm lầy
 
 Thiếu kỷ luật, một cái lake xuống cấp theo kịch bản dễ đoán:
 
@@ -34,7 +41,7 @@ Thiếu kỷ luật, một cái lake xuống cấp theo kịch bản dễ đoán
 
 "Data swamp" không phải từ đùa; đó là trạng thái kết mặc định của một cái lake vô kỷ luật. Thuốc chữa đến từ hai lớp.
 
-## Hồi 3 — Lakehouse: hai thứ kỷ luật đặt lên trên lake
+## 3. Lakehouse: hai thứ kỷ luật đặt lên trên lake
 
 **Kỷ luật 1 — quy ước medallion.** Tổ chức lake thành các vùng theo mức độ tin cậy:
 
@@ -62,7 +69,7 @@ Có table format bên dưới, lake thôi là đống folder và trở thành t�
 
 Vậy lời chào hàng của lakehouse trong một dòng: **kinh tế của lake (object storage rẻ, format mở) + đảm bảo của warehouse (ACID, schema, catalog).** Cuộc hội tụ chạy cả hai chiều — warehouse giờ đọc thẳng open table format, còn engine lakehouse mọc SQL cỡ warehouse. Hai trường phái đang nhập một cách hữu hình; thứ còn phân biệt là *nguồn sự thật của dữ liệu bạn nằm ở đâu và trong format của ai*.
 
-## Chấm theo năm trục
+## 4. Chấm theo năm trục
 
 - **Scale:** điểm mạnh tiêu đề — TB tới PB, storage và compute scale độc lập.
 - **Latency:** gốc batch như warehouse; ingest streaming vào bronze là khả thi (lãnh thổ của Phần 4).
@@ -70,17 +77,60 @@ Vậy lời chào hàng của lakehouse trong một dòng: **kinh tế của lak
 - **Budget:** storage mỗi TB rẻ nhất mọi trường phái; chi phí compute phụ thuộc hoàn toàn kỷ luật query (Phần 12).
 - **Compliance:** format hiện đại xử lý được xoá kiểu GDPR (đó chính xác là thứ row-level delete sửa); tooling catalog + lineage trẻ hơn của warehouse nhưng dùng được.
 
-## Khi nào chọn, khi nào tránh
+## 5. Khi nào chọn, khi nào tránh
 
 **Chọn lakehouse khi:** khối dữ liệu TB+ và đang lớn; nguồn có dữ liệu bán/phi cấu trúc; ML cần lịch sử thô; bạn muốn linh hoạt engine và format mở làm đường lui chiến lược.
 
 **Tránh khi:** dữ liệu nhỏ và có cấu trúc (warehouse — hoặc stack small-data của Phần 8 — đơn giản hơn); team chỉ có một engineer bán thời gian (bảo trì bảng sẽ nuốt chửng họ); hoặc bạn chọn nó vì sơ đồ trông hiện đại (cảnh báo của Phần 1 áp dụng).
 
-## Ba khách hàng, một lakehouse
+## 6. Ba khách hàng, một lakehouse
 
 - **Startup nặng event data:** bronze + một lớp silver, DuckDB/Trino để query — một "lakehouse-lite" lớn lên duyên dáng.
 - **Tầm trung có data team:** medallion đầy đủ, một table format thống nhất, compaction theo lịch, catalog thật — setup kinh điển.
 - **Enterprise chịu kiểm soát:** cùng bộ khung + bronze tách vùng PII/non-PII, khoá mã hoá theo domain, snapshot audit bất biến nhờ time travel — lại là lớp phủ Phần 10 trên bộ khung không đổi.
+
+## Thực hành (20 phút — DuckDB, không cần cloud)
+
+Dựng mini-medallion hai tầng và cảm nhận vấn đề đầm lầy nó giải:
+
+```python
+import duckdb, pathlib
+pathlib.Path("bronze").mkdir(exist_ok=True); pathlib.Path("silver").mkdir(exist_ok=True)
+
+# 1. Bronze: đáp hai "chuyến hàng" — chuyến thứ hai có field bị đổi tên (kinh điển đầm lầy)
+duckdb.sql("COPY (SELECT 1 AS id, 'a@x.com' AS email, 120 AS amount) TO 'bronze/day1.parquet'")
+duckdb.sql("COPY (SELECT 2 AS id, 'b@x.com' AS mail,  250 AS amount) TO 'bronze/day2.parquet'")
+
+# 2. Thử đọc bronze như một bảng — xem nó vỡ/lệch:
+try:
+    print(duckdb.sql("SELECT * FROM 'bronze/*.parquet'"))
+except Exception as e:
+    print("ĐẦM LẦY:", e)
+
+# 3. Silver: cưỡng chế hợp đồng tường minh (typed, hợp nhất, dedupe)
+duckdb.sql("""COPY (
+  SELECT id, email, amount FROM 'bronze/day1.parquet'
+  UNION ALL
+  SELECT id, mail AS email, amount FROM 'bronze/day2.parquet'
+) TO 'silver/orders.parquet'""")
+print(duckdb.sql("SELECT count(*), sum(amount) FROM 'silver/orders.parquet'"))
+```
+
+Kết quả mong đợi: bước 2 fail (hoặc lệch âm thầm) — một field đổi tên và cái "bảng" vốn chỉ là đống thư mục ngừng đọc được: đầm lầy, tái hiện trong ba dòng. Tầng silver ở bước 3 là nơi niềm tin bắt đầu — cú đổi tên được *xử lý tại biên*, hạ nguồn đọc một hợp đồng sạch duy nhất. Table format tự động hoá chính xác kỷ luật này (cộng transaction, delete, time travel) để con người khỏi phải nhớ.
+
+## Tự kiểm tra
+
+1. Schema-on-read là cú cược khai sinh của lake. Nó thật sự mua được gì, và âm thầm trì hoãn thứ gì?
+2. Một yêu cầu xoá GDPR tới cho một khách hàng có event nằm trong ba năm partition Parquet. Vì sao đây từng là ác mộng của đầm lầy, và chính xác thứ gì đã sửa nó?
+3. Team 2 người với 200 GB dữ liệu quan hệ sạch hỏi có nên dựng lakehouse "cho tương lai". Trả lời thế nào, dùng các trục?
+
+<details><summary>Xem đáp án</summary>
+
+1. Nó mua được việc đáp mọi dữ liệu ngay và rẻ — không phải model trước, không xoá gì. Nó trì hoãn (chứ không xoá bỏ) chi phí của cấu trúc: giờ mọi reader phải tự biết schema từng file, và không gì ngăn producer làm vỡ reader — khoản trì hoãn tích lũy thành đầm lầy.
+2. Object storage không có delete mức dòng: xoá một khách nghĩa là ghi lại mọi partition chứa họ. Table format thêm update/delete mức dòng (merge) — cú xoá thành một thao tác transaction nhỏ thay vì viết lại hàng loạt.
+3. Không — nhỏ, có cấu trúc, team tí hon chấm ra warehouse (hoặc small-data stack) trên mọi trục: điểm mạnh của lakehouse (PB, phi cấu trúc, đa engine) vắng mặt, còn chi phí ẩn (bảo trì bảng, catalog, chọn engine) đè lên hai con người. "Cho tương lai" chính là cái bẫy sơ-đồ-trông-hiện-đại của Phần 1.
+
+</details>
 
 ## Điều cần nhớ
 
