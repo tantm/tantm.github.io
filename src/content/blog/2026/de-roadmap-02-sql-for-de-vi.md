@@ -12,6 +12,15 @@ part: 2
 
 Một sự thật mất lòng: senior không "vượt qua" SQL — họ viết SQL *nhiều hơn*, trên dữ liệu lớn hơn, với rủi ro cao hơn. SQL là ngôn ngữ duy nhất mà mọi warehouse, lakehouse và công cụ BI đều đồng thuận. Phần này nói về bốn kỹ năng biến "em biết SQL" thành "SQL của em tin được": join, window functions, CTE, và pattern aggregation.
 
+## Bạn sẽ học được gì
+
+- Viết JOIN không bao giờ lặng lẽ nhân đôi hay làm rơi hàng.
+- Dùng 3 pattern window function phủ đa số công việc DE hằng ngày.
+- Cấu trúc query phức tạp bằng CTE để đồng đội đọc được.
+- Chọn đúng giữa WHERE, HAVING, FILTER mà không đoán mò.
+
+**Cần biết trước:** SELECT/WHERE/GROUP BY cơ bản. Bài 1 để biết SQL nằm đâu trong lộ trình.
+
 Mọi ví dụ dùng schema shop generic: `orders(id, customer_id, status, amount, created_at)` và `customers(id, name, country)`.
 
 ## 1. JOIN đáng tin
@@ -132,11 +141,25 @@ HAVING SUM(amount) > 1000;      -- nhóm sau
 
 Đặt điều kiện dòng vào `HAVING` cho đáp án đúng với chi phí gấp 10; đặt điều kiện nhóm vào `WHERE` thì lỗi — hoặc tệ hơn, một query sai mà bạn sửa mò tới khi nó "chạy".
 
-## Luyện tập cho ra kỹ năng thật
+## Thực hành (30 phút)
 
 - Dựng lại mọi ví dụ trên PostgreSQL nháp (một lệnh `docker run postgres` là có).
 - Lấy một con số trên dashboard ở công ty và tái tạo nó từ bảng raw — bạn sẽ gặp fan-out, NULL và nỗi đau timezone trong cùng một bài tập.
 - Đọc query plan thường xuyên (`EXPLAIN`) kể cả khi chưa hiểu hết từng node; độ quen thuộc sinh lãi kép.
+
+## Tự kiểm tra
+
+1. Bạn join `orders` với bảng `payments` và tổng doanh thu tăng gấp đôi. Chuyện gì xảy ra, và phép chẩn đoán 10 giây là gì?
+2. `WHERE`, `HAVING`, `FILTER` — cái nào chạy trước grouping, cái nào sau, cái nào aggregate có điều kiện?
+3. Khi nào `ROW_NUMBER()` thắng `GROUP BY` cho bài "bản ghi mới nhất mỗi khách hàng"?
+
+<details><summary>Xem đáp án</summary>
+
+1. Fan-out: một số order có nhiều dòng payment, nên mỗi dòng order bị nhân bản theo số payment. Chẩn đoán: so `COUNT(*)` trước và sau join — tăng nghĩa là fan-out; sửa bằng cách pre-aggregate payments về một dòng mỗi order.
+2. `WHERE` lọc hàng trước grouping; `HAVING` lọc group sau aggregation; `FILTER (WHERE ...)` aggregate có điều kiện trong một lượt quét.
+3. Khi cần trọn bộ dòng mới nhất (mọi cột), không chỉ một con số: `ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY created_at DESC)` rồi `WHERE rn = 1` — GROUP BY chỉ cho max timestamp, không cho cái dòng sở hữu nó.
+
+</details>
 
 ## Điều cần nhớ
 

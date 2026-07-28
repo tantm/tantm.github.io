@@ -12,6 +12,15 @@ part: 2
 
 Here is an unpopular truth: seniors don't outgrow SQL — they write *more* of it, on bigger data, with higher stakes. SQL is the one language every warehouse, lakehouse, and BI tool agrees on. This part covers the four skills that turn "I know SQL" into "I trust my SQL": joins, window functions, CTEs, and aggregation patterns.
 
+## What you'll learn
+
+- Write joins that never silently duplicate or drop rows.
+- Use the three window-function patterns that cover most daily DE work.
+- Structure complex queries with CTEs so a teammate can read them.
+- Choose between WHERE, HAVING, and FILTER without guessing.
+
+**Prerequisites:** basic SELECT/WHERE/GROUP BY. Part 1 for where SQL fits in the roadmap.
+
 All examples use a generic shop schema: `orders(id, customer_id, status, amount, created_at)` and `customers(id, name, country)`.
 
 ## 1. Joins you can trust
@@ -132,11 +141,25 @@ HAVING SUM(amount) > 1000;      -- groups after
 
 Putting a row condition in `HAVING` gives the right answer at 10× the cost; putting a group condition in `WHERE` gives an error — or worse, a wrong query you rewrite until it "works".
 
-## Practice that actually builds skill
+## Practice (30 minutes)
 
 - Rebuild every example on a scratch PostgreSQL (one `docker run postgres` away).
 - Take a dashboard number at work and reproduce it from raw tables — you will meet fan-out, NULLs, and timezone pain in one exercise.
 - Read query plans casually (`EXPLAIN`) even before you understand every node; familiarity compounds.
+
+## Check yourself
+
+1. You joined `orders` to a `payments` table and total revenue doubled. What happened, and what's the 10-second diagnostic?
+2. `WHERE`, `HAVING`, `FILTER` — which one runs before grouping, which after, and which aggregates conditionally?
+3. When does `ROW_NUMBER()` beat `GROUP BY` for "latest record per customer"?
+
+<details><summary>See answers</summary>
+
+1. Fan-out: some orders have multiple payment rows, so each order row duplicated per payment. Diagnostic: compare `COUNT(*)` before and after the join — if it grew, you have fan-out; fix by pre-aggregating payments to one row per order.
+2. `WHERE` filters rows before grouping; `HAVING` filters groups after aggregation; `FILTER (WHERE ...)` aggregates conditionally inside one pass.
+3. When you need the whole latest row (all columns), not just an aggregate: `ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY created_at DESC)` then `WHERE rn = 1` — a GROUP BY can only give you the max timestamp, not the row that owns it.
+
+</details>
 
 ## Key takeaways
 
