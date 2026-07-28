@@ -9,7 +9,6 @@ translationKey: docker-k8s-10
 series: docker-k8s
 part: 10
 cover: images/s11-p10-hero.png
-draft: true
 ---
 
 

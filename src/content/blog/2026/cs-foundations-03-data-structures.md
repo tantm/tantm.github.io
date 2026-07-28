@@ -10,7 +10,18 @@ series: cs-foundations
 part: 3
 ---
 
+![The working five, on one whiteboard — and the red circle is where half of all optimization lives](images/s01-p03-concept1.png)
+
 University courses cover a zoo of data structures — red-black trees, Fibonacci heaps, skip lists. Then you start working and discover the working set is five: **array, hash map, tree, graph, queue**. The skill that matters is not implementing them from scratch; it is **recognizing which one your problem secretly is** — and spotting them hiding inside every tool you use.
+
+## What you'll learn
+
+- Match each of the five structures to its one-line identity — and to the tools where it already lives.
+- Apply the single highest-value optimization move: build a hash index, then probe it.
+- Explain why database indexes answer in milliseconds (B-trees) and why a cyclic pipeline can't run (topological sort).
+- Use the recognition table to name the structure hiding in a messy problem.
+
+**Prerequisites:** Part 2 (why memory layout and the call stack matter). Python examples, but everything transfers to any language.
 
 ## 1. Array / list — "things in a row"
 
@@ -80,7 +91,7 @@ One idea, three sizes:
 
 When Part 10 of the DE Roadmap says "Kafka is a log", your mental model can start here: a queue that many consumers can read at their own pace. (Two cousins worth knowing by name: the **stack** — LIFO, undo history, call stack — and the **priority queue** — "most urgent first", schedulers and top-K.)
 
-## The recognition table
+## 6. The recognition table
 
 | You catch yourself saying… | Reach for |
 |---|---|
@@ -90,6 +101,52 @@ When Part 10 of the DE Roadmap says "Kafka is a log", your mental model can star
 | "these depend on each other" | Graph + topo sort |
 | "produced faster than consumed" | Queue |
 | "just walk through them all" | Array — and that's fine |
+
+## Practice (20 minutes — one file, no libraries)
+
+Generate a fake dataset and feel two structures earn their keep:
+
+```python
+import random, time
+customers = [{"id": i, "name": f"c{i}"} for i in range(20_000)]
+orders = [{"id": i, "customer_id": random.randrange(20_000)} for i in range(20_000)]
+
+# 1. The slow way — search inside a loop
+t = time.perf_counter()
+slow = [next(c for c in customers if c["id"] == o["customer_id"]) for o in orders]
+print("nested loop:", round(time.perf_counter() - t, 2), "s")
+
+# 2. The hash-index way
+t = time.perf_counter()
+by_id = {c["id"]: c for c in customers}
+fast = [by_id[o["customer_id"]] for o in orders]
+print("hash index:", round(time.perf_counter() - t, 4), "s")
+
+# 3. Topological sort in 10 lines — order these pipeline steps:
+deps = {"report": {"clean"}, "clean": {"extract"}, "dashboard": {"report"}, "extract": set()}
+order, done = [], set()
+while len(order) < len(deps):
+    ready = [k for k, v in deps.items() if v <= done and k not in done]
+    if not ready: raise SystemExit("cycle!")   # try adding: deps["extract"] = {"dashboard"}
+    order += ready; done |= set(ready)
+print("run order:", order)
+```
+
+Expected results: the nested loop takes seconds; the hash index takes milliseconds — the O(n²) → O(n) move, felt on your own hardware. Step 3 prints a valid run order; add the suggested cycle and it dies with `cycle!` — exactly why Airflow rejects cyclic DAGs.
+
+## Check yourself
+
+1. Your report joins orders to customers with a loop inside a loop and takes minutes. What's the one-move fix, and what tool does the same thing at database scale?
+2. A composite index on `(country, city)` doesn't speed up `WHERE city = 'Hanoi'`. Which structure explains why?
+3. A teammate's pipeline definition fails with "cycle detected." What does that mean structurally, and why is there no fix except breaking the cycle?
+
+<details><summary>See answers</summary>
+
+1. Build a hash index once (`{id: customer}`), then probe it per order — O(n·m) becomes O(n+m). A database hash join does exactly this move when joining two tables.
+2. The B-tree: it's sorted by `country` first, `city` second. Keys with the same city are scattered across all countries, so the tree can't narrow the search — the structure, not the database, dictates the rule.
+3. The dependency graph has a loop (A needs B needs A), so no topological order exists — there is literally no sequence in which every step runs after its dependencies. It's not a tuning problem; the definition itself is contradictory.
+
+</details>
 
 ## Key takeaways
 
