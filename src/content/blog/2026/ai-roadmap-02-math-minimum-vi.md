@@ -12,7 +12,16 @@ part: 2
 
 Toán là nơi phần lớn hành trình tự học AI bỏ mạng — thường là ở tuần thứ ba của một khoá linear algebra thiết kế cho dân chuyên toán. Sự thật giải phóng là đây: để *engineer* hệ thống AI, bạn cần **bốn ý tưởng**, hiểu bằng trực giác, và sự sẵn lòng giao phần số học cho thư viện. Bài này chính là bốn ý tưởng đó. Không chứng minh. Chỉ hình ảnh và hệ quả.
 
-## Ý tưởng 1 — Vector là một điểm; giống nhau là khoảng cách
+## Bạn sẽ học được gì
+
+- Nắm 4 ý tưởng toán chống lưng toàn bộ AI thực dụng: vector, matrix, probability, gradient descent.
+- Nối mỗi ý tưởng với tính năng AI nó tạo ra (search, mạng nơ-ron, output LLM, training).
+- Biết chính xác các chủ đề toán nào bỏ qua được an toàn.
+- Hoàn thành bài tập 30 phút khiến ý tưởng 1 khắc vào trí nhớ.
+
+**Cần biết trước:** không cần gì. Bài viết cho engineer "không phải dân toán".
+
+## 1. Ý tưởng 1 — Vector là một điểm; giống nhau là khoảng cách
 
 Vector chỉ là một dãy số — và một dãy số là một **vị trí trong không gian**. `[2, 3]` là một điểm trên mặt phẳng; một embedding 768 số là một điểm trong không gian 768 chiều. Bạn không hình dung nổi 768 chiều; chẳng ai hình dung nổi. Cứ hình dung 2 chiều và tin đại số tự tổng quát hoá.
 
@@ -30,7 +39,7 @@ def cos_sim(a, b):
 
 Khi bạn xây RAG ở Phần 9, "retrieval" theo nghĩa đen là "tìm các vector lưu sẵn có cosine similarity cao nhất với vector của câu hỏi". Toàn bộ bí kíp chỉ có thế.
 
-## Ý tưởng 2 — Matrix là cỗ máy biến đổi vector
+## 2. Ý tưởng 2 — Matrix là cỗ máy biến đổi vector
 
 Matrix trông như một lưới số; hãy nghĩ về nó như một **hàm**: vector vào, vector đã biến đổi ra — xoay, kéo giãn, chiếu, trộn. Nhân với matrix là "cho qua máy". Nhân chuỗi matrix là ghép các máy nối tiếp.
 
@@ -40,7 +49,7 @@ Và đây là cú chốt bạn nên mang theo suốt đời:
 
 Đó là lý do GPU quan trọng (chúng nhân matrix nhanh khủng khiếp), lý do model đo bằng "parameters" (số lượng con số trong các matrix), và con số "175B" trong tên model đang đếm cái gì. Khi ai đó nói model "đã học được", sự thật đen của nó là: hàng tỷ phần tử matrix vừa được xê dịch.
 
-## Ý tưởng 3 — Probability là phép đếm trung thực
+## 3. Ý tưởng 3 — Probability là phép đếm trung thực
 
 Bạn cần ba khái niệm probability, học hết trong một buổi chiều:
 
@@ -50,7 +59,7 @@ Bạn cần ba khái niệm probability, học hết trong một buổi chiều:
 
 Khuyến mãi một sự thật thà: đây cũng là lý do **hallucination không phải bug**. Một cỗ máy sinh "token hợp lý nhất tiếp theo" thì theo cấu tạo sẽ sinh ra những điều sai nghe rất hợp lý. Engineering (RAG, grounding, evals) quản trị nó; toán học nói nó không bao giờ biến mất hẳn.
 
-## Ý tưởng 4 — Gradient descent là đi bộ xuống dốc trong sương mù
+## 4. Ý tưởng 4 — Gradient descent là đi bộ xuống dốc trong sương mù
 
 Training cần làm model bớt sai. Định nghĩa một **loss** (con số đo độ sai), rồi cải thiện nó:
 
@@ -66,15 +75,29 @@ Training cần làm model bớt sai. Định nghĩa một **loss** (con số đo
 
 Khi bạn nhìn đường loss lúc training ở Phần 5, bạn đang xem nhật ký độ cao của một người leo núi.
 
-## Những thứ bạn dứt khoát KHÔNG cần
+## 5. Những thứ bạn dứt khoát KHÔNG cần
 
 - Chứng minh, eigen-các-thứ, measure theory, hay đạo hàm tính tay — autograd đạo hàm giùm bạn.
 - Trình thống kê cấp bằng cử nhân — ba ý probability ở trên phủ đủ việc engineering.
 - Cảm giác tội lỗi. Bạn có thể (và nên) học sâu hơn về sau — *bị kéo bởi nhu cầu*, không phải bị đẩy bởi tội lỗi. Thiếu đúng thứ toán mình đang cần là một vấn đề đáng mơ ước: nghĩa là bạn đang thực sự build.
 
-## Bài tập 30 phút ăn đứt một học kỳ
+## Thực hành (30 phút)
 
 Mở notebook: tạo mười điểm 2 chiều cho các từ về động vật và phương tiện (tự bịa toạ độ — coi như trục "kích thước" và "tốc độ"). Tính cosine similarity mọi cặp. Nhìn các cụm hiện ra. Chúc mừng — bạn vừa hiểu embeddings, similarity search và hình học của ngữ nghĩa sâu hơn đa số người hay nói về chúng.
+
+## Tự kiểm tra
+
+1. Hai mô tả sản phẩm có cosine similarity 0.94; một cặp khác được 0.12. Bạn kết luận được gì, và *không* kết luận được gì?
+2. LLM "chọn token kế tiếp". Ý tưởng nào trong bốn cái mô tả điều nó thật sự làm?
+3. Loss training giảm 3 tiếng, rồi nổ lên vô cực. Ý tưởng nào đang diễn ra, và cái núm kinh điển cần kiểm là gì?
+
+<details><summary>Xem đáp án</summary>
+
+1. Cặp đầu gần nhau hơn nhiều trong không-gian-nghĩa (theo cách embedding model nhìn); cặp sau không liên quan. Bạn không kết luận được chúng tương đương về sự thật hay chất lượng cao — similarity là độ gần hình học, không phải chân lý.
+2. Ý tưởng 3, probability: model xuất một phân phối xác suất trên mọi token và lấy mẫu từ đó — "chọn" là phép đếm trung thực trên tần suất đã học.
+3. Ý tưởng 4, gradient descent: bước đi nhiều khả năng quá dài (learning rate quá cao), cú đi bộ vọt qua thung lũng và phân kỳ. Núm kinh điển: hạ learning rate.
+
+</details>
 
 ## Điều cần nhớ
 
