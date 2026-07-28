@@ -17,7 +17,16 @@ This series is a guided tour of the major architecture schools — warehouse, la
 
 ![The Data Platform Architecture Map](images/dp-arch-map.png)
 
-## The uncomfortable premise: there is no "best"
+## What you'll learn
+
+- Argue why there is no "best" data architecture — only fits and misfits.
+- Score any use case on the five axes that actually decide an architecture.
+- Navigate the map of 14 architectures this series covers.
+- See how one problem gets three different right answers for three customers.
+
+**Prerequisites:** the Data Engineer Roadmap (S02) helps a lot — this series chooses between the things S02 teaches you to build.
+
+## 1. The uncomfortable premise: there is no "best"
 
 Architecture debates sound like technology debates ("lakehouse vs warehouse!") but are actually **constraint debates**. Every school on this map was invented by someone whose constraints made the previous school painful:
 
@@ -29,7 +38,7 @@ Architecture debates sound like technology debates ("lakehouse vs warehouse!") b
 
 None of these inventions deleted the previous one. **They stacked.** Your job is not to pick the newest — it's to pick the one whose birth-pain matches your current pain.
 
-## The five axes that actually decide
+## 2. The five axes that actually decide
 
 Before any diagram, score your situation on five axes. Every recommendation in this series traces back to them:
 
@@ -43,7 +52,7 @@ Before any diagram, score your situation on five axes. Every recommendation in t
 
 Write your five answers down now — seriously, in a note. Each part of this series ends by telling you which answers point toward, or away from, that architecture.
 
-## The map
+## 3. The map
 
 ```mermaid
 flowchart TB
@@ -72,7 +81,7 @@ flowchart TB
 
 Four groups, one ending. The **foundational** schools answer "where does data live and how is it shaped". The **latency-driven** group exists because someone said "yesterday's data is too old". The **organization-driven** group exists because architecture must match the shape of your company (Conway's law does not spare data teams). The **constraint-driven** group are overlays — regulation, AI-readiness, cost, and the art of migrating between all of the above without dropping the business.
 
-## Same problem, three customers, three right answers
+## 4. Same problem, three customers, three right answers
 
 To make "it depends" concrete, here's one problem — *"we want dashboards for sales and inventory"* — solved correctly three ways:
 
@@ -82,10 +91,32 @@ To make "it depends" concrete, here's one problem — *"we want dashboards for s
 
 Same business question. Three architectures. All correct. That's the whole thesis of this series.
 
-## Two warnings before we start
+## 5. Two warnings before we start
 
 1. **Resume-driven architecture is real.** The gravitational pull toward "what's on the conference stage" is strong. The map above has no "trendy" axis — that's deliberate.
 2. **Architectures are rented, not bought.** Constraints change: the startup grows, the batch business goes real-time. Part 13 (migration) is on the map because *every* long-lived platform eventually walks between schools. Design with the exit in mind.
+
+## Practice (10 minutes)
+
+Score a real system on the five axes:
+
+1. Pick one data system you know — at work, or a public case study.
+2. Rate it 1–5 on each axis: data volume, freshness need, team size, budget sensitivity, compliance weight.
+3. Write one sentence: "Given these scores, the architecture I'd expect is ___ — and what they actually run is ___." A mismatch is not automatically wrong; it's a question worth asking. You'll re-do this exercise with sharper eyes after Part 14's decision framework.
+
+## Check yourself
+
+1. Why does this series refuse to name a "best" architecture?
+2. Name the five axes from memory.
+3. A 5-person startup and a bank both need customer analytics. Which axes push them toward different architectures?
+
+<details><summary>See answers</summary>
+
+1. Because architecture is a fit between a design and a context — volume, freshness, team, budget, compliance. Change the context and the "best" answer changes with it.
+2. Data volume, freshness requirement, team size/skill, budget sensitivity, compliance weight.
+3. Team size (5 engineers vs hundreds), budget sensitivity (runway vs regulated budget), and compliance weight (almost none vs heavy) — pushing the startup toward simple managed/serverless and the bank toward governed, isolated, auditable platforms.
+
+</details>
 
 ## Key takeaways
 

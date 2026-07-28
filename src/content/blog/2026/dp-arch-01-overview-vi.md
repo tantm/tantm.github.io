@@ -17,7 +17,16 @@ Series này là chuyến tham quan có dẫn đường qua các trường phái 
 
 ![Bản đồ các kiến trúc Data Platform](images/dp-arch-map.png)
 
-## Tiền đề khó chịu: không có "tốt nhất"
+## Bạn sẽ học được gì
+
+- Lập luận được vì sao không có kiến trúc dữ liệu "tốt nhất" — chỉ có hợp và lệch.
+- Chấm điểm bất kỳ use case nào trên 5 trục thật sự quyết định kiến trúc.
+- Nắm bản đồ 14 kiến trúc mà series này phủ.
+- Thấy một bài toán có ba đáp án đều đúng cho ba khách hàng khác nhau.
+
+**Cần biết trước:** có Lộ trình Data Engineer (S02) là lợi thế lớn — series này chọn giữa những thứ S02 dạy bạn xây.
+
+## 1. Tiền đề khó chịu: không có "tốt nhất"
 
 Các cuộc tranh luận kiến trúc nghe như tranh luận công nghệ ("lakehouse vs warehouse!") nhưng thực ra là **tranh luận về ràng buộc**. Mỗi trường phái trên bản đồ đều được phát minh bởi ai đó mà ràng buộc của họ khiến trường phái trước đó trở nên đau đớn:
 
@@ -29,7 +38,7 @@ Các cuộc tranh luận kiến trúc nghe như tranh luận công nghệ ("lake
 
 Không phát minh nào xoá phát minh trước. **Chúng xếp chồng.** Việc của bạn không phải chọn cái mới nhất — mà chọn cái có nỗi-đau-khai-sinh khớp với nỗi đau hiện tại của bạn.
 
-## Năm trục thật sự quyết định
+## 2. Năm trục thật sự quyết định
 
 Trước mọi sơ đồ, hãy chấm điểm tình huống của bạn trên năm trục. Mọi khuyến nghị trong series đều truy về chúng:
 
@@ -43,7 +52,7 @@ Trước mọi sơ đồ, hãy chấm điểm tình huống của bạn trên n�
 
 Viết năm câu trả lời của bạn ra ngay — nghiêm túc đấy, vào một tờ note. Mỗi phần của series sẽ kết bằng việc chỉ ra câu trả lời nào hướng về, hay tránh xa, kiến trúc đó.
 
-## Bản đồ
+## 3. Bản đồ
 
 ```mermaid
 flowchart TB
@@ -72,7 +81,7 @@ flowchart TB
 
 Bốn nhóm, một điểm kết. Nhóm **nền tảng** trả lời "dữ liệu sống ở đâu, hình thù thế nào". Nhóm **theo latency** tồn tại vì có người nói "dữ liệu hôm qua là quá cũ". Nhóm **theo tổ chức** tồn tại vì kiến trúc phải khớp hình dạng công ty (định luật Conway không tha cho data team). Nhóm **theo ràng buộc** là các lớp phủ — quy định, độ sẵn sàng AI, chi phí, và nghệ thuật di cư giữa tất cả những thứ trên mà không đánh rơi business.
 
-## Cùng một bài toán, ba khách hàng, ba đáp án đều đúng
+## 4. Cùng một bài toán, ba khách hàng, ba đáp án đều đúng
 
 Để "còn tuỳ" bớt trừu tượng, đây là một bài toán — *"chúng tôi muốn dashboard bán hàng và tồn kho"* — được giải đúng theo ba cách:
 
@@ -82,10 +91,32 @@ Bốn nhóm, một điểm kết. Nhóm **nền tảng** trả lời "dữ liệ
 
 Cùng một câu hỏi business. Ba kiến trúc. Đều đúng. Đó là toàn bộ luận đề của series.
 
-## Hai cảnh báo trước khi lên đường
+## 5. Hai cảnh báo trước khi lên đường
 
 1. **Resume-driven architecture là có thật.** Lực hút về phía "thứ đang trên sân khấu hội thảo" rất mạnh. Bản đồ ở trên không có trục "đang trend" — cố ý đấy.
 2. **Kiến trúc là đồ thuê, không phải đồ mua đứt.** Ràng buộc sẽ đổi: startup lớn lên, business batch chuyển real-time. Phần 13 (migration) nằm trên bản đồ vì *mọi* platform sống lâu rồi cũng phải đi bộ giữa các trường phái. Thiết kế với lối ra trong đầu.
+
+## Thực hành (10 phút)
+
+Chấm một hệ thống thật trên 5 trục:
+
+1. Chọn một hệ thống dữ liệu bạn biết — ở công ty, hoặc một case study công khai.
+2. Chấm 1–5 cho từng trục: khối lượng dữ liệu, nhu cầu độ tươi, cỡ team, độ nhạy ngân sách, sức nặng compliance.
+3. Viết một câu: "Với các điểm này, kiến trúc mình dự đoán là ___ — còn thứ họ thật sự chạy là ___." Lệch nhau không tự động là sai; đó là một câu hỏi đáng đặt. Bạn sẽ làm lại bài này với con mắt sắc hơn sau decision framework ở bài 14.
+
+## Tự kiểm tra
+
+1. Vì sao series này từ chối gọi tên một kiến trúc "tốt nhất"?
+2. Kể tên 5 trục từ trí nhớ.
+3. Một startup 5 người và một ngân hàng đều cần analytics khách hàng. Những trục nào đẩy họ về hai kiến trúc khác nhau?
+
+<details><summary>Xem đáp án</summary>
+
+1. Vì kiến trúc là độ khớp giữa một thiết kế và một bối cảnh — volume, độ tươi, team, ngân sách, compliance. Đổi bối cảnh thì đáp án "tốt nhất" đổi theo.
+2. Khối lượng dữ liệu, yêu cầu độ tươi, cỡ/kỹ năng team, độ nhạy ngân sách, sức nặng compliance.
+3. Cỡ team (5 kỹ sư vs hàng trăm), độ nhạy ngân sách (runway vs ngân sách có kiểm soát), sức nặng compliance (gần như không vs rất nặng) — đẩy startup về managed/serverless đơn giản, ngân hàng về platform có governance, cô lập, audit được.
+
+</details>
 
 ## Điều cần nhớ
 
