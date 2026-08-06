@@ -7,6 +7,7 @@ tags: [cs-foundations, git, testing, career]
 lang: en
 translationKey: cs-foundations-09
 series: cs-foundations
+cover: images/s01-p09-hero.png
 part: 9
 ---
 

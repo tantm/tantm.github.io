@@ -7,6 +7,7 @@ tags: [cs-foundations, database, sql]
 lang: vi
 translationKey: cs-foundations-07
 series: cs-foundations
+cover: images/s01-p07-hero.png
 part: 7
 ---
 

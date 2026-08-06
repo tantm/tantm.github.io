@@ -7,6 +7,7 @@ tags: [cs-foundations, design-patterns, architecture]
 lang: en
 translationKey: cs-foundations-10
 series: cs-foundations
+cover: images/s01-p10-hero.png
 part: 10
 ---
 

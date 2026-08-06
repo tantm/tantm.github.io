@@ -7,6 +7,7 @@ tags: [cs-foundations, concurrency, performance]
 lang: en
 translationKey: cs-foundations-08
 series: cs-foundations
+cover: images/s01-p08-hero.png
 part: 8
 ---
 
