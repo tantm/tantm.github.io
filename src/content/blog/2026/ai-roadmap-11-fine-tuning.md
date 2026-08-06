@@ -7,6 +7,7 @@ tags: [ai-roadmap, fine-tuning, llm]
 lang: en
 translationKey: ai-roadmap-11
 series: ai-roadmap
+cover: images/s03-p11-hero.png
 part: 11
 ---
 

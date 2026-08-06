@@ -7,6 +7,7 @@ tags: [ai-roadmap, llmops, mlops]
 lang: en
 translationKey: ai-roadmap-13
 series: ai-roadmap
+cover: images/s03-p13-hero.png
 part: 13
 ---
 

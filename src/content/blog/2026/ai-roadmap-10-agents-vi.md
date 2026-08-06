@@ -7,6 +7,7 @@ tags: [ai-roadmap, agents, llm]
 lang: vi
 translationKey: ai-roadmap-10
 series: ai-roadmap
+cover: images/s03-p10-hero.png
 part: 10
 ---
 

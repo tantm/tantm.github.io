@@ -7,6 +7,7 @@ tags: [ai-roadmap, evals, llmops]
 lang: vi
 translationKey: ai-roadmap-12
 series: ai-roadmap
+cover: images/s03-p12-hero.png
 part: 12
 ---
 
