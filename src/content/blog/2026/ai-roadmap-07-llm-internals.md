@@ -7,6 +7,7 @@ tags: [ai-roadmap, llm]
 lang: en
 translationKey: ai-roadmap-07
 series: ai-roadmap
+cover: images/s03-p07-hero.png
 part: 7
 ---
 

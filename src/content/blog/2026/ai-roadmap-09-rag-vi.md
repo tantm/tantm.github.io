@@ -7,6 +7,7 @@ tags: [ai-roadmap, rag, vector-db, llm]
 lang: vi
 translationKey: ai-roadmap-09
 series: ai-roadmap
+cover: images/s03-p09-hero.png
 part: 9
 ---
 

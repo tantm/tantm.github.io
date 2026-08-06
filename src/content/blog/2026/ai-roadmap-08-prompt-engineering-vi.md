@@ -7,6 +7,7 @@ tags: [ai-roadmap, llm, prompt-engineering]
 lang: vi
 translationKey: ai-roadmap-08
 series: ai-roadmap
+cover: images/s03-p08-hero.png
 part: 8
 ---
 

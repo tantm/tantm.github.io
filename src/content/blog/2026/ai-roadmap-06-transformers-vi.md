@@ -7,6 +7,7 @@ tags: [ai-roadmap, nlp, transformers, llm]
 lang: vi
 translationKey: ai-roadmap-06
 series: ai-roadmap
+cover: images/s03-p06-hero.png
 part: 6
 ---
 
