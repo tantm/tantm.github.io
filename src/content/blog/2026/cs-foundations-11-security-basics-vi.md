@@ -7,6 +7,7 @@ tags: [cs-foundations, security, web]
 lang: vi
 translationKey: cs-foundations-11
 series: cs-foundations
+cover: images/s01-p11-hero.png
 part: 11
 ---
 

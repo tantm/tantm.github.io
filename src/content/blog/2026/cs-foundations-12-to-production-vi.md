@@ -7,6 +7,7 @@ tags: [cs-foundations, devops, career]
 lang: vi
 translationKey: cs-foundations-12
 series: cs-foundations
+cover: images/s01-p12-hero.png
 part: 12
 ---
 

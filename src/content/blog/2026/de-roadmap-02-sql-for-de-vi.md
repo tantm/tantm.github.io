@@ -7,6 +7,7 @@ tags: [de-roadmap, sql, database]
 lang: vi
 translationKey: de-roadmap-02
 series: de-roadmap
+cover: images/s02-p02-hero.png
 part: 2
 ---
 

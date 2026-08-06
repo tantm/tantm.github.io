@@ -7,6 +7,7 @@ tags: [de-roadmap, warehouse, lakehouse, dbt]
 lang: en
 translationKey: de-roadmap-05
 series: de-roadmap
+cover: images/s02-p05-hero.png
 part: 5
 ---
 
