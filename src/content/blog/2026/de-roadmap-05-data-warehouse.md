@@ -107,7 +107,7 @@ Incremental is a performance optimization *on top of* an idempotent full-rebuild
 
 Every arrow is a re-runnable job owning a dated slice. Every table states its grain. The DAG that orders these arrows is exactly what Part 8 schedules.
 
-<!-- TODO(img): concept — style SP-B light clean diagram. Three stacked horizontal bands on a white background labeled BRONZE, SILVER, GOLD from bottom to top, connected by upward arrows. Beside each band, a small contract-card shape lists a one-word guarantee; a circular re-run arrow loops from the top two bands back down to BRONZE, which carries a small padlock. Thin dark-gray linework, one calm blue accent, generous whitespace. Allowed words: BRONZE, SILVER, GOLD -->
+![Layers are contracts: bronze is evidence and never rebuilt; silver and gold are derived, so a re-run restores them.](images/s02-p05-concept1.png)
 
 ## Practice (25 minutes — build all three layers in DuckDB, locally)
 

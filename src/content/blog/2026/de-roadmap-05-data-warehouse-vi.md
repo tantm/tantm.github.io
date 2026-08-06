@@ -107,7 +107,7 @@ Incremental là tối ưu hiệu năng *đặt trên* một thiết kế full-re
 
 Mỗi mũi tên là một job chạy-lại-được sở hữu một lát cắt có ngày. Mỗi bảng khai grain của nó. Cái DAG xếp thứ tự các mũi tên này chính xác là thứ Phần 8 sẽ lập lịch.
 
-<!-- TODO(img): concept — style SP-B light clean diagram. Three stacked horizontal bands on a white background labeled BRONZE, SILVER, GOLD from bottom to top, connected by upward arrows. Beside each band, a small contract-card shape lists a one-word guarantee; a circular re-run arrow loops from the top two bands back down to BRONZE, which carries a small padlock. Thin dark-gray linework, one calm blue accent, generous whitespace. Allowed words: BRONZE, SILVER, GOLD -->
+![Lớp là hợp đồng: bronze là bằng chứng và không bao giờ rebuild; silver và gold dẫn xuất, nên chạy lại là dựng lại được.](images/s02-p05-concept1.png)
 
 ## Thực hành (25 phút — dựng cả ba lớp bằng DuckDB, ngay trên máy)
 
