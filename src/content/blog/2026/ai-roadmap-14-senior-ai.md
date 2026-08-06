@@ -7,6 +7,7 @@ tags: [ai-roadmap, career, architecture, security]
 lang: en
 translationKey: ai-roadmap-14
 series: ai-roadmap
+cover: images/s03-p14-hero.png
 part: 14
 ---
 

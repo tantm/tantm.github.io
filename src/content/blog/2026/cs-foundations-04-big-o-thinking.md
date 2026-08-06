@@ -7,6 +7,7 @@ tags: [cs-foundations, algorithms, performance]
 lang: en
 translationKey: cs-foundations-04
 series: cs-foundations
+cover: images/s01-p04-hero.png
 part: 4
 ---
 

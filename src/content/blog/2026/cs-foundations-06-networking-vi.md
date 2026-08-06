@@ -7,6 +7,7 @@ tags: [cs-foundations, networking, http]
 lang: vi
 translationKey: cs-foundations-06
 series: cs-foundations
+cover: images/s01-p06-hero.png
 part: 6
 ---
 

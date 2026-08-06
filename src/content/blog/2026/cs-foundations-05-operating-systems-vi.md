@@ -7,6 +7,7 @@ tags: [cs-foundations, os, linux]
 lang: vi
 translationKey: cs-foundations-05
 series: cs-foundations
+cover: images/s01-p05-hero.png
 part: 5
 ---
 
