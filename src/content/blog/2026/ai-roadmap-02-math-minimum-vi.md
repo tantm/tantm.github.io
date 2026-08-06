@@ -7,6 +7,7 @@ tags: [ai-roadmap, math, ml]
 lang: vi
 translationKey: ai-roadmap-02
 series: ai-roadmap
+cover: images/s03-p02-hero.png
 part: 2
 ---
 

@@ -7,6 +7,7 @@ tags: [ai-roadmap, python, ml]
 lang: vi
 translationKey: ai-roadmap-03
 series: ai-roadmap
+cover: images/s03-p03-hero.png
 part: 3
 ---
 

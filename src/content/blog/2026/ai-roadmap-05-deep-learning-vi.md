@@ -7,6 +7,7 @@ tags: [ai-roadmap, deep-learning, pytorch]
 lang: vi
 translationKey: ai-roadmap-05
 series: ai-roadmap
+cover: images/s03-p05-hero.png
 part: 5
 ---
 

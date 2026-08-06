@@ -7,6 +7,7 @@ tags: [ai-roadmap, ml, evals]
 lang: vi
 translationKey: ai-roadmap-04
 series: ai-roadmap
+cover: images/s03-p04-hero.png
 part: 4
 ---
 
