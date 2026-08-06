@@ -50,7 +50,7 @@ They trade off against each other through the **decision threshold** (the probab
 
 So the right question is never "is 0.5 good?" It is **"which mistake is more expensive here?"** — blocking a real customer, or missing a fraudster? That is a business decision wearing a math costume. Making it explicit is a big part of the job. (**F1** collapses the pair into one number when you must rank models; report all three when humans decide.)
 
-<!-- TODO(img): concept — style SP-E flat pastel illustration. A simple balance scale: left pan holds a stack of small "flagged" cards with one red X card on top, right pan holds a single figure walking away unnoticed; a slider bar labeled THRESHOLD sits beneath the scale with a knob off-center. Minimalist faceless figures, pastel peach/mint/lavender. Allowed words: THRESHOLD -->
+![Precision and recall trade off against each other; the threshold is where you encode which mistake costs more.](images/s03-p04-concept1.png)
 
 ## 4. Overfitting: the one disease every model catches
 

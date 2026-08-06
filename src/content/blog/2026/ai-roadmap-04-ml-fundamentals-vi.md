@@ -50,7 +50,7 @@ Chúng đánh đổi với nhau qua **ngưỡng quyết định** (mức xác su
 
 Nên câu hỏi đúng không bao giờ là "0.5 có ổn không?". Nó là **"ở đây sai lầm nào đắt hơn?"** — chặn nhầm khách thật, hay bỏ lọt kẻ gian? Đó là một quyết định business khoác áo toán. Làm nó tường minh là phần lớn của nghề. (**F1** nén cặp số thành một khi bạn phải xếp hạng model; báo cả ba khi con người ra quyết định.)
 
-<!-- TODO(img): concept — style SP-E flat pastel illustration. A simple balance scale: left pan holds a stack of small "flagged" cards with one red X card on top, right pan holds a single figure walking away unnoticed; a slider bar labeled THRESHOLD sits beneath the scale with a knob off-center. Minimalist faceless figures, pastel peach/mint/lavender. Allowed words: THRESHOLD -->
+![Precision và recall đánh đổi với nhau; ngưỡng là nơi bạn mã hoá sai lầm nào đắt hơn.](images/s03-p04-concept1.png)
 
 ## 4. Overfitting: căn bệnh mọi model đều mắc
 

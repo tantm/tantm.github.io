@@ -10,18 +10,29 @@ series: aws-zero-to-advanced
 part: 4
 ---
 
-S3 looks like a file share and that resemblance is a trap. It is an **object store** — a different animal with different physics — and it quietly underpins half of AWS: the data lakes of S07, EBS snapshots, log archives, static websites, ML datasets. Understand S3 properly and a dozen later services become obvious; misunderstand it and you'll fight "folders" that don't exist.
+S3 looks like a file share and that resemblance is a trap. It is an **object store** (storage addressed by key over HTTP, not by disk block) — a different animal with different physics. It quietly underpins half of AWS: data lakes, EBS snapshots, log archives, static websites, ML datasets.
 
-## Objects, not files
+## What you'll learn
+
+- Explain why S3 has no folders and no file edits — and what that changes in your code.
+- Pick a storage class from the access pattern, and spot the two fine-print traps.
+- Write a lifecycle rule that tiers and expires data automatically, forever.
+- Share objects safely with presigned URLs, and never need a public bucket.
+
+**Prerequisites:** Part 2 (IAM roles — presigned URLs use them). Part 1 helps for the everything-is-an-API model.
+
+## 1. Objects, not files
 
 An S3 **bucket** (globally unique name) holds **objects**: a key (the full "path" string), the bytes, and metadata. The mental model corrections that matter:
 
 - **There are no folders.** `raw/2026/07/orders.parquet` is one flat key; the console just *renders* slashes as a hierarchy. Consequence: "renaming a folder" means copying every object under a prefix — there is no cheap `mv`.
-- **Objects are immutable.** You never edit an object; you overwrite the whole thing under the same key. "Append to a file in S3" is not an operation — which is exactly why big data files come in immutable formats like Parquet (S02-P03's escalation path) and why table formats (S07-P03) exist to fake mutability on top.
-- **It's an HTTP API, not a disk** (Part 1's everything-is-an-API): ~milliseconds per request, effectively infinite parallel throughput. Optimized code makes *fewer, larger* requests — a thousand 1 KB objects cost more time and money than one 1 MB object.
-- **Durability vs availability are different promises**: eleven 9s of durability (your bytes survive) but occasional request errors are normal — clients retry (idempotency, again). Objects land in one **region**, replicated across AZs — residency (S07-P10) is decided by your bucket's region choice.
+- **Objects are immutable.** You never edit an object; you overwrite the whole thing under the same key. "Append to a file in S3" is not an operation. That is exactly why big-data files come in immutable formats like Parquet, and why table formats exist to fake mutability on top.
+- **It's an HTTP API, not a disk.** Roughly milliseconds per request, effectively infinite parallel throughput. Optimized code makes *fewer, larger* requests — a thousand 1 KB objects cost more time and money than one 1 MB object.
+- **Durability and availability are different promises.** Eleven 9s of durability (your bytes survive), but occasional request errors are normal — clients retry. Objects live in one **region**, replicated across AZs; where your data legally resides is decided by that one region choice.
 
-## Storage classes: the same bytes at five prices
+![Keys are flat: the folder tree is only a rendering, and each object is immutable.](images/s04-p04-concept1.png)
+
+## 2. Storage classes: the same bytes at five prices
 
 The bytes don't change; the access-pattern promise does. The menu, simplified to what you'll use:
 
@@ -31,11 +42,11 @@ The bytes don't change; the access-pattern promise does. The menu, simplified to
 | Intelligent-Tiering | Small monitoring fee, auto-moves tiers | You honestly don't know the access pattern |
 | Standard-IA | ~45% cheaper storage, per-GB retrieval fee, 30-day minimum | Backups, older partitions still queried sometimes |
 | Glacier Instant | ~68% cheaper, still millisecond access | Archives you rarely touch but can't wait for |
-| Glacier Deep Archive | ~95% cheaper, hours to restore, 180-day minimum | Compliance archives (S07-P10's retention years) |
+| Glacier Deep Archive | ~95% cheaper, hours to restore, 180-day minimum | Compliance archives kept for years |
 
-Two traps hide in the fine print: **minimum storage durations** (delete an IA object after a week, pay for 30 days anyway) and **retrieval fees** (move a hot dataset to IA and the "savings" invert). Which is why the honest default for mixed workloads is Intelligent-Tiering, and why the real tool is the next section.
+Two traps hide in the fine print. **Minimum storage durations**: delete an IA object after a week and you pay for 30 days anyway. **Retrieval fees**: move a hot dataset to IA and the "savings" invert. That is why the honest default for mixed workloads is Intelligent-Tiering — and why the real tool is the next section.
 
-## Lifecycle rules: S07-P12's tiering, made real
+## 3. Lifecycle rules: tiering, made real
 
 The FinOps "tier automatically" pattern is literally an S3 JSON rule:
 
@@ -53,18 +64,20 @@ The FinOps "tier automatically" pattern is literally an S3 JSON rule:
 }
 ```
 
-Raw data cools with age: Standard for the working quarter, IA for the year, Deep Archive until the 7-year retention expires, then gone. Written once at design time (S07-P12's "decide retention at design time" — this is the mechanism), it compounds savings forever. Also cover the unglamorous leaks: a rule to **abort incomplete multipart uploads** after 7 days — failed uploads silently bill until you do.
+Raw data cools with age: Standard for the working quarter, IA for the year, Deep Archive until the 7-year retention expires, then gone. Written once at design time, it compounds savings forever.
 
-## Versioning: the undo button with a bill
+Also cover the unglamorous leak: a rule to **abort incomplete multipart uploads** after 7 days. Failed uploads leave orphaned parts that bill silently until something deletes them.
+
+## 4. Versioning: the undo button with a bill
 
 Turn on versioning and overwrites/deletes stop destroying data: old versions stack up; a delete just adds a *delete marker*. Two edges:
 
 - **The good**: fat-finger protection, and the substrate for replication and audit trails. For buckets holding anything irreplaceable, it's non-negotiable.
 - **The bill**: every overwritten version keeps billing at full class price. Versioning **without** a lifecycle rule expiring old versions (`NoncurrentVersionExpiration`) is a slow-motion cost incident — the pair travels together, always.
 
-## Presigned URLs: sharing without opening the door
+## 5. Presigned URLs: sharing without opening the door
 
-The bucket stays private; your backend (using its IAM role, S04-P02) mints a time-limited URL that grants exactly one operation on exactly one object:
+The bucket stays private. Your backend, using its IAM role from Part 2, mints a time-limited URL that grants exactly one operation on exactly one object:
 
 ```python
 url = s3.generate_presigned_url("get_object",
@@ -72,16 +85,68 @@ url = s3.generate_presigned_url("get_object",
         ExpiresIn=900)   # 15 minutes, this object only
 ```
 
-This one primitive powers most "download your invoice" and "upload your avatar" features on the internet — user uploads go *directly* to S3 via a presigned PUT, never through (or sized for) your servers. It's the pattern that keeps buckets private while the product stays convenient.
+This one primitive powers most "download your invoice" and "upload your avatar" features on the internet. User uploads go *directly* to S3 via a presigned PUT, never through your servers — so you never size servers for file traffic. It keeps buckets private while the product stays convenient.
 
-Which brings up the famous failure mode: the **public bucket**. A decade of breach headlines came from "just make it public so the app works." Modern S3 ships with **Block Public Access** on by default — leave it on. The legitimate exception is *deliberate* static website hosting (this blog's pattern via GitHub Pages equivalents; on AWS, prefer CloudFront + Origin Access Control so the bucket itself still isn't public). If you're about to uncheck that box for any other reason, the answer is a presigned URL.
+Which brings up the famous failure mode: the **public bucket**. A decade of breach headlines came from "just make it public so the app works." Modern S3 ships with **Block Public Access** on by default — leave it on. The legitimate exception is *deliberate* static website hosting, and even then prefer CloudFront with Origin Access Control so the bucket itself still isn't public. If you're about to uncheck that box for any other reason, the answer is a presigned URL.
 
-## Hands-on (20 minutes, free tier)
+## Practice (25 minutes — free tier, feel each mechanism)
 
-1. Create a bucket (Block Public Access on), upload a file through console and CLI (`aws s3 cp`).
-2. Enable versioning; overwrite the file; list versions; delete it; observe the delete marker; restore by deleting the marker. Feel the undo.
-3. Add the lifecycle rule above (shorten to 1 day to see it registered) + the multipart-abort rule.
-4. Generate a presigned URL from the CLI, open it in a private browser window, watch it work — then expire.
+Do these in order; each step produces something you can see:
+
+```bash
+B=my-s3-lab-$RANDOM                                  # bucket names are globally unique
+aws s3 mb s3://$B                                    # Block Public Access is on by default — leave it
+
+# 1. Keys are flat: the "folder" is a rendering
+echo "hello" > a.txt
+aws s3 cp a.txt s3://$B/raw/2026/07/a.txt
+aws s3api list-objects-v2 --bucket $B --query 'Contents[].Key'   # one key, slashes and all
+
+# 2. Versioning: the undo button
+aws s3api put-bucket-versioning --bucket $B --versioning-configuration Status=Enabled
+echo "goodbye" > a.txt && aws s3 cp a.txt s3://$B/raw/2026/07/a.txt
+aws s3api list-object-versions --bucket $B --query 'Versions[].[Key,VersionId,IsLatest]'
+aws s3 rm s3://$B/raw/2026/07/a.txt                  # a delete marker, not a deletion
+aws s3api list-object-versions --bucket $B --query 'DeleteMarkers[].VersionId'
+# restore: delete the marker (paste the VersionId above)
+aws s3api delete-object --bucket $B --key raw/2026/07/a.txt --version-id <MARKER_ID>
+aws s3 cp s3://$B/raw/2026/07/a.txt -                # "goodbye" is back
+
+# 3. Lifecycle: tiering + the multipart leak, in one rule set
+cat > lc.json <<'EOF'
+{"Rules":[
+ {"ID":"archive-raw","Status":"Enabled","Filter":{"Prefix":"raw/"},
+  "Transitions":[{"Days":30,"StorageClass":"STANDARD_IA"}],
+  "NoncurrentVersionExpiration":{"NoncurrentDays":7}},
+ {"ID":"abort-multipart","Status":"Enabled","Filter":{"Prefix":""},
+  "AbortIncompleteMultipartUpload":{"DaysAfterInitiation":7}}]}
+EOF
+aws s3api put-bucket-lifecycle-configuration --bucket $B --lifecycle-configuration file://lc.json
+aws s3api get-bucket-lifecycle-configuration --bucket $B   # both rules registered
+
+# 4. Presigned URL: sharing without going public
+aws s3 presign s3://$B/raw/2026/07/a.txt --expires-in 60
+curl -s "https://$B.s3.amazonaws.com/raw/2026/07/a.txt"     # AccessDenied — bucket is private
+curl -s "<paste presigned url>"                             # "goodbye" — one object, one minute
+
+aws s3 rb s3://$B --force                                   # clean up
+```
+
+Expected results: step 1 shows a single flat key — there is no folder object anywhere. In step 2 the delete does not remove data; the object comes back when you delete the marker, which is the moment "undo button" stops being a metaphor. Step 3's second rule is the one nobody remembers and every bill notices. In step 4 the plain URL is denied while the presigned one works for exactly 60 seconds — that contrast is the whole argument against public buckets.
+
+## Check yourself
+
+1. Your teammate wants to "rename the `raw/2026/` folder to `raw/archive/`." What actually has to happen, and what does it cost?
+2. You move 5 TB of frequently-queried data to Standard-IA to save money. What are the two ways this can end up costing *more*?
+3. You enable versioning on a bucket holding daily 10 GB overwrites, and the bill triples over a month. What did you forget, and what's the fix?
+
+<details><summary>See answers</summary>
+
+1. Every object under the prefix must be copied to the new key and the old one deleted — there is no rename operation, because there is no folder. Cost is one request pair per object plus data-copy time; for millions of small objects that's slow and not free.
+2. Retrieval fees (frequently-queried means constant per-GB retrieval charges), and the 30-day minimum storage duration if any of that data gets deleted or re-tiered early. Both make IA a bad fit for hot data.
+3. A `NoncurrentVersionExpiration` lifecycle rule. Every overwrite keeps the old version billing at full price forever; versioning and noncurrent-version expiration always travel together.
+
+</details>
 
 ## Key takeaways
 
