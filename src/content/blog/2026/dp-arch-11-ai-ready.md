@@ -15,7 +15,16 @@ Sooner or later a team shows up at your platform's door saying "we're doing AI n
 
 ![The AI-Ready Data Platform](images/dp-arch-ai-ready.png)
 
-## The birth pain
+## What you'll learn
+
+- Name what AI workloads need that a classic platform does not already provide.
+- Add the four pieces — unstructured storage, vectors, features, eval loop — without rebuilding anything.
+- Keep vector indexes in sync, and carry access control into them.
+- Extend existing governance to the new assets instead of inventing a parallel regime.
+
+**Prerequisites:** Parts 2-3 (platform foundations) and Part 10 (governance in regulated settings).
+
+## 1. The birth pain
 
 Classic analytics consumes *aggregates of the past*. AI workloads consume three things your platform probably doesn't serve yet:
 
@@ -25,7 +34,7 @@ Classic analytics consumes *aggregates of the past*. AI workloads consume three 
 
 Teams that don't get these from the platform build shadow pipelines (Part 7's disease, AI edition) — notebooks feeding models from CSV exports, with no lineage and no reproducibility. AI-readiness is mostly *preventing that*.
 
-## The four additions
+## 2. The four additions
 
 ```mermaid
 flowchart LR
@@ -49,11 +58,11 @@ flowchart LR
 
 **④ Eval & feedback data.** The addition everyone forgets: predictions, outcomes, user feedback, and (for GenAI) prompt/response traces flowing *back into the lakehouse* as first-class tables. Without this loop you cannot answer "did the model get worse?" — the AI Roadmap's Part 12 (evals) stands on this plumbing.
 
-## Governance: same rules, new assets
+## 3. Governance: same rules, new assets
 
 The Part 10 overlay extends, it doesn't restart: training sets need **provenance** ("what data trained this model" is an audit question now), embeddings of PII are still PII (delete-by-key must cascade into vectors), and model artifacts join data artifacts in lineage. If you did Parts 3 and 10 well, this is paperwork; if you didn't, AI is where the debt gets called.
 
-## Scoring on the five axes
+## 4. Scoring on the five axes
 
 - **Latency:** the online feature store and vector serving bring true millisecond requirements — new muscle for a batch-native platform.
 - **Team:** the platform team gains two consumers with different vocabularies (DS/ML and app engineers); paved roads (Part 7's platform thinking) beat tickets.
@@ -61,11 +70,76 @@ The Part 10 overlay extends, it doesn't restart: training sets need **provenance
 - **Budget:** the meter moves from storage to *compute events* (re-embedding a corpus, retraining); Part 12's per-use-case metering is the control.
 - **Compliance:** provenance + PII-in-vectors are the new exam questions; answer them before the first model ships, not after.
 
-## Three customers
+## 5. Three customers
 
 - **Startup:** pgvector + a nightly embedding refresh + eval tables in the same small-data stack (Part 8). AI-ready ≠ heavy; it means *disciplined*.
 - **Mid-size:** the four additions on top of the lakehouse, feature correctness enforced in dbt tests, one shared RAG ingestion pipeline instead of per-team scripts.
 - **Enterprise / regulated:** everything above + model provenance in the catalog, vector ACLs mirrored from source permissions, and GenAI traces retained under the same audit regime as Part 10 — the platform's governance is *why* the AI program passes review.
+
+## Practice (25 minutes — find the sync bug that every vector index eventually has)
+
+The four additions are easy to draw and easy to get subtly wrong. This exercise reproduces the two failures that actually happen: a stale index, and an index that leaks documents a user shouldn't see.
+
+```python
+# A tiny "platform": a source of truth, and a derived vector index over it
+DOCS = {                      # source of truth (your lakehouse table)
+    "d1": {"text": "Refunds within 14 days.",      "acl": ["support", "admin"]},
+    "d2": {"text": "Pro plan is 49 USD per seat.", "acl": ["support", "admin", "public"]},
+    "d3": {"text": "Q4 layoff plan draft.",        "acl": ["admin"]},
+}
+INDEX = {}                    # the derived copy — a projection, like a serving layer
+
+def reindex():
+    INDEX.clear()
+    for doc_id, d in DOCS.items():
+        INDEX[doc_id] = {"text": d["text"], "acl": d["acl"]}   # ACL travels WITH the vector
+
+def search(query, user_roles, index=INDEX, enforce_acl=True):
+    hits = []
+    for doc_id, d in index.items():
+        if enforce_acl and not set(d["acl"]) & set(user_roles):
+            continue                                            # authorization at RETRIEVAL time
+        if any(w in d["text"].lower() for w in query.lower().split()):
+            hits.append((doc_id, d["text"]))
+    return hits
+
+reindex()
+print("support searches 'plan':", search("plan", ["support"]))
+print("admin   searches 'plan':", search("plan", ["admin"]))
+
+# FAILURE 1 — the stale index: source changes, index doesn't
+DOCS["d1"]["text"] = "Refunds within 30 days."          # policy changed today
+print("after policy change, index still says:", INDEX["d1"]["text"])
+print("  -> the assistant will confidently quote the OLD policy")
+reindex()
+print("after reindex:", INDEX["d1"]["text"])
+
+# FAILURE 2 — the ACL leak: retrieval without authorization
+DOCS["d3"]["acl"] = ["admin"]; reindex()
+print("support WITH acl check :", search("layoff", ["support"]))
+print("support WITHOUT check  :", search("layoff", ["support"], enforce_acl=False),
+      " <- a document they may not read, now inside an LLM prompt")
+
+# FAILURE 3 — the silent one: an embedding model change with no reindex
+print("index built with model:", "v1", "| queries now embedded with:", "v2",
+      "-> similarity across two spaces is meaningless, and nothing errors")
+```
+
+Expected results: failure 1 is the one users report as "the AI is wrong" when the platform is simply stale — a vector index is a derived copy, and every derived copy needs a refresh contract with a stated freshness target. Failure 2 is the one nobody reports, because it looks like the system working: the retrieval step returned a document, the model summarized it helpfully, and a support agent just read the layoff plan. Authorization has to happen at retrieval, with the ACL stored alongside the vector, because by prompt-assembly time the text has lost its provenance. Failure 3 has no symptom at all — just quietly worse answers — which is why the embedding model version belongs in the index metadata like a schema version.
+
+## Check yourself
+
+1. Your RAG assistant quotes a policy that changed two weeks ago. Where's the bug, and what contract was missing?
+2. Why is filtering results *after* retrieval a weaker design than filtering during it?
+3. Your team wants to add a vector database, a feature store and an eval pipeline. What do you build first, and why not all three?
+
+<details><summary>See answers</summary>
+
+1. In the sync contract between the source of truth and the derived index — not in the model, and not in the prompt. A vector index is a projection, so it needs a defined refresh path (event-driven or scheduled) and a freshness target someone owns. Without that, "the AI is wrong" is really "the platform never told it".
+2. Because post-filtering means the forbidden document already entered the pipeline: it consumed a retrieval slot, it may already be in the prompt, and any bug in the filter exposes it. Filtering during retrieval — with permissions stored next to the vectors — means unauthorized content never enters the context at all, which is the only version that survives a mistake downstream.
+3. The eval loop. Without it you cannot tell whether the vector database or the feature store improved anything, so you'd be adding two systems on faith. Evals are also the cheapest of the three and the one that makes every later change measurable — build the measurement before the thing being measured.
+
+</details>
 
 ## Key takeaways
 
