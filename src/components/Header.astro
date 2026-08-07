@@ -1,5 +1,6 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+import Logo from './Logo.astro';
 import { SITE_TITLE } from '../consts';
 import { localePath, switchPath, useT, type Lang } from '../i18n';
 
@@ -24,7 +25,10 @@ const switchHref = switchUrl ?? switchPath(lang, Astro.url.pathname);
 
 <header class="site-header">
   <div class="container">
-    <a href={localePath(lang, '/')} class="site-brand">{SITE_TITLE}<span style="color: var(--accent)">.</span></a>
+    <a href={localePath(lang, '/')} class="site-brand">
+      <Logo />
+      <span class="site-brand-name">{SITE_TITLE}<span style="color: var(--accent)">.</span></span>
+    </a>
     <nav class="site-nav">
       {
         nav.map(({ href, label }) => (

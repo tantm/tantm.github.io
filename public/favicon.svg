@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tan Thai">
   <rect width="64" height="64" rx="14" fill="#2563eb"/>
-  <text x="32" y="44" font-family="-apple-system, 'Segoe UI', Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="middle">T.</text>
+  <g fill="#ffffff">
+    <rect x="10.5" y="40" width="11" height="13" rx="5.5"/>
+    <rect x="26.5" y="32" width="11" height="21" rx="5.5"/>
+    <rect x="42.5" y="24" width="11" height="29" rx="5.5"/>
+    <circle cx="48" cy="15.5" r="5.5"/>
+  </g>
 </svg>
